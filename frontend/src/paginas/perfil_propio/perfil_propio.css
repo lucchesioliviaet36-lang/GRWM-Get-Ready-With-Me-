@@ -1,0 +1,148 @@
+/* Página completa */
+.perfil {
+  min-height: 100vh;
+  background-color: #f8f5f2;
+  color: #333;
+  font-family: Arial, sans-serif;
+}
+
+/* Barra superior */
+.perfil-header {
+  height: 70px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  border-bottom: 1px solid #ddd;
+}
+
+.perfil-header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.perfil-header nav {
+  display: flex;
+  gap: 30px;
+}
+
+.perfil-header nav span {
+  cursor: pointer;
+}
+
+/* Portada */
+.portada {
+  height: 250px;
+  background-color: #d8c8bd;
+  position: relative;
+}
+
+/* Foto de perfil */
+.foto-perfil {
+  width: 140px;
+  height: 140px;
+  background-color: white;
+  border: 5px solid white;
+  border-radius: 50%;
+  position: absolute;
+  left: 50px;
+  bottom: -70px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.foto-perfil span {
+  font-size: 60px;
+}
+
+/* Información */
+.informacion-perfil {
+  background-color: white;
+  padding: 90px 50px 30px;
+}
+
+.nombre-perfil {
+  margin-bottom: 20px;
+}
+
+.nombre-perfil h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.nombre-perfil p {
+  margin-top: 5px;
+  color: #777;
+}
+
+.boton-editar {
+  padding: 10px 20px;
+  border: 1px solid #333;
+  border-radius: 20px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.descripcion {
+  margin-top: 25px;
+  line-height: 1.6;
+}
+
+/* Estadísticas */
+.estadisticas {
+  display: flex;
+  gap: 50px;
+  margin-top: 25px;
+}
+
+.estadisticas div {
+  display: flex;
+  flex-direction: column;
+}
+
+.estadisticas strong {
+  font-size: 20px;
+}
+
+.estadisticas span {
+  color: #777;
+  margin-top: 5px;
+}
+
+/* Pestañas */
+.pestanas {
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.pestanas button {
+  padding: 18px 30px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Publicaciones */
+.publicaciones {
+  padding: 30px 50px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.publicacion {
+  height: 250px;
+  background-color: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+}
