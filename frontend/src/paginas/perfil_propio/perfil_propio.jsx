@@ -1,76 +1,159 @@
 import './perfil_propio.css'
+import logo from '../../assets/imagenes/logo.png'
 
 function PerfilPropio() {
   return (
-    <div className="perfil">
+    <div className="pagina-perfil">
 
-      <header className="perfil-header">
-        <h1>GRWM</h1>
+      {/* BARRA SUPERIOR */}
+      <header className="barra-superior">
 
-        <nav>
-          <span>Inicio</span>
-          <span>Buscar</span>
-          <span>Chat</span>
-          <span>Mi perfil</span>
-        </nav>
-      </header>
-
-      <main>
-
-        <section className="portada">
-          <div className="foto-perfil">
-            <span>👤</span>
-          </div>
-        </section>
-
-        <section className="informacion-perfil">
-
-          <div className="nombre-perfil">
-            <h2>Mi nombre</h2>
-            <p>@miusuario</p>
-          </div>
-
-          <button className="boton-editar">
-            Editar perfil
-          </button>
-
-          <p className="descripcion">
-            ✨ Mi perfil de GRWM ✨
-            <br />
-            Moda, outfits y mis looks favoritos.
-          </p>
-
-          <div className="estadisticas">
-            <div>
-              <strong>12</strong>
-              <span>Publicaciones</span>
-            </div>
-
-            <div>
-              <strong>150</strong>
-              <span>Seguidores</span>
-            </div>
-
-            <div>
-              <strong>120</strong>
-              <span>Siguiendo</span>
-            </div>
-          </div>
-
-        </section>
-
-        <div className="pestanas">
-          <button>Publicaciones</button>
-          <button>Guardados</button>
+        <div className="logo">
+          ✧ <span>GRWM</span>
         </div>
 
-        <section className="publicaciones">
-          <div className="publicacion">Foto 1</div>
-          <div className="publicacion">Foto 2</div>
-          <div className="publicacion">Foto 3</div>
-          <div className="publicacion">Foto 4</div>
-          <div className="publicacion">Foto 5</div>
-          <div className="publicacion">Foto 6</div>
+        <div className="buscador">
+          🔍
+          <span>Buscar outfits, marcas, tendencias...</span>
+        </div>
+
+        <nav className="menu">
+          <span>Comunidad</span>
+          <span>Tienda</span>
+          <span>Soporte</span>
+          <div className="mini-avatar">E</div>
+        </nav>
+
+      </header>
+
+
+      {/* CONTENIDO */}
+      <main className="contenido">
+
+        {/* PORTADA + PERFIL */}
+        <section className="tarjeta-perfil">
+
+          <div className="portada">
+            {/* Acá después pondremos la imagen de portada */}
+          </div>
+
+          <div className="datos-perfil">
+
+            <div className="avatar">
+              E
+            </div>
+
+            <div className="nombre-y-descripcion">
+              <h1>Elena Gómez</h1>
+              <p className="usuario">@elenag_style</p>
+
+              <p className="descripcion">
+                Amante de la moda urbana. Vendiendo joyas de
+                <br />
+                mi clóset vintage 🧥👠
+              </p>
+            </div>
+
+            <div className="estadisticas">
+
+              <div>
+                <strong>24</strong>
+                <span>Publicaciones</span>
+              </div>
+
+              <div>
+                <strong>1.8k</strong>
+                <span>Seguidores</span>
+              </div>
+
+              <div>
+                <strong>352</strong>
+                <span>Siguiendo</span>
+              </div>
+
+              <div className="botones">
+                <button className="btn-editar">
+                  Editar Perfil
+                </button>
+
+                <button className="btn-tienda">
+                  Mi Tienda
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        {/* PESTAÑAS */}
+        <div className="pestanas">
+
+          <button className="activa">
+            Publicaciones
+          </button>
+
+          <button>
+            Ventas
+          </button>
+
+          <button>
+            Guardados
+          </button>
+
+        </div>
+
+
+        {/* PUBLICACIONES */}
+        <section className="grid-publicaciones">
+
+          <article className="post">
+            <div className="foto-post foto-1">
+              <span>Foto</span>
+            </div>
+
+            <div className="pie-post">
+              <span>♡ 189</span>
+              <strong>€75</strong>
+            </div>
+          </article>
+
+
+          <article className="post">
+            <div className="foto-post foto-2">
+              <span>Foto</span>
+            </div>
+
+            <div className="pie-post">
+              <span>♡ 245</span>
+            </div>
+          </article>
+
+
+          <article className="post">
+            <div className="foto-post foto-3">
+              <span>Foto</span>
+            </div>
+
+            <div className="pie-post">
+              <span>♡ 98</span>
+              <strong>€95</strong>
+            </div>
+          </article>
+
+
+          <article className="post">
+            <div className="foto-post foto-4">
+              <span>Foto</span>
+            </div>
+
+            <div className="pie-post">
+              <span>♡ 150</span>
+            </div>
+          </article>
+
         </section>
 
       </main>

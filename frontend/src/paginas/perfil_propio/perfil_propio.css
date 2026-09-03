@@ -1,148 +1,495 @@
-/* Página completa */
-.perfil {
-  min-height: 100vh;
-  background-color: #f8f5f2;
-  color: #333;
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
   font-family: Arial, sans-serif;
 }
 
-/* Barra superior */
-.perfil-header {
-  height: 70px;
-  background-color: white;
+.pagina-perfil {
+  min-height: 100vh;
+  background: #fff7fa;
+  color: #703c5e;
+}
+
+
+/* =========================
+   BARRA SUPERIOR
+========================= */
+
+.barra-superior {
+  height: 60px;
+  background: white;
+  border-bottom: 1px solid #f0dbe5;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 40px;
-  border-bottom: 1px solid #ddd;
+
+  padding: 0 43px;
 }
 
-.perfil-header h1 {
-  margin: 0;
-  font-size: 28px;
+
+/* LOGO */
+
+.logo {
+  border: 1px solid #f0cddd;
+  border-radius: 20px;
+
+  padding: 6px 13px;
+
+  font-family: Georgia, serif;
+  font-size: 17px;
+
+  color: #8b3f68;
 }
 
-.perfil-header nav {
+.logo span {
+  margin-left: 4px;
+}
+
+
+/* BUSCADOR */
+
+.buscador {
+  width: 290px;
+  height: 30px;
+
+  border: 1px solid #edcfdd;
+  border-radius: 20px;
+
   display: flex;
-  gap: 30px;
+  align-items: center;
+
+  padding: 0 12px;
+
+  color: #8b6378;
+  font-size: 11px;
 }
 
-.perfil-header nav span {
-  cursor: pointer;
+.buscador span {
+  margin-left: 8px;
 }
 
-/* Portada */
-.portada {
-  height: 250px;
-  background-color: #d8c8bd;
-  position: relative;
+
+/* MENU */
+
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+
+  font-size: 11px;
+  color: #5d294b;
 }
 
-/* Foto de perfil */
-.foto-perfil {
-  width: 140px;
-  height: 140px;
-  background-color: white;
-  border: 5px solid white;
+.mini-avatar {
+  width: 27px;
+  height: 27px;
+
   border-radius: 50%;
-  position: absolute;
-  left: 50px;
-  bottom: -70px;
+
+  background: #d8c2b7;
 
   display: flex;
   align-items: center;
   justify-content: center;
+
+  color: white;
+  font-weight: bold;
 }
 
-.foto-perfil span {
-  font-size: 60px;
+
+/* =========================
+   CONTENIDO
+========================= */
+
+.contenido {
+  width: 814px;
+  margin: 24px auto 0;
 }
 
-/* Información */
-.informacion-perfil {
-  background-color: white;
-  padding: 90px 50px 30px;
+
+/* =========================
+   TARJETA DEL PERFIL
+========================= */
+
+.tarjeta-perfil {
+  background: white;
+
+  border: 1px solid #f0d4e0;
+  border-radius: 20px;
+
+  overflow: hidden;
 }
 
-.nombre-perfil {
-  margin-bottom: 20px;
+
+/* PORTADA */
+
+.portada {
+  height: 160px;
+
+  background:
+    linear-gradient(
+      rgba(235, 220, 211, 0.25),
+      rgba(235, 220, 211, 0.25)
+    ),
+    #d8c2af;
 }
 
-.nombre-perfil h2 {
-  margin: 0;
+
+/* DATOS */
+
+.datos-perfil {
+  min-height: 100px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 22px 18px;
+}
+
+
+/* AVATAR */
+
+.avatar {
+  width: 76px;
+  height: 76px;
+
+  min-width: 76px;
+
+  margin-top: -2px;
+
+  border-radius: 50%;
+
+  border: 5px solid white;
+
+  background: #c9b7aa;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+
+  font-family: Georgia, serif;
   font-size: 28px;
 }
 
-.nombre-perfil p {
-  margin-top: 5px;
-  color: #777;
+
+/* NOMBRE */
+
+.nombre-y-descripcion {
+  margin-left: 15px;
+  flex: 1;
 }
 
-.boton-editar {
-  padding: 10px 20px;
-  border: 1px solid #333;
-  border-radius: 20px;
-  background-color: white;
-  cursor: pointer;
+.nombre-y-descripcion h1 {
+  margin: 0;
+
+  font-family: Georgia, serif;
+
+  font-size: 23px;
+
+  color: #70345c;
+}
+
+.usuario {
+  margin: 3px 0 0;
+
+  font-size: 11px;
+
+  color: #9a6685;
 }
 
 .descripcion {
-  margin-top: 25px;
-  line-height: 1.6;
+  margin: 5px 0 0;
+
+  font-size: 10px;
+
+  line-height: 1.35;
+
+  color: #956d82;
 }
 
-/* Estadísticas */
+
+/* =========================
+   ESTADÍSTICAS
+========================= */
+
 .estadisticas {
   display: flex;
-  gap: 50px;
-  margin-top: 25px;
+  align-items: center;
+  gap: 22px;
 }
 
-.estadisticas div {
-  display: flex;
-  flex-direction: column;
+.estadisticas > div:not(.botones) {
+  text-align: center;
 }
 
 .estadisticas strong {
-  font-size: 20px;
+  display: block;
+
+  font-family: Georgia, serif;
+
+  font-size: 14px;
+
+  color: #75395f;
 }
 
 .estadisticas span {
-  color: #777;
-  margin-top: 5px;
+  display: block;
+
+  margin-top: 2px;
+
+  font-size: 9px;
+
+  color: #9b7188;
 }
 
-/* Pestañas */
-.pestanas {
-  background-color: white;
+
+/* BOTONES */
+
+.botones {
   display: flex;
-  justify-content: center;
-  gap: 50px;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+  gap: 8px;
+
+  margin-left: 5px;
+}
+
+.botones button {
+  height: 28px;
+
+  padding: 0 13px;
+
+  border-radius: 9px;
+
+  font-size: 10px;
+
+  cursor: pointer;
+}
+
+.btn-editar {
+  background: white;
+
+  border: 1px solid #eac7d7;
+
+  color: #743b60;
+}
+
+.btn-tienda {
+  background: #f6d6e8;
+
+  border: 1px solid #f6d6e8;
+
+  color: #743b60;
+}
+
+
+/* =========================
+   PESTAÑAS
+========================= */
+
+.pestanas {
+  height: 54px;
+
+  display: flex;
+  align-items: end;
+
+  gap: 25px;
+
+  border-bottom: 1px solid #efcfdd;
+
+  margin-top: 18px;
 }
 
 .pestanas button {
-  padding: 18px 30px;
+  height: 38px;
+
+  padding: 0 17px;
+
   border: none;
-  background: none;
+
+  background: transparent;
+
+  color: #9a6685;
+
+  font-size: 11px;
+
   cursor: pointer;
-  font-size: 16px;
 }
 
-/* Publicaciones */
-.publicaciones {
-  padding: 30px 50px;
+.pestanas .activa {
+  border-bottom: 2px solid #843c67;
+
+  color: #713357;
+
+  font-weight: bold;
+}
+
+
+/* =========================
+   PUBLICACIONES
+========================= */
+
+.grid-publicaciones {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+
+  grid-template-columns: repeat(4, 1fr);
+
   gap: 15px;
+
+  margin-top: 18px;
 }
 
-.publicacion {
-  height: 250px;
-  background-color: #ddd;
+
+/* TARJETA */
+
+.post {
+  background: white;
+
+  border: 1px solid #efd5e0;
+
+  border-radius: 14px;
+
+  overflow: hidden;
+}
+
+
+/* FOTOS */
+
+.foto-post {
+  height: 196px;
+
+  margin: 7px;
+
+  border-radius: 9px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #777;
+
+  color: transparent;
+}
+
+
+/* Por ahora son fondos.
+   Después pondremos las fotos reales. */
+
+.foto-1 {
+  background:
+    linear-gradient(
+      135deg,
+      #d9b79f,
+      #efd9c6
+    );
+}
+
+.foto-2 {
+  background:
+    linear-gradient(
+      135deg,
+      #c5b29f,
+      #e8dfd4
+    );
+}
+
+.foto-3 {
+  background:
+    linear-gradient(
+      135deg,
+      #c79b70,
+      #e4c4a4
+    );
+}
+
+.foto-4 {
+  background:
+    linear-gradient(
+      135deg,
+      #8fa5b0,
+      #eee5df
+    );
+}
+
+
+/* PIE DE FOTO */
+
+.pie-post {
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 10px;
+
+  font-size: 9px;
+
+  color: #9a6581;
+}
+
+.pie-post strong {
+  background: #bd4f80;
+
+  color: white;
+
+  padding: 4px 8px;
+
+  border-radius: 6px;
+
+  font-size: 9px;
+}
+
+
+/* =========================
+   PANTALLAS PEQUEÑAS
+========================= */
+
+@media (max-width: 850px) {
+
+  .contenido {
+    width: calc(100% - 30px);
+  }
+
+  .barra-superior {
+    padding: 0 15px;
+  }
+
+  .buscador {
+    display: none;
+  }
+
+  .grid-publicaciones {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .estadisticas {
+    gap: 10px;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .menu span {
+    display: none;
+  }
+
+  .datos-perfil {
+    flex-wrap: wrap;
+  }
+
+  .estadisticas {
+    width: 100%;
+    margin-top: 15px;
+    justify-content: center;
+  }
+
+  .grid-publicaciones {
+    grid-template-columns: 1fr;
+  }
+
 }
