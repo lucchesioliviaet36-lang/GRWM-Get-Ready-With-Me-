@@ -1,5 +1,12 @@
 import './perfil_propio.css'
-import logo from '../../assets/imagenes/logo.png'
+
+import bannerFotoDePerfilPropio from '../../assets/imagenes/bannerFotoDePerfilPropio.jpg'
+import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg'
+import fotoPropia1 from '../../assets/imagenes/fotoPropia1.jpg'
+import fotoPropia2 from '../../assets/imagenes/fotoPropia2.jpg'
+import fotoPropia3 from '../../assets/imagenes/fotoPropia3.jpg'
+import fotoPropia4 from '../../assets/imagenes/fotoPropia4.jpg'
+
 
 function PerfilPropio() {
   return (
@@ -11,17 +18,24 @@ function PerfilPropio() {
         <div className="logo">
           ✧ <span>GRWM</span>
         </div>
-
+        
         <div className="buscador">
-          🔍
-          <span>Buscar outfits, marcas, tendencias...</span>
+          <span className="icono-busqueda">🔍︎</span>
+
+          <input
+            type="text"
+            placeholder="Buscar outfits, marcas, tendencias..."
+          />
         </div>
 
         <nav className="menu">
-          <span>Comunidad</span>
-          <span>Tienda</span>
-          <span>Soporte</span>
-          <div className="mini-avatar">E</div>
+          <button>Comunidad</button>
+          <button>Tienda</button>
+          <button>Soporte</button>
+
+          <div className="mini-avatar">
+            <img src={fotoPerfilPropio} alt="Foto de perfil" />
+          </div>
         </nav>
 
       </header>
@@ -33,27 +47,47 @@ function PerfilPropio() {
         {/* PORTADA + PERFIL */}
         <section className="tarjeta-perfil">
 
-          <div className="portada">
-            {/* Acá después pondremos la imagen de portada */}
+          {/* PORTADA */}
+          <div
+            className="portada"
+            style={{
+              backgroundImage: `url(${bannerFotoDePerfilPropio})`
+            }}
+          >
           </div>
 
+
+          {/* INFORMACIÓN DEL PERFIL */}
           <div className="datos-perfil">
 
+            {/* FOTO DE PERFIL */}
             <div className="avatar">
-              E
+              <img
+                src={fotoPerfilPropio}
+                alt="Avatar de Elena Gómez"
+              />
             </div>
 
+
+            {/* NOMBRE Y DESCRIPCIÓN */}
             <div className="nombre-y-descripcion">
-              <h1>Elena Gómez</h1>
-              <p className="usuario">@elenag_style</p>
+
+              <h1>Taylor Swift</h1>
+
+              <p className="usuario">
+                @taylor_swift13
+              </p>
 
               <p className="descripcion">
-                Amante de la moda urbana. Vendiendo joyas de
+                Cantante, compositora y amante de la moda -`𖹭´-
                 <br />
-                mi clóset vintage 🧥👠
+                Compartiendo looks de cada era ♬⋆.˚
               </p>
+
             </div>
 
+
+            {/* ESTADÍSTICAS Y BOTONES */}
             <div className="estadisticas">
 
               <div>
@@ -72,6 +106,7 @@ function PerfilPropio() {
               </div>
 
               <div className="botones">
+
                 <button className="btn-editar">
                   Editar Perfil
                 </button>
@@ -79,6 +114,7 @@ function PerfilPropio() {
                 <button className="btn-tienda">
                   Mi Tienda
                 </button>
+
               </div>
 
             </div>
@@ -109,49 +145,73 @@ function PerfilPropio() {
         {/* PUBLICACIONES */}
         <section className="grid-publicaciones">
 
+          {/* PUBLICACIÓN 1 */}
           <article className="post">
-            <div className="foto-post foto-1">
-              <span>Foto</span>
+
+            <div className="foto-post">
+              <img
+                src={fotoPropia1}
+                alt="Publicación de Elena"
+              />
             </div>
 
             <div className="pie-post">
               <span>♡ 189</span>
-              <strong>€75</strong>
+              <strong>$75</strong>
             </div>
+
           </article>
 
 
+          {/* PUBLICACIÓN 2 */}
           <article className="post">
-            <div className="foto-post foto-2">
-              <span>Foto</span>
+
+            <div className="foto-post">
+              <img
+                src={fotoPropia2}
+                alt="Publicación de Elena"
+              />
             </div>
 
             <div className="pie-post">
               <span>♡ 245</span>
             </div>
+
           </article>
 
 
+          {/* PUBLICACIÓN 3 */}
           <article className="post">
-            <div className="foto-post foto-3">
-              <span>Foto</span>
+
+            <div className="foto-post">
+              <img
+                src={fotoPropia3}
+                alt="Publicación de Elena"
+              />
             </div>
 
             <div className="pie-post">
               <span>♡ 98</span>
-              <strong>€95</strong>
+              <strong>$95</strong>
             </div>
+
           </article>
 
 
+          {/* PUBLICACIÓN 4 */}
           <article className="post">
-            <div className="foto-post foto-4">
-              <span>Foto</span>
+
+            <div className="foto-post">
+              <img
+                src={fotoPropia4}
+                alt="Publicación de Elena"
+              />
             </div>
 
             <div className="pie-post">
               <span>♡ 150</span>
             </div>
+
           </article>
 
         </section>
