@@ -146,12 +146,12 @@ function PerfilPropio() {
         <section className="grid-publicaciones">
 
           {/* PUBLICACIÓN 1 */}
-          <article className="post">
+          <button className="post" type="button">
 
             <div className="foto-post">
               <img
                 src={fotoPropia1}
-                alt="Publicación de Elena"
+                alt="Publicación de Taylor"
               />
             </div>
 
@@ -160,16 +160,16 @@ function PerfilPropio() {
               <strong>$75</strong>
             </div>
 
-          </article>
+          </button>
 
 
           {/* PUBLICACIÓN 2 */}
-          <article className="post">
+          <button className="post" type="button">
 
             <div className="foto-post">
               <img
                 src={fotoPropia2}
-                alt="Publicación de Elena"
+                alt="Publicación de Taylor"
               />
             </div>
 
@@ -177,16 +177,16 @@ function PerfilPropio() {
               <span>♡ 245</span>
             </div>
 
-          </article>
+          </button>
 
 
           {/* PUBLICACIÓN 3 */}
-          <article className="post">
+          <button className="post" type="button">
 
             <div className="foto-post">
               <img
                 src={fotoPropia3}
-                alt="Publicación de Elena"
+                alt="Publicación de Taylor"
               />
             </div>
 
@@ -195,16 +195,16 @@ function PerfilPropio() {
               <strong>$95</strong>
             </div>
 
-          </article>
+          </button>
 
 
           {/* PUBLICACIÓN 4 */}
-          <article className="post">
+          <button className="post" type="button">
 
             <div className="foto-post">
               <img
                 src={fotoPropia4}
-                alt="Publicación de Elena"
+                alt="Publicación de Taylor"
               />
             </div>
 
@@ -212,7 +212,7 @@ function PerfilPropio() {
               <span>♡ 150</span>
             </div>
 
-          </article>
+          </button>
 
         </section>
 
