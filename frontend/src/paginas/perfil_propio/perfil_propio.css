@@ -665,3 +665,39 @@ body {
 .post:nth-child(4) img {
   object-position: center 30%;
 }
+
+.logo-contenedor {
+  position: relative;
+}
+
+.logo {
+  cursor: pointer;
+}
+
+.menu-logo {
+  position: absolute;
+  top: 43px;
+  left: 0;
+  width: 150px;
+  background: white;
+  border: 1px solid #f0d4e0;
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 5px 15px rgba(112, 60, 94, 0.12);
+  z-index: 10;
+}
+
+.menu-logo button {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 9px 10px;
+  text-align: left;
+  color: #703c5e;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.menu-logo button:hover {
+  background: #fff0f6;
+}

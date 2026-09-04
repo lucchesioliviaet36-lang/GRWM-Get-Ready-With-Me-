@@ -1,4 +1,6 @@
 import './perfil_propio.css'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import bannerFotoDePerfilPropio from '../../assets/imagenes/bannerFotoDePerfilPropio.jpg'
 import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg'
@@ -9,14 +11,35 @@ import fotoPropia4 from '../../assets/imagenes/fotoPropia4.jpg'
 
 
 function PerfilPropio() {
+  const navigate = useNavigate();
+  const [menuAbierto, setMenuAbierto] = useState(false)
+
   return (
     <div className="pagina-perfil">
 
       {/* BARRA SUPERIOR */}
       <header className="barra-superior">
 
-        <div className="logo">
-          ✧ <span>GRWM</span>
+        <div className="logo-contenedor">
+
+          <button
+            className="logo"
+            type="button"
+            onClick={() => setMenuAbierto(!menuAbierto)}
+          >
+            ✧ <span>GRWM</span>
+          </button>
+
+          {menuAbierto && (
+            <div className="menu-logo">
+              <button>Mi perfil</button>
+              <button>Mis outfits</button>
+              <button>Tienda</button>
+              <button>Página Principal</button>
+              <button>Configuración</button>
+            </div>
+          )}
+
         </div>
         
         <div className="buscador">
@@ -145,26 +168,34 @@ function PerfilPropio() {
         {/* PUBLICACIONES */}
         <section className="grid-publicaciones">
 
-          {/* PUBLICACIÓN 1 */}
-          <button className="post" type="button">
+        {/* PUBLICACIÓN 1 */}
+        <button
+          className="post"
+          type="button"
+          onClick={() => navigate('/publicacion1')}
+        >
 
-            <div className="foto-post">
-              <img
-                src={fotoPropia1}
-                alt="Publicación de Taylor"
-              />
-            </div>
+          <div className="foto-post">
+            <img
+              src={fotoPropia1}
+              alt="Publicación de Taylor"
+            />
+          </div>
 
-            <div className="pie-post">
-              <span>♡ 189</span>
-              <strong>$75</strong>
-            </div>
+          <div className="pie-post">
+            <span>♡ 189</span>
+            <strong>$75</strong>
+          </div>
 
-          </button>
+        </button>
 
 
           {/* PUBLICACIÓN 2 */}
-          <button className="post" type="button">
+          <button
+            className="post"
+            type="button"
+            onClick={() => navigate('/publicacion2')}
+          >
 
             <div className="foto-post">
               <img
@@ -181,7 +212,11 @@ function PerfilPropio() {
 
 
           {/* PUBLICACIÓN 3 */}
-          <button className="post" type="button">
+          <button
+            className="post"
+            type="button"
+            onClick={() => navigate('/publicacion3')}
+          >
 
             <div className="foto-post">
               <img
@@ -199,7 +234,11 @@ function PerfilPropio() {
 
 
           {/* PUBLICACIÓN 4 */}
-          <button className="post" type="button">
+          <button
+            className="post"
+            type="button"
+            onClick={() => navigate('/publicacion4')}
+          >
 
             <div className="foto-post">
               <img
