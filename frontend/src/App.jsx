@@ -9,6 +9,7 @@ import InicioSesion from './paginas/inicio_sesion/inicio_sesion'
 import Registro from "./paginas/registro/registro";
 
 
+
 function App() {
   return (
     
@@ -19,13 +20,13 @@ function App() {
 
         <Route path="/registro" element={<Registro />} />
 
-        <Route path="/" element={<PerfilPropio />} />
+        <Route path="/perfil_propio" element={<PerfilPropio />} />
 
         <Route path="/publicacion1" element={<Publicacion1 />} />
         <Route path="/publicacion2" element={<Publicacion2 />} />
         <Route path="/publicacion3" element={<Publicacion3 />} />
         <Route path="/publicacion4" element={<Publicacion4 />} />
-
+    
       </Routes>
     </BrowserRouter>
   );
