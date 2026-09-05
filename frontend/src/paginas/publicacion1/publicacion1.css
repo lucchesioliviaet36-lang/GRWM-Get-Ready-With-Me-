@@ -1,0 +1,457 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.pagina-publicacion {
+  min-height: 100vh;
+  background: #fff7fa;
+  color: #703c5e;
+}
+
+
+/* =========================
+   BARRA SUPERIOR
+========================= */
+
+.barra-superior-publicacion {
+  height: 60px;
+  background: white;
+  border-bottom: 1px solid #f0dbe5;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 43px;
+}
+
+
+/* LOGO */
+
+.logo-publicacion {
+  border: 1px solid #f0cddd;
+  border-radius: 20px;
+
+  padding: 6px 13px;
+
+  background: white;
+
+  font-family: Georgia, serif;
+  font-size: 17px;
+
+  color: #8b3f68;
+
+  cursor: pointer;
+}
+
+.logo-publicacion span {
+  margin-left: 4px;
+}
+
+
+/* BUSCADOR */
+
+.buscador-publicacion {
+  width: 290px;
+  height: 30px;
+
+  border: 1px solid #edcfdd;
+  border-radius: 20px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 12px;
+
+  color: #8b6378;
+}
+
+.buscador-publicacion span {
+  margin-right: 10px;
+}
+
+.buscador-publicacion input {
+  width: 100%;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  font-size: 11px;
+  color: #703c5e;
+}
+
+.buscador-publicacion input::placeholder {
+  color: #9a7188;
+}
+
+
+/* MENU */
+
+.menu-publicacion {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.menu-publicacion button {
+  border: none;
+  background: transparent;
+
+  color: #703c5e;
+
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+.menu-publicacion button:hover {
+  color: #9a4f78;
+}
+
+
+/* AVATAR */
+
+.mini-avatar-publicacion {
+  width: 27px;
+  height: 27px;
+
+  border-radius: 50%;
+
+  overflow: hidden;
+}
+
+.mini-avatar-publicacion img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* =========================
+   CONTENIDO
+========================= */
+
+.contenido-publicacion {
+  width: 900px;
+
+  margin: 35px auto;
+}
+
+
+/* VOLVER */
+
+.volver {
+  border: none;
+  background: transparent;
+
+  color: #8b5274;
+
+  font-size: 12px;
+
+  cursor: pointer;
+
+  margin-bottom: 15px;
+}
+
+.volver:hover {
+  color: #703c5e;
+}
+
+
+/* =========================
+   TARJETA
+========================= */
+
+.publicacion-card {
+  width: 100%;
+
+  background: white;
+
+  border: 1px solid #efd5e0;
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  display: grid;
+  grid-template-columns: 55% 45%;
+
+  min-height: 580px;
+}
+
+
+/* =========================
+   FOTO
+========================= */
+
+.publicacion-foto {
+  background: #f5e7ec;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+.publicacion-foto img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+}
+
+
+/* =========================
+   INFORMACIÓN
+========================= */
+
+.publicacion-info {
+  display: flex;
+  flex-direction: column;
+
+  padding: 22px;
+}
+
+
+/* USUARIO */
+
+.usuario-publicacion {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding-bottom: 18px;
+
+  border-bottom: 1px solid #f1dce5;
+}
+
+.avatar-publicacion {
+  width: 38px;
+  height: 38px;
+
+  border-radius: 50%;
+
+  overflow: hidden;
+}
+
+.avatar-publicacion img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.usuario-publicacion strong {
+  display: block;
+
+  font-family: Georgia, serif;
+
+  font-size: 14px;
+
+  color: #70345c;
+}
+
+.usuario-publicacion span {
+  display: block;
+
+  margin-top: 3px;
+
+  font-size: 10px;
+
+  color: #9a6685;
+}
+
+
+/* DESCRIPCIÓN */
+
+.descripcion-publicacion {
+  padding: 18px 0;
+
+  border-bottom: 1px solid #f1dce5;
+}
+
+.descripcion-publicacion p {
+  margin: 0 0 8px;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+
+  color: #75445f;
+}
+
+.fecha {
+  font-size: 9px;
+
+  color: #ae879b;
+}
+
+
+/* =========================
+   INTERACCIONES
+========================= */
+
+.interacciones {
+  padding: 15px 0;
+
+  border-bottom: 1px solid #f1dce5;
+}
+
+.iconos-interaccion {
+  display: flex;
+  gap: 12px;
+}
+
+.iconos-interaccion button {
+  border: none;
+  background: transparent;
+
+  font-size: 22px;
+
+  color: #703c5e;
+
+  cursor: pointer;
+
+  padding: 0;
+}
+
+.iconos-interaccion button:hover {
+  color: #bd4f80;
+
+  transform: scale(1.08);
+}
+
+.cantidad-likes {
+  display: block;
+
+  margin-top: 7px;
+
+  font-size: 11px;
+
+  color: #703c5e;
+}
+
+
+/* =========================
+   PRECIO
+========================= */
+
+.precio-publicacion {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 15px 0;
+
+  border-bottom: 1px solid #f1dce5;
+}
+
+.precio-publicacion span {
+  font-size: 10px;
+
+  color: #9a7188;
+}
+
+.precio-publicacion strong {
+  background: #bd4f80;
+
+  color: white;
+
+  padding: 6px 10px;
+
+  border-radius: 7px;
+
+  font-size: 11px;
+}
+
+
+/* =========================
+   COMENTARIOS
+========================= */
+
+.comentarios {
+  padding: 12px 0;
+
+  flex: 1;
+}
+
+.comentario {
+  display: flex;
+
+  gap: 7px;
+
+  margin-bottom: 10px;
+
+  font-size: 10px;
+}
+
+.comentario strong {
+  color: #703c5e;
+}
+
+.comentario span {
+  color: #896178;
+}
+
+
+/* =========================
+   NUEVO COMENTARIO
+========================= */
+
+.agregar-comentario {
+  display: flex;
+
+  gap: 8px;
+
+  padding-top: 12px;
+
+  border-top: 1px solid #f1dce5;
+}
+
+.agregar-comentario input {
+  flex: 1;
+
+  border: none;
+
+  outline: none;
+
+  font-size: 10px;
+
+  color: #703c5e;
+
+  background: transparent;
+}
+
+.agregar-comentario input::placeholder {
+  color: #ae879b;
+}
+
+.agregar-comentario button {
+  border: none;
+
+  background: transparent;
+
+  color: #bd4f80;
+
+  font-size: 10px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.agregar-comentario button:hover {
+  color: #8f315f;
+}

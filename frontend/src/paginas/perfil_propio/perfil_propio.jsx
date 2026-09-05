@@ -158,8 +158,11 @@ function PerfilPropio() {
             Ventas
           </button>
 
-          <button>
-            Guardados
+          <button
+            type="button"
+            onClick={() => navigate('/favoritos')}
+          >
+            Favoritos
           </button>
 
         </div>
