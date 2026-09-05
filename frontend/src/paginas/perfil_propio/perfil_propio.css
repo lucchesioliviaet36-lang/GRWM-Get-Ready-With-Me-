@@ -13,60 +13,48 @@ body {
   color: #703c5e;
 }
 
-
 /* =========================
-   BARRA SUPERIOR
+BARRA SUPERIOR
 ========================= */
-
 .barra-superior {
   height: 60px;
   background: white;
   border-bottom: 1px solid #f0dbe5;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: 0 43px;
 }
 
-
-/* LOGO */
-
+/* LOGO ESTÁTICO (YA NO ES UN BOTÓN) */
 .logo {
   border: 1px solid #f0cddd;
   border-radius: 20px;
-
   padding: 6px 13px;
-
   font-family: Georgia, serif;
   font-size: 17px;
-
   color: #8b3f68;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  user-select: none; /* Evita que se resalte como texto al hacer doble clic */
 }
 
 .logo span {
   margin-left: 4px;
 }
 
-
 /* BUSCADOR */
-
 .buscador {
-  width: 290px;
+  width: 250px;
   height: 30px;
-
   border: 1px solid #edcfdd;
   border-radius: 20px;
-
   display: flex;
   align-items: center;
-
   padding: 0 12px;
-
   color: #8b6378;
   font-size: 11px;
-
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -76,10 +64,8 @@ body {
   outline: none;
   box-shadow: none;
   background: transparent;
-
   font-size: 11px;
   color: #703c5e;
-
   padding: 0;
   margin: 0;
 }
@@ -99,31 +85,13 @@ body {
   flex-shrink: 0;
 }
 
-/* MENU */
-
+/* MENU CON NUEVOS ACCESOS UNIFICADOS */
 .menu {
   display: flex;
   align-items: center;
-  gap: 25px;
-
+  gap: 15px; /* Reducimos el espacio para que entren los nuevos botones holgadamente */
   font-size: 11px;
   color: #5d294b;
-}
-
-.mini-avatar {
-  width: 27px;
-  height: 27px;
-
-  border-radius: 50%;
-
-  background: #d8c2b7;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: white;
-  font-weight: bold;
 }
 
 .menu button {
@@ -132,10 +100,8 @@ body {
   color: #703c5e;
   font-size: 12px;
   cursor: pointer;
-
   padding: 8px 10px;
   border-radius: 8px;
-
   transition: all 0.2s ease;
 }
 
@@ -145,85 +111,83 @@ body {
   transform: translateY(-2px);
 }
 
-/* =========================
-   CONTENIDO
-========================= */
+.mini-avatar {
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #d8c2b7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
 
+.mini-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* =========================
+CONTENIDO
+========================= */
 .contenido {
   width: 814px;
   margin: 24px auto 0;
 }
 
-
 /* =========================
-   TARJETA DEL PERFIL
+TARJETA DEL PERFIL
 ========================= */
-
 .tarjeta-perfil {
   background: white;
-
   border: 1px solid #f0d4e0;
   border-radius: 20px;
-
   overflow: hidden;
 }
 
-
 /* PORTADA */
-
 .portada {
   height: 160px;
-
-  background:
-    linear-gradient(
+  background: linear-gradient(
       rgba(235, 220, 211, 0.25),
       rgba(235, 220, 211, 0.25)
     ),
     #d8c2af;
 }
 
-
 /* DATOS */
-
 .datos-perfil {
   min-height: 100px;
-
   display: flex;
   align-items: center;
-
   padding: 0 22px 18px;
 }
 
-
 /* AVATAR */
-
 .avatar {
   width: 76px;
   height: 76px;
-
   min-width: 76px;
-
   margin-top: -2px;
-
   border-radius: 50%;
-
   border: 5px solid white;
-
   background: #c9b7aa;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  color: white;
-
-  font-family: Georgia, serif;
-  font-size: 28px;
+  overflow: hidden;
 }
 
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
 /* NOMBRE */
-
 .nombre-y-descripcion {
   margin-left: 15px;
   flex: 1;
@@ -231,37 +195,27 @@ body {
 
 .nombre-y-descripcion h1 {
   margin: 0;
-
   font-family: Georgia, serif;
-
   font-size: 23px;
-
   color: #70345c;
 }
 
 .usuario {
   margin: 3px 0 0;
-
   font-size: 11px;
-
   color: #9a6685;
 }
 
 .descripcion {
   margin: 5px 0 0;
-
   font-size: 10px;
-
   line-height: 1.35;
-
   color: #956d82;
 }
 
-
 /* =========================
-   ESTADÍSTICAS
+ESTADÍSTICAS
 ========================= */
-
 .estadisticas {
   display: flex;
   align-items: center;
@@ -274,55 +228,39 @@ body {
 
 .estadisticas strong {
   display: block;
-
   font-family: Arial, sans-serif;
-
   font-size: 16px;
-
   font-weight: 600;
-
   color: #703c5e;
 }
 
 .estadisticas span {
   display: block;
-
   margin-top: 2px;
-
   font-size: 9px;
-
   color: #9b7188;
 }
 
-
 /* BOTONES */
-
 .botones {
   display: flex;
   gap: 8px;
-
   margin-left: 5px;
 }
 
 .botones button {
   height: 28px;
-
   padding: 0 13px;
-
   border-radius: 9px;
-
   font-size: 10px;
-
   cursor: pointer;
 }
-
 
 .btn-editar {
   background: white;
   border: 1px solid #eac7d7;
   color: #743b60;
   cursor: pointer;
-
   transition: all 0.2s ease;
 }
 
@@ -338,7 +276,6 @@ body {
   border: 1px solid #f6d6e8;
   color: #743b60;
   cursor: pointer;
-
   transition: all 0.2s ease;
 }
 
@@ -350,21 +287,15 @@ body {
   box-shadow: 0 3px 8px rgba(112, 60, 94, 0.12);
 }
 
-
 /* =========================
-   PESTAÑAS
+PESTAÑAS
 ========================= */
-
 .pestanas {
   height: 54px;
-
   display: flex;
   align-items: end;
-
   gap: 25px;
-
   border-bottom: 1px solid #efcfdd;
-
   margin-top: 18px;
 }
 
@@ -376,7 +307,6 @@ body {
   color: #9a6685;
   font-size: 11px;
   cursor: pointer;
-
   position: relative;
   transition: color 0.2s ease, font-weight 0.2s ease;
 }
@@ -397,16 +327,12 @@ body {
 /* Barrita */
 .pestanas button:not(.activa)::after {
   content: "";
-
   position: absolute;
   left: 50%;
   bottom: 0;
-
   width: 0;
   height: 2px;
-
   background-color: #843c67;
-
   transform: translateX(-50%);
   transition: width 0.2s ease;
 }
@@ -416,39 +342,26 @@ body {
   width: 100%;
 }
 
-
 /* =========================
-   PUBLICACIONES
+PUBLICACIONES (GRID Y ZOOM)
 ========================= */
-
 .grid-publicaciones {
   display: grid;
-
   grid-template-columns: repeat(4, 1fr);
-
   gap: 15px;
-
   margin-top: 18px;
 }
 
-
 /* TARJETA */
-
 .post {
   background: white;
-
   border: 1px solid #efd5e0;
   border-radius: 14px;
-
   overflow: hidden;
-
   padding: 0;
-
   cursor: pointer;
-
   font-family: Arial, sans-serif;
   text-align: left;
-
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease,
@@ -457,106 +370,81 @@ body {
 
 .post:hover {
   transform: translateY(-4px);
-
   border-color: #e2b8cb;
-
-  box-shadow:
-    0 7px 16px rgba(112, 60, 94, 0.14);
+  box-shadow: 0 7px 16px rgba(112, 60, 94, 0.14);
 }
-
 
 /* FOTOS */
-
 .foto-post {
-  height: 196px;
-
+  height: 210px;
   margin: 7px;
-
   border-radius: 9px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: transparent;
+  overflow: hidden;
 }
 
-
-/* Por ahora son fondos.
-   Después pondremos las fotos reales. */
-
-.foto-1 {
-  background:
-    linear-gradient(
-      135deg,
-      #d9b79f,
-      #efd9c6
-    );
+.foto-post img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.foto-2 {
-  background:
-    linear-gradient(
-      135deg,
-      #c5b29f,
-      #e8dfd4
-    );
+/* Ajuste individual de cada foto */
+.post:nth-child(1) img {
+  object-position: center 45%;
 }
 
-.foto-3 {
-  background:
-    linear-gradient(
-      135deg,
-      #c79b70,
-      #e4c4a4
-    );
+.post:nth-child(2) img {
+  object-position: center 35%;
 }
 
-.foto-4 {
-  background:
-    linear-gradient(
-      135deg,
-      #8fa5b0,
-      #eee5df
-    );
+.post:nth-child(3) img {
+  object-position: center 40%;
 }
 
+.post:nth-child(4) img {
+  object-position: center 30%;
+}
 
 /* PIE DE FOTO */
-
 .pie-post {
   height: 28px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: 0 10px;
-
   font-size: 9px;
-
   color: #9a6581;
 }
 
-.pie-post strong {
-  background: #bd4f80;
-
+/* ETIQUETA EXCLUSIVA CLOSET (BORGOÑA) */
+.pie-post .tag-prenda {
+  background: #703c5e;
   color: white;
-
-  padding: 4px 8px;
-
-  border-radius: 6px;
-
-  font-size: 9px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
+/* TEXTO DE SECCIÓN VACÍA (FAVORITOS / CLOSET VACÍO) CORREGIDA */
+.sin-contenido {
+  grid-column: 1 / -1;            /* Hace que el texto se centre en toda la grilla */
+  text-align: center;
+  padding: 50px 20px;
+  color: #9a6685;                 /* Color rosa/borgoña suave a tono con tu app */
+  font-family: Arial, sans-serif; /* Usamos Arial para mantener la consistencia */
+  font-size: 13px;
+  font-style: normal;             /* Letra derecha (sin cursiva) para que se lea perfecto */
+  letter-spacing: 0.5px;
+}
 
 /* =========================
-   PANTALLAS PEQUEÑAS
+PANTALLAS PEQUEÑAS
 ========================= */
-
 @media (max-width: 850px) {
-
   .contenido {
     width: calc(100% - 30px);
   }
@@ -576,12 +464,9 @@ body {
   .estadisticas {
     gap: 10px;
   }
-
 }
 
-
 @media (max-width: 600px) {
-
   .menu span {
     display: none;
   }
@@ -599,31 +484,6 @@ body {
   .grid-publicaciones {
     grid-template-columns: 1fr;
   }
-
-}
-
-/* IMÁGENES */
-
-.avatar {
-  overflow: hidden;
-}
-
-.avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.mini-avatar {
-  overflow: hidden;
-}
-
-.mini-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
 }
 
 .portada {
@@ -632,72 +492,223 @@ body {
   background-repeat: no-repeat;
 }
 
-/* PUBLICACIONES */
+/* ==========================================================================
+   ESTILOS COMPLEMENTARIOS PARA LA SUBIDA DE ARCHIVOS Y EL FORMULARIO MODAL
+   ========================================================================== */
 
-.foto-post {
-  height: 210px;
-  margin: 7px;
-  border-radius: 9px;
-  overflow: hidden;
+.btn-cargar {
+  background: #bd4f80 !important;
+  border: 1px solid #bd4f80 !important;
+  color: white !important;
+  font-weight: bold;
+  transition: all 0.2s ease;
 }
 
-.foto-post img {
+.btn-cargar:hover {
+  background: #9a3f68 !important;
+  border-color: #9a3f68 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(189, 79, 128, 0.25);
+}
+
+/* Área de Subida de Archivos */
+.upload-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: #fffafc;
+  border: 1px dashed #edcfdd;
+  border-radius: 9px;
+  padding: 10px;
+}
+
+.btn-upload {
+  background: white;
+  border: 1px solid #eac7d7;
+  color: #743b60;
+  padding: 8px 12px;
+  border-radius: 7px;
+  font-size: 11px;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.btn-upload:hover {
+  background: #fff0f6;
+  border-color: #c989a9;
+}
+
+.preview-container {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #edcfdd;
+}
+
+.preview-container img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
-/* Ajuste individual de cada foto */
-
-.post:nth-child(1) img {
-  object-position: center 45%;
-}
-
-.post:nth-child(2) img {
-  object-position: center 35%;
-}
-
-.post:nth-child(3) img {
-  object-position: center 40%;
-}
-
-.post:nth-child(4) img {
-  object-position: center 30%;
-}
-
-.logo-contenedor {
-  position: relative;
-}
-
-.logo {
-  cursor: pointer;
-}
-
-.menu-logo {
-  position: absolute;
-  top: 43px;
-  left: 0;
-  width: 150px;
-  background: white;
-  border: 1px solid #f0d4e0;
-  border-radius: 12px;
-  padding: 8px;
-  box-shadow: 0 5px 15px rgba(112, 60, 94, 0.12);
-  z-index: 10;
-}
-
-.menu-logo button {
-  width: 100%;
-  border: none;
-  background: transparent;
-  padding: 9px 10px;
-  text-align: left;
+/* Inputs del Formulario Modal */
+.modal-input {
+  height: 35px;
+  border-radius: 9px;
+  border: 1px solid #edcfdd;
+  padding: 0 10px;
+  font-size: 11px;
   color: #703c5e;
-  border-radius: 8px;
-  cursor: pointer;
+  outline: none;
+  background-color: #fffafc;
+  transition: border-color 0.2s ease;
 }
 
-.menu-logo button:hover {
-  background: #fff0f6;
+.modal-input:focus {
+  border-color: #c989a9;
 }
+
+/* Contenedores en Fila para el Formulario */
+.form-grupo-fila {
+  display: flex;
+  gap: 15px;
+  width: 100%;
+}
+
+.form-grupo-medio {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Overlay del Modal de Carga */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(112, 60, 94, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Caja de Contenido del Modal */
+.modal-contenido {
+  background: white;
+  width: 440px;
+  border-radius: 18px;
+  border: 1px solid #f0d4e0;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(112, 60, 94, 0.15);
+  animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+}
+
+.modal-contenido h2 {
+  margin: 0 0 20px 0;
+  font-family: Georgia, serif;
+  font-size: 20px;
+  color: #70345c;
+  text-align: center;
+}
+
+.form-grupo {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-grupo label {
+  font-size: 11px;
+  font-weight: bold;
+  color: #9a6685;
+}
+
+.modal-select {
+  height: 35px;
+  border-radius: 9px;
+  border: 1px solid #edcfdd;
+  padding: 0 10px;
+  font-size: 11px;
+  color: #703c5e;
+  outline: none;
+  background-color: #fffafc;
+}
+
+.modal-select:focus {
+  border-color: #c989a9;
+}
+
+.modal-textarea {
+  border-radius: 9px;
+  border: 1px solid #edcfdd;
+  padding: 10px;
+  font-size: 11px;
+  color: #703c5e;
+  outline: none;
+  resize: none;
+  background-color: #fffafc;
+  font-family: Arial, sans-serif;
+}
+
+.modal-textarea:focus {
+  border-color: #c989a9;
+}
+
+.modal-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-acciones button {
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 9px;
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancelar-modal {
+  background: white;
+  border: 1px solid #eac7d7;
+  color: #743b60;
+}
+
+.btn-cancelar-modal:hover {
+  background: #fff0f6;
+  border-color: #c989a9;
+}
+
+.btn-publicar-modal {
+  background: #bd4f80;
+  border: none;
+  color: white;
+}
+
+.btn-publicar-modal:hover {
+  background: #9a3f68;
+  transform: translateY(-1px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+

@@ -33,9 +33,10 @@ function Publicacion1() {
           <input type="text" placeholder="Buscar outfits, marcas, tendencias..." />
         </div>
         <nav className="menu-publicacion">
-          <button onClick={() => navigate('/comunidad')}>Comunidad</button>
-          <button onClick={() => navigate('/tienda')}>Tienda</button>
-          <button onClick={() => navigate('/soporte')}>Soporte</button>
+          <button onClick={() => navigate('/perfil_propio')}>Mi perfil</button>
+          <button onClick={() => navigate('/miTienda')}>Mi Tienda</button>
+          <button onClick={() => navigate('/')}>Página Principal</button>
+          <button onClick={() => navigate('/configuracion')}>Configuración</button>
           <div className="mini-avatar-publicacion" onClick={() => navigate('/perfil_propio')} style={{ cursor: 'pointer' }}>
             <img src={fotoPerfilPropio} alt="Foto de perfil" />
           </div>
