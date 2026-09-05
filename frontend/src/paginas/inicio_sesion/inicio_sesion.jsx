@@ -23,7 +23,7 @@ function InicioSesion() {
         console.log("Usuario: ", usuario);
         console.log("Password: ", password);
 
-        ALERT("Formulario enviadocorrectamente!");
+        ALERT("Formulario enviado correctamente!");
     };
 
     return(
