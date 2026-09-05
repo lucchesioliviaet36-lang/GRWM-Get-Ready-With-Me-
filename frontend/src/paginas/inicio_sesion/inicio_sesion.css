@@ -20,16 +20,19 @@
 .InicioSesion-Container{
     width: 100%;
     max-width: 420px;
-
     background: #e0a4b2;
     padding: 40px;
     border-radius: 18px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    transition: .4s ease-in-out;
+}
+.InicioSesion-Container:hover {
+  transform: scale(1.02);
 }
 
 .InicioSesion-Header{
     text-align: center;
-    margin-bottom: 35px;
+    margin-bottom: 20px;
 }
 .InicioSesion-Header h1{
     margin: 0;
@@ -75,22 +78,35 @@
     color: white;
 }
 .form-group input{
-    width: 100%;
-    height: 27px;
-    padding: 20px 20x;
-    border: 2px solid #E0A4B2;
-    border-radius: 5px;
-    font-size: 15px;
-    outline: none;
-    transition: border 5s;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: transparent;
+  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  color: rgb(255, 255, 255);
+  border: 2px solid #ba2e4a9a;
+  box-shadow: rgba(255, 253, 253, 0.4) 0px 2px 4px, rgba(154, 153, 153, 0.3) 0px 7px 13px -3px, rgba(192, 113, 187, 0.372) 0px -3px 0px inset;
 }
-.form-group input:focus{
-    border: #BA2E4B;
-}
-.form-group input::placeholder{
-    color: #aaa;
+.form-group input::placeholder {
+  color: #fff;
 }
 
+.form-group input:hover,
+.form-group input:focus {
+  border-color: #ba2e4a9a;
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05) rotateY(20deg);
+  outline: none;
+}
+
+.Olvidar-Password{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+  margin-bottom: 7px;
+}
 .Olvidar-Password button {
   background: none;
   border: none;
@@ -112,74 +128,52 @@
 }
 
 .InicioSesion {
- width: 100%;  
- background: #da4563af;
- border: solid transparent;
- border-radius: 16px;
- border-width: 0 0 4px;
- box-sizing: border-box;
- color: white;
- cursor: pointer;
- display: inline-block;
- font-size: 16px;
- font-weight: 600;
- letter-spacing: .8px;
- line-height: 20px;
- margin: 0;
- outline: none;
- overflow: visible;
- padding: 13px 19px;
- text-align: center;
- text-transform: uppercase;
- touch-action: manipulation;
- transform: translateZ(0);
- transition: filter .2s;
- user-select: none;
- -webkit-user-select: none;
- vertical-align: middle;
- white-space: nowrap;
+  width: 100%;
+  height: 40px;
+  font-size: 17px;
+  padding: 0.5em;
+  padding-left: 1.1em;
+  padding-right: 1.1em;
+  border-radius: 5px;
+  margin-right: 0.5em;
+  border: none;
+  outline: none;
+  transition: .4s ease-in-out;
+  background-color: #ba2e4a9a;
+  color: white;
 }
 .InicioSesion:hover {
-  opacity: 0.85;
-}
-.InicioSesion:after {
- background-clip: padding-box;
- background-color: #ce425e;
- border: solid transparent;
- border-radius: 16px;
- border-width: 0 0 4px;
- bottom: -4px;
- content: "";
- left: 0;
- position: absolute;
- right: 0;
- top: 0;
- z-index: -1;
-}
-.InicioSesion:main, button:focus {
- user-select: auto;
-}
-.InicioSesion:hover:not(:disabled) {
- filter: brightness(1.1);
-}
-.InicioSesion:active:after {
- border-width: 0 0 0px;
-}
-.InicioSesion:active {
- padding-bottom: 10px;
+  background-color: #BA2E4B;
+  color: white;
 }
 
 .Opcion-Registro {
-  text-align: center;
-  margin-top: 30px;
-  padding-top: 25px;
-  border-top: 1px solid #eeeeee;
+  width: 90%;
+  height: 35px;
+  margin-left: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5em;
+  padding-left: 1.1em;
+  padding-right: 1.1em;
+  border-radius: 5px;
+  margin-right: 0.5em;
+  border: none;
+  outline: none;
+  transition: .4s ease-in-out;
+  background-color: #ba2e4a9a;
+  color: white;
+}
+.Opcion-Registro:hover{
+  background-color: #BA2E4B;
+  color: white;
 }
 .Opcion-Registro p {
   display: inline;
   margin-right: 5px;
-  color: #BA2E4B;;
-  font-size: 14px;
+  color: white;
+  font-size: 15px;
 }
 
 .registro {

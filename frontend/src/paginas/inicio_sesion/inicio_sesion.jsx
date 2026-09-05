@@ -46,13 +46,13 @@ function InicioSesion() {
                         <label htmlFor="usuario">
                             Usuario o email
                         </label>
-                        <input 
-                            id="Usuario"
-                            type="text"
-                            placeholder="Ingresa tu nombre de usuario o email"
-                            value={usuario}
-                            onChange={(e) => setUsuario(e.target.value)}
-                        />
+                            <input 
+                                id="Usuario"
+                                type="text"
+                                placeholder="Ingresa tu nombre de usuario o email"
+                                value={usuario}
+                                onChange={(e) => setUsuario(e.target.value)}
+                            />
                     </div>
 
                     <div className="form-group">
@@ -68,13 +68,19 @@ function InicioSesion() {
                         />
                     </div>
 
-                    <div className="Olvidar-Password">
+                </form>
+
+                <button type="submit" className="InicioSesion">
+                    Iniciar Sesion
+                </button>
+
+                <div className="Olvidar-Password">
                         <button type="button" onClick={() => {
                             console.log("Recuperar password")
                         }}>
                             Olvidaste tu Password?
                         </button>
-                    </div>
+                </div>
 
                     {error && (
                         <div className="Error-IniciarS">
@@ -82,19 +88,15 @@ function InicioSesion() {
                         </div>
                     )}
 
-                    <button type="submit" className="InicioSesion">
-                        Iniciar Sesion
-                    </button>
-
-                </form>
-
                 <div className="Opcion-Registro">
-                    <p>No tenes cuenta?</p>
+                    <p>Registrarse</p>
 
                     <button type="button" className="registro" onClick={() => 
                         navigate("Registrarse")
                     }></button>
                 </div>
+
+                 
             </div>
         </div>
     );
