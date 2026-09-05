@@ -2,203 +2,319 @@
     box-sizing: border-box;
 }
 
-.InicioSesion-Page{
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 50%;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  padding: 20px;
+.InicioSesion-Page {
+    min-height: 90vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px;
 }
 
+.flip-card {
+    background-color: transparent;
+    width: 420px;
+    min-height: 620px;
+    perspective: 1000px;
+}
 
-.InicioSesion-Container{
+.flip-card-inner {
+    position: relative;
     width: 100%;
-    max-width: 420px;
-    background: #e0a4b2;
+    height: 90%;
+    min-height: 620px;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    width: 100%;
+    min-height: 620px;
     padding: 40px;
     border-radius: 18px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-    transition: .4s ease-in-out;
-}
-.InicioSesion-Container:hover {
-  transform: scale(1.02);
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.15);
+
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+
 }
 
-.InicioSesion-Header{
-    text-align: center;
-    margin-bottom: 20px;
+
+.flip-card-front {
+    background: #e0a4b293;
 }
-.InicioSesion-Header h1{
+
+.flip-card-back {
+    background: #e0a4b293;
+    transform: rotateY(180deg);
+}
+
+.InicioSesion-Header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.InicioSesion-Header h1 {
     margin: 0;
     font-size: 42px;
     font-weight: 700;
     color: white;
     letter-spacing: 2px;
 }
-.InicioSesion-Header p{
+
+.InicioSesion-Header p {
     margin-top: 5px;
     font-size: 14px;
     color: #BA2E4B;
 }
 
-.InicioSesion-Title{
-    margin-bottom: 0;
+.InicioSesion-Title {
+    margin-bottom: 15px;
     color: white;
 }
-.InicioSesion-Title h2{
+
+.InicioSesion-Title h2 {
     margin: 0;
     font-size: 27px;
     font-weight: 600;
 }
-.InicioSesion-Title p{
+
+.InicioSesion-Title p {
     margin-top: 7px;
     color: #BA2E4B;
     font-size: 15px;
 }
 
-.InicioSesion-Formulario{
+.Registro-Header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.Registro-Header h1 {
+    margin: 0;
+    font-size: 42px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 2px;
+}
+
+.Registro-Header p {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #BA2E4B;
+}
+
+.Registro-Title {
+    margin-bottom: 15px;
+    color: white;
+}
+
+.Registro-Title h2 {
+    margin: 0;
+    font-size: 27px;
+    font-weight: 600;
+}
+
+.Registro-Title p {
+    margin-top: 5px;
+    color: #BA2E4B;
+    font-size: 15px;
+}
+
+.InicioSesion-Formulario,
+.Registro-Formulario {
     width: 100%;
 }
 
-.form-group{
+.form-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
+    text-align: left;
 }
-.form-group label{
+
+.form-group label {
     margin-bottom: 8px;
     font-size: 16px;
     font-weight: 700;
     color: white;
 }
-.form-group input{
-  padding: 10px;
-  border-radius: 5px;
-  background-color: transparent;
-  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  color: rgb(255, 255, 255);
-  border: 2px solid #ba2e4a9a;
-  box-shadow: rgba(255, 253, 253, 0.4) 0px 2px 4px, rgba(154, 153, 153, 0.3) 0px 7px 13px -3px, rgba(192, 113, 187, 0.372) 0px -3px 0px inset;
+
+.form-group input {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: transparent;
+    transition:
+        border-color 0.3s ease-in-out,
+        background-color 0.3s ease-in-out,
+        transform 0.3s ease-in-out,
+        box-shadow 0.3s ease-in-out;
+    color: white;
+    border: 2px solid #ba2e4a9a;
+    box-shadow:
+        rgba(255, 253, 253, 0.4) 0px 2px 4px,
+        rgba(154, 153, 153, 0.3) 0px 7px 13px -3px,
+        rgba(192, 113, 187, 0.372) 0px -3px 0px inset;
 }
 .form-group input::placeholder {
-  color: #fff;
+    color: white;
 }
-
 .form-group input:hover,
 .form-group input:focus {
-  border-color: #ba2e4a9a;
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: scale(1.05) rotateY(20deg);
-  outline: none;
-}
-
-.Olvidar-Password{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 5px;
-  margin-bottom: 7px;
-}
-.Olvidar-Password button {
-  background: none;
-  border: none;
-  padding: 3px;
-  cursor: pointer;
-  font-size: 13px;
-  color: #BA2E4B;
-  text-decoration: underline;
-  margin-bottom: 3px;
-}
-
-.Error-IniciarS {
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 7px;
-  background: #f5f5f5;
-  font-size: 14px;
-  text-align: center;
+    border-color: #BA2E4B;
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.03);
+    outline: none;
 }
 
 .InicioSesion {
-  width: 100%;
-  height: 40px;
-  font-size: 17px;
-  padding: 0.5em;
-  padding-left: 1.1em;
-  padding-right: 1.1em;
-  border-radius: 5px;
-  margin-right: 0.5em;
-  border: none;
-  outline: none;
-  transition: .4s ease-in-out;
-  background-color: #ba2e4a9a;
-  color: white;
+    width: 100%;
+    height: 40px;
+    font-size: 17px;
+    padding: 0.5em;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    transition: .4s ease-in-out;
+    background-color: #ba2e4a9a;
+    color: white;
+    cursor: pointer;
 }
 .InicioSesion:hover {
-  background-color: #BA2E4B;
-  color: white;
+    background-color: #BA2E4B;
+}
+
+.Olvidar-Password {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.Olvidar-Password button {
+    background: none;
+    border: none;
+    padding: 3px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #BA2E4B;
+    text-decoration: underline;
+}
+
+.Error-IniciarS {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 7px;
+    background: #f5f5f5;
+    color: #BA2E4B;
+    font-size: 14px;
+    text-align: center;
 }
 
 .Opcion-Registro {
-  width: 90%;
-  height: 35px;
-  margin-left: 5%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0.5em;
-  padding-left: 1.1em;
-  padding-right: 1.1em;
-  border-radius: 5px;
-  margin-right: 0.5em;
-  border: none;
-  outline: none;
-  transition: .4s ease-in-out;
-  background-color: #ba2e4a9a;
-  color: white;
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
 }
-.Opcion-Registro:hover{
-  background-color: #BA2E4B;
-  color: white;
-}
-.Opcion-Registro p {
-  display: inline;
-  margin-right: 5px;
-  color: white;
-  font-size: 15px;
+
+.Opcion-Registro span {
+    color: white;
+    font-size: 14px;
 }
 
 .registro {
-  border: none;
-  background: none;
-  padding: 0;
-  cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: underline;
 }
 
+.Registro-Boton {
+    width: 100%;
+    height: 40px;
+    font-size: 17px;
+    padding: 0.5em;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    transition: .4s ease-in-out;
+    background-color: #ba2e4a9a;
+    color: white;
+    cursor: pointer;
+}
+.Registro-Boton:hover {
+    background-color: #BA2E4B;
+}
+
+.Opcion-InicioSesion {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.Opcion-InicioSesion span {
+    color: white;
+    font-size: 14px;
+}
+
+.volver-login {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: underline;
+}
 
 @media (max-width: 480px) {
 
-  .InicioSesion-Page {
-    padding: 15px;
-  }
+    .InicioSesion-Page {
+        padding: 15px;
+    }
 
-  .InicioSesion-Container {
-    padding: 30px 22px;
-  }
+    .flip-card {
+        width: 100%;
+        min-height: 650px;
+    }
 
-  .InicioSesion-Header h1 {
-    font-size: 36px;
-  }
+    .flip-card-inner {
+        min-height: 650px;
+    }
 
-  .InicioSesion-Title h2 {
-    font-size: 24px;
-  }
+    .flip-card-front,
+    .flip-card-back {
+        min-height: 650px;
+        padding: 30px 22px;
+    }
+
+    .InicioSesion-Header h1,
+    .Registro-Header h1 {
+        font-size: 36px;
+    }
+
+    .InicioSesion-Title h2,
+    .Registro-Title h2 {
+        font-size: 24px;
+    }
 }
