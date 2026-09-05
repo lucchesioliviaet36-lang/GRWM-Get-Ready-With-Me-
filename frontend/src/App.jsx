@@ -6,6 +6,8 @@ import Publicacion2 from './paginas/publicacion2/publicacion2'
 import Publicacion3 from './paginas/publicacion3/publicacion3'
 import Publicacion4 from './paginas/publicacion4/publicacion4'
 import InicioSesion from './paginas/inicio_sesion/inicio_sesion'
+import Registro from "./paginas/registro/registro";
+
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
       <Routes>
         <Route path="/" element={<InicioSesion />} />
         <Route path="/IniciarSesion" element={<InicioSesion />}></Route> 
+
+        <Route path="/registro" element={<Registro />} />
 
         <Route path="/" element={<PerfilPropio />} />
 

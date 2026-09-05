@@ -9,6 +9,7 @@ function InicioSesion() {
     const [usuario, setUsuario] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [flipped, setFlipped] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -23,12 +24,22 @@ function InicioSesion() {
         console.log("Usuario: ", usuario);
         console.log("Password: ", password);
 
-        ALERT("Formulario enviado correctamente!");
+        alert("Formulario enviado correctamente!");
+
     };
+
+    const irARegistro = () => {
+    setFlipped(true);
+
+     setTimeout(() => {
+       navigate("/registro");
+      }, 800);
+    };
+    
 
     return(
         <div className="InicioSesion-Page" style={{backgroundImage: `url(${FotoFondo})`}}>
-            <div className="InicioSesion-Container">
+            <div className={`InicioSesion-Container ${flipped ? "flipped" : ""}`}>
 
                 <div className="InicioSesion-Header">
                     <h1>GRWM</h1>
@@ -68,11 +79,11 @@ function InicioSesion() {
                         />
                     </div>
 
-                </form>
+                    <button type="submit" className="InicioSesion">
+                        Iniciar Sesion
+                    </button>
 
-                <button type="submit" className="InicioSesion">
-                    Iniciar Sesion
-                </button>
+                </form>
 
                 <div className="Olvidar-Password">
                         <button type="button" onClick={() => {
@@ -89,11 +100,9 @@ function InicioSesion() {
                     )}
 
                 <div className="Opcion-Registro">
-                    <p>Registrarse</p>
-
-                    <button type="button" className="registro" onClick={() => 
-                        navigate("Registrarse")
-                    }></button>
+                    <button type="button" className="registro" onClick={irARegistro}>
+                        <p>Registrarse</p>
+                    </button>
                 </div>
 
                  
