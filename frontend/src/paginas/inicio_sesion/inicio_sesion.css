@@ -1,0 +1,213 @@
+* {
+    box-sizing: border-box;
+}
+
+.InicioSesion-Page{
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  padding: 20px;
+}
+
+
+.InicioSesion-Container{
+    width: 100%;
+    max-width: 420px;
+
+    background: #e0a4b2;
+    padding: 40px;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.InicioSesion-Header{
+    text-align: center;
+    margin-bottom: 35px;
+}
+.InicioSesion-Header h1{
+    margin: 0;
+    font-size: 42px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 2px;
+}
+.InicioSesion-Header p{
+    margin-top: 5px;
+    font-size: 14px;
+    color: #BA2E4B;
+}
+
+.InicioSesion-Title{
+    margin-bottom: 0;
+    color: white;
+}
+.InicioSesion-Title h2{
+    margin: 0;
+    font-size: 27px;
+    font-weight: 600;
+}
+.InicioSesion-Title p{
+    margin-top: 7px;
+    color: #BA2E4B;
+    font-size: 15px;
+}
+
+.InicioSesion-Formulario{
+    width: 100%;
+}
+
+.form-group{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+.form-group label{
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+}
+.form-group input{
+    width: 100%;
+    height: 27px;
+    padding: 20px 20x;
+    border: 2px solid #E0A4B2;
+    border-radius: 5px;
+    font-size: 15px;
+    outline: none;
+    transition: border 5s;
+}
+.form-group input:focus{
+    border: #BA2E4B;
+}
+.form-group input::placeholder{
+    color: #aaa;
+}
+
+.Olvidar-Password button {
+  background: none;
+  border: none;
+  padding: 3px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #BA2E4B;
+  text-decoration: underline;
+  margin-bottom: 3px;
+}
+
+.Error-IniciarS {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 7px;
+  background: #f5f5f5;
+  font-size: 14px;
+  text-align: center;
+}
+
+.InicioSesion {
+ width: 100%;  
+ background: #da4563af;
+ border: solid transparent;
+ border-radius: 16px;
+ border-width: 0 0 4px;
+ box-sizing: border-box;
+ color: white;
+ cursor: pointer;
+ display: inline-block;
+ font-size: 16px;
+ font-weight: 600;
+ letter-spacing: .8px;
+ line-height: 20px;
+ margin: 0;
+ outline: none;
+ overflow: visible;
+ padding: 13px 19px;
+ text-align: center;
+ text-transform: uppercase;
+ touch-action: manipulation;
+ transform: translateZ(0);
+ transition: filter .2s;
+ user-select: none;
+ -webkit-user-select: none;
+ vertical-align: middle;
+ white-space: nowrap;
+}
+.InicioSesion:hover {
+  opacity: 0.85;
+}
+.InicioSesion:after {
+ background-clip: padding-box;
+ background-color: #ce425e;
+ border: solid transparent;
+ border-radius: 16px;
+ border-width: 0 0 4px;
+ bottom: -4px;
+ content: "";
+ left: 0;
+ position: absolute;
+ right: 0;
+ top: 0;
+ z-index: -1;
+}
+.InicioSesion:main, button:focus {
+ user-select: auto;
+}
+.InicioSesion:hover:not(:disabled) {
+ filter: brightness(1.1);
+}
+.InicioSesion:active:after {
+ border-width: 0 0 0px;
+}
+.InicioSesion:active {
+ padding-bottom: 10px;
+}
+
+.Opcion-Registro {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 1px solid #eeeeee;
+}
+.Opcion-Registro p {
+  display: inline;
+  margin-right: 5px;
+  color: #BA2E4B;;
+  font-size: 14px;
+}
+
+.registro {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+
+@media (max-width: 480px) {
+
+  .InicioSesion-Page {
+    padding: 15px;
+  }
+
+  .InicioSesion-Container {
+    padding: 30px 22px;
+  }
+
+  .InicioSesion-Header h1 {
+    font-size: 36px;
+  }
+
+  .InicioSesion-Title h2 {
+    font-size: 24px;
+  }
+}
