@@ -13,6 +13,18 @@ app.get("/", (req, res) => {
         mensaje: "Backend de GRWM funcionando correctamente"
     });
 });
+//estamos probando lo de usuarioDAO
+async function probarUsuario() {
+    try {
+        const usuarios = await Usuario.findAll();
+
+        console.log("Usuarios encontrados:", usuarios.length);
+
+    } catch (error) {
+        console.error(" Error consultando usuario:");
+        console.error(error);
+    }
+}
 
 async function startServer() {
     try {
@@ -20,6 +32,8 @@ async function startServer() {
 
         console.log("Conexión con MySQL exitosa");
         console.log("Modelo Usuario cargado");
+
+        await probarUsuario();
 
         app.listen(PORT, () => {
             console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
