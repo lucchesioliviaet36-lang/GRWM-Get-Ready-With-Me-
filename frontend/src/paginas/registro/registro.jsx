@@ -120,7 +120,7 @@ function Registro() {
                         <input
                             id="repetirPassword"
                             type="password"
-                            placeholder="Repetir la password"
+                            placeholder="Repetir tu password"
                             value={repetirPassword}
                             onChange={(e) =>
                                 setRepetirPassword(e.target.value)
