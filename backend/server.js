@@ -15,6 +15,7 @@ app.get("/", (req, res) => {
         mensaje: "Backend de GRWM funcionando correctamente"
     });
 });
+
 //estamos probando lo de usuarioDAO
 async function probarUsuario() {
     try {

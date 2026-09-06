@@ -22,7 +22,7 @@ class authController{
 
         catch (error) {
             res.status(400).json({
-                mensaje: error.mensaje
+                mensaje: error.message
             });
         }
     }
