@@ -1,0 +1,205 @@
+.layout-container {
+  display: flex;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fdf6f6; /* Fondo rosado muy claro */
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.sidebar {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card-box {
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.card-box h3 {
+  font-size: 1.1rem;
+  color: #5c3a42;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.trends-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.trends-list li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  color: #4a4a4a;
+}
+
+.trends-list small {
+  color: #888;
+}
+
+.suggestions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.suggestions-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.suggestions-list img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.suggestions-list div {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.suggestions-list small {
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.btn-follow {
+  border: none;
+  background: transparent;
+  color: #d14d72;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Feed Principal */
+.feed-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Historias */
+.stories-bar {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.story-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #333;
+}
+
+.avatar-ring {
+  padding: 2px;
+  border: 2px solid #d14d72;
+  border-radius: 50%;
+  margin-bottom: 4px;
+}
+
+.avatar-ring img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: block;
+  object-fit: cover;
+}
+
+/* Cards de Post */
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.post-card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.image-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.image-container img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+}
+
+.price-tag {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: #c0486b;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.post-description {
+  font-size: 0.88rem;
+  color: #555;
+  margin: 10px 0;
+  line-height: 1.4;
+}
+
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #777;
+  font-size: 0.85rem;
+}
+
+.stats {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-save {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
