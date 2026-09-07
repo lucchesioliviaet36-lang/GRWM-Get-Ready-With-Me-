@@ -1,194 +1,400 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #fff7fa;
+}
+
+/* CONTENEDOR PRINCIPAL CON EL DEGRADADO DE FONDO */
 .Registro-Page {
-    min-height: 100vh;
-    width: 100%;
-    opacity: 67%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    padding: 20px;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #fff2f6 0%, #ffe3ee 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
+/* ==========================================================================
+   BARRA SUPERIOR (Elegante y minimalista)
+   ========================================================================== */
+.barra-superior-registro {
+  height: 60px;
+  background: white;
+  border-bottom: 1px solid #f0dbe5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 43px;
+  width: 100%;
+}
+
+.logo-registro {
+  border: 1px solid #f0cddd;
+  border-radius: 20px;
+  padding: 6px 13px;
+  font-family: Georgia, serif;
+  font-size: 17px;
+  color: #8b3f68;
+  background: white;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.logo-registro span {
+  margin-left: 4px;
+}
+
+.menu-registro {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.menu-registro button {
+  border: none;
+  background: transparent;
+  color: #703c5e;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.menu-registro button:hover {
+  background: #fff0f6;
+  color: #9a4f78;
+}
+
+/* ==========================================================================
+   FORMULARIO CENTRAL
+   ========================================================================== */
+.registro-contenido-principal {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* TARJETA BLANCA DE REGISTRO */
 .Registro-Container {
-    width: 100%;
-    max-width: 450px;
-    height: 605px;
-    background: #e0a4b2a6;
-    padding: 30px;
-    border-radius: 18px;
-    box-shadow:
-        0 8px 30px rgba(0, 0, 0, 0.08);
-    transition: .4s ease-in-out;
-}
-.Registro-Container:hover {
-    transform: scale(1.02);
+  width: 100%;
+  max-width: 440px;
+  background: white;
+  padding: 35px 30px;
+  border-radius: 24px;
+  border: 1px solid #f9ebf1;
+  box-shadow: 0 10px 30px rgba(112, 60, 94, 0.04);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.Registro-Container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(112, 60, 94, 0.07);
+}
+
+/* Corazón flotante arriba a la derecha */
+.corazon-flotante {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  background: white;
+  border: 1px solid #f5dee8;
+  color: #bd4f80;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.corazon-flotante:hover {
+  background: #fff0f6;
+  transform: scale(1.1);
+  border-color: #bd4f80;
+}
+
+/* CABECERA */
 .Registro-Header {
-    text-align: center;
-    margin-bottom: 10px;
+  text-align: center;
+  margin-bottom: 25px;
+  padding: 0 15px;
 }
 
 .Registro-Header h1 {
-    margin: 0;
-    font-size: 30px;
-    font-weight: 700;
-    color: white;
-    letter-spacing: 2px;
+  margin: 0 0 8px 0;
+  font-family: Georgia, serif;
+  font-size: 21px;
+  font-weight: normal;
+  color: #70345c;
 }
 
 .Registro-Header p {
-    margin-top: 5px;
-    font-size: 14px;
-    color: #BA2E4B;
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #9a6685;
 }
 
-.Registro-Title {
-    margin-bottom: 17px;
-    color: white;
-}
-
-.Registro-Title h2 {
-    margin: 0;
-    font-size: 27px;
-    font-weight: 600;
-}
-
-.Registro-Title p {
-    margin-top: 2px;
-    color: #BA2E4B;
-    font-size: 14px;
-}
-
+/* CONTENEDORES DE ENTRADA (Aislados para no colisionar con el CSS de tu amiga) */
 .Registro-Formulario {
-    width: 100%;
+  width: 100%;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 16px;
+.form-group-registro {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
 }
 
-.form-group label {
-    margin-bottom: 8px;
-    font-size: 16px;
-    font-weight: 700;
-    color: white;
+.form-group-registro label {
+  margin-bottom: 6px;
+  font-size: 10px;
+  font-weight: bold;
+  color: #9a6685;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.form-group input {
-    padding: 10px;
-    border-radius: 5px;
-    background-color: transparent;
-    transition:
-        border-color .3s ease-in-out,
-        background-color .3s ease-in-out,
-        transform .3s ease-in-out,
-        box-shadow .3s ease-in-out;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
-    color: white;
-    border: 2px solid #ba2e4a9a;
-    box-shadow:
-        rgba(255, 253, 253, 0.4) 0px 2px 4px,
-        rgba(154, 153, 153, 0.3) 0px 7px 13px -3px,
-        rgba(192, 113, 187, 0.372) 0px -3px 0px inset;
-}
-.form-group input::placeholder {
-    color: white;
-}
-.form-group input:hover,
-.form-group input:focus {
-    border-color: #ba2e4a9a;
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: scale(1.05) rotateY(10deg);
-    outline: none;
+/* Contenedor elegante de input */
+.input-with-icon {
+  display: flex;
+  align-items: center;
+  border: 1px solid #eecddc;
+  border-radius: 11px;
+  height: 42px;
+  padding: 0 14px;
+  background-color: white;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.input-with-icon:focus-within {
+  border-color: #bd4f80;
+  box-shadow: 0 0 0 3px rgba(189, 79, 128, 0.08);
+}
+
+.input-icon {
+  color: #bfa1b3;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+/* Limpieza de inputs dentro de este contenedor para que no hereden efectos 3D de tu amiga */
+.input-with-icon input {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+  background: transparent !important;
+  width: 100% !important;
+  height: 100% !important;
+  font-size: 13px !important;
+  color: #703c5e !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.input-with-icon input::placeholder {
+  color: #cbb4c2 !important;
+}
+
+/* Botón de ojito para mostrar/ocultar contraseñas */
+.btn-password-toggle {
+  border: none;
+  background: transparent;
+  color: #bfa1b3;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.btn-password-toggle:hover {
+  color: #bd4f80;
+}
+
+/* Mensajes de Error */
 .Error-Registro {
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 7px;
-    background: #f5f5f5;
-    color: #BA2E4B;
-    font-size: 14px;
-    text-align: center;
+  padding: 8px 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  background: #fff0f5;
+  border: 1px solid #ffd2e1;
+  color: #bd4f80;
+  font-size: 11px;
+  text-align: center;
 }
 
+/* BOTÓN CREAR CUENTA (Pink elegant style) */
 .Registro-Boton {
-    width: 100%;
-    height: 40px;
-    font-size: 17px;
-    padding: 0.5em;
-    border-radius: 5px;
-    border: none;
-    outline: none;
-    transition: .4s ease-in-out;
-    background-color: #ba2e4a9a;
-    color: white;
-    cursor: pointer;
+  width: 100%;
+  height: 42px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 11px;
+  border: none;
+  outline: none;
+  background-color: #ffdce8; /* Rosado pastel idéntico al mockup */
+  color: #703c5e;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 5px;
 }
+
 .Registro-Boton:hover {
-    background-color: #BA2E4B;
-    color: white;
+  background-color: #fca9c9;
+  transform: translateY(-1px);
 }
 
+.Registro-Boton:active {
+  transform: translateY(0);
+}
+
+/* DIVISOR DE REDES SOCIALES */
+.social-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: #cbb4c2;
+  font-size: 10px;
+}
+
+.social-divider::before,
+.social-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #f5dee8;
+}
+
+.social-divider span {
+  padding: 0 10px;
+}
+
+/* BOTONES DE REDES SOCIALES */
+.social-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.btn-social {
+  flex: 1;
+  height: 40px;
+  border: 1px solid #eecddc;
+  border-radius: 11px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #703c5e;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-social:hover {
+  background-color: #fff0f6;
+  border-color: #bd4f80;
+}
+
+/* REDIRECCIÓN AL LOGIN */
 .Opcion-InicioSesion {
-    width: 90%;
-    margin-left: 5%;
-    margin-top: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 5px;
-    padding-top: 15px;
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.Opcion-InicioSesion p {
-    margin: 0;
-    color: white;
-    font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding-top: 15px;
+  border-top: 1px solid #fcf2f6;
+  font-size: 12px;
+  color: #9a6685;
 }
 
 .volver-login {
-    border: none;
-    background: none;
-    padding: 0;
-    cursor: pointer;
-    color: white;
-    font-size: 14px;
-    font-weight: 600;
-
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: #bd4f80;
+  font-size: 12px;
+  font-weight: bold;
+  transition: color 0.2s ease;
 }
 
-@media (max-width: 480px) {
+.volver-login:hover {
+  color: #8b3f68;
+  text-decoration: underline;
+}
 
-    .Registro-Page {
-        padding: 15px;
-    }
+/* ==========================================================================
+   FOOTER GENERAL (Elegante y ubicado al pie de pantalla)
+   ========================================================================== */
+.footer-registro {
+  height: 50px;
+  padding: 0 43px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: #9a6685;
+  border-top: 1px solid #f5dee8;
+  background-color: white;
+}
 
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
 
-    .Registro-Container {
-        padding: 30px 22px;
-    }
+.footer-links button {
+  border: none;
+  background: none;
+  color: #9a6685;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+}
 
+.footer-links button:hover {
+  color: #703c5e;
+}
 
-    .Registro-Header h1 {
-        font-size: 36px;
-    }
-
-
-    .Registro-Title h2 {
-        font-size: 24px;
-    }
-
+/* RESPONSIVO PARA PANTALLAS PEQUEÑAS */
+@media (max-width: 600px) {
+  .barra-superior-registro,
+  .footer-registro {
+    padding: 0 20px;
+  }
+  
+  .menu-registro {
+    gap: 12px;
+  }
+  
+  .footer-registro {
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    height: auto;
+    padding: 15px 20px;
+  }
+  
+  .Registro-Container {
+    padding: 30px 20px;
+  }
 }

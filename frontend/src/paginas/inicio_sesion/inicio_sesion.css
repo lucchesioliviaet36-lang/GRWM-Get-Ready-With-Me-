@@ -1,207 +1,403 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-.InicioSesion-Page{
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #fff7fa;
+}
+
+/* CONTENEDOR PRINCIPAL CON EL DEGRADADO DE FONDO */
+.InicioSesion-Page {
   min-height: 100vh;
   width: 100%;
-  opacity: 67%;
+  background: linear-gradient(135deg, #fff2f6 0%, #ffe3ee 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   BARRA SUPERIOR (Idéntica a Registro para consistencia)
+   ========================================================================== */
+.barra-superior-sesion {
+  height: 60px;
+  background: white;
+  border-bottom: 1px solid #f0dbe5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 43px;
+  width: 100%;
+}
+
+.logo-sesion {
+  border: 1px solid #f0cddd;
+  border-radius: 20px;
+  padding: 6px 13px;
+  font-family: Georgia, serif;
+  font-size: 17px;
+  color: #8b3f68;
+  background: white;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.logo-sesion span {
+  margin-left: 4px;
+}
+
+.menu-sesion {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.menu-sesion button {
+  border: none;
+  background: transparent;
+  color: #703c5e;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.menu-sesion button:hover {
+  background: #fff0f6;
+  color: #9a4f78;
+}
+
+/* ==========================================================================
+   TARJETA CENTRAL DE LOGIN
+   ========================================================================== */
+.sesion-contenido-principal {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  padding: 20px;
+  padding: 40px 20px;
 }
 
-
-.InicioSesion-Container{
-    width: 100%;
-    max-width: 420px;
-    background: #e0a4b2a6;
-    padding: 40px;
-    border-radius: 18px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-    transition: .4s ease-in-out;
+/* TARJETA BLANCA DE INICIO DE SESIÓN */
+.InicioSesion-Container {
+  width: 100%;
+  max-width: 440px;
+  background: white;
+  padding: 35px 30px;
+  border-radius: 24px;
+  border: 1px solid #f9ebf1;
+  box-shadow: 0 10px 30px rgba(112, 60, 94, 0.04);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, box-shadow 0.3s ease;
 }
+
 .InicioSesion-Container:hover {
-  transform: scale(1.02);
+  box-shadow: 0 14px 40px rgba(112, 60, 94, 0.07);
 }
 
-.InicioSesion-Header{
-    text-align: center;
-    margin-bottom: 20px;
-}
-.InicioSesion-Header h1{
-    margin: 0;
-    font-size: 30px;
-    font-weight: 700;
-    color: white;
-    letter-spacing: 2px;
-}
-.InicioSesion-Header p{
-    margin-top: 5px;
-    font-size: 14px;
-    color: #BA2E4B;
+/* Animación flipped al cambiar a Registro */
+.InicioSesion-Container.flipped {
+  transform: rotateY(90deg) scale(0.9);
+  opacity: 0;
 }
 
-.InicioSesion-Title{
-    margin-bottom: 0;
-    color: white;
-}
-.InicioSesion-Title h2{
-    margin: 0;
-    font-size: 27px;
-    font-weight: 600;
-}
-.InicioSesion-Title p{
-    margin-top: 2px;
-    color: #BA2E4B;
-    font-size: 14px;
+/* CABECERA */
+.InicioSesion-Header {
+  text-align: center;
+  margin-bottom: 25px;
+  padding: 0 15px;
 }
 
-.InicioSesion-Formulario{
-    width: 100%;
+.InicioSesion-Header h1 {
+  margin: 0 0 8px 0;
+  font-family: Georgia, serif;
+  font-size: 21px;
+  font-weight: normal;
+  color: #70345c;
 }
 
-.form-group{
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-}
-.form-group label{
-    margin-bottom: 8px;
-    font-size: 16px;
-    font-weight: 700;
-    color: white;
-}
-.form-group input{
-  padding: 10px;
-  border-radius: 5px;
-  background-color: transparent;
-  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  color: rgb(255, 255, 255);
-  border: 2px solid #ba2e4a9a;
-  box-shadow: rgba(255, 253, 253, 0.4) 0px 2px 4px, rgba(154, 153, 153, 0.3) 0px 7px 13px -3px, rgba(192, 113, 187, 0.372) 0px -3px 0px inset;
-}
-.form-group input::placeholder {
-  color: #fff;
+.InicioSesion-Header p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #9a6685;
 }
 
-.form-group input:hover,
-.form-group input:focus {
-  border-color: #ba2e4a9a;
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: scale(1.05) rotateY(20deg);
-  outline: none;
+/* CONTENEDORES DE ENTRADA AISLADOS */
+.InicioSesion-Formulario {
+  width: 100%;
 }
 
-.Olvidar-Password{
+.form-group-sesion {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 5px;
-  margin-bottom: 7px;
+  flex-direction: column;
+  margin-bottom: 16px;
 }
+
+.form-group-sesion label {
+  margin-bottom: 6px;
+  font-size: 10px;
+  font-weight: bold;
+  color: #9a6685;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Contenedor estético del input */
+.input-with-icon {
+  display: flex;
+  align-items: center;
+  border: 1px solid #eecddc;
+  border-radius: 11px;
+  height: 42px;
+  padding: 0 14px;
+  background-color: white;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-with-icon:focus-within {
+  border-color: #bd4f80;
+  box-shadow: 0 0 0 3px rgba(189, 79, 128, 0.08);
+}
+
+.input-icon {
+  color: #bfa1b3;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+/* Limpieza de inputs para que no hereden sombras ni giros 3D */
+.input-with-icon input {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+  background: transparent !important;
+  width: 100% !important;
+  height: 100% !important;
+  font-size: 13px !important;
+  color: #703c5e !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.input-with-icon input::placeholder {
+  color: #cbb4c2 !important;
+}
+
+/* Ojito de contraseña */
+.btn-password-toggle {
+  border: none;
+  background: transparent;
+  color: #bfa1b3;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.btn-password-toggle:hover {
+  color: #bd4f80;
+}
+
+/* Olvidaste tu Contraseña */
+.Olvidar-Password {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
+
 .Olvidar-Password button {
   background: none;
   border: none;
-  padding: 3px;
+  padding: 0;
   cursor: pointer;
-  font-size: 13px;
-  color: #BA2E4B;
+  font-size: 11px;
+  color: #bd4f80;
+  transition: color 0.2s ease;
+}
+
+.Olvidar-Password button:hover {
+  color: #8b3f68;
   text-decoration: underline;
-  margin-bottom: 3px;
 }
 
+/* Mensaje de Error */
 .Error-IniciarS {
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 7px;
-    background: #f5f5f5;
-    color: #BA2E4B;
-    font-size: 14px;
-    text-align: center;
+  padding: 8px 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  background: #fff0f5;
+  border: 1px solid #ffd2e1;
+  color: #bd4f80;
+  font-size: 11px;
+  text-align: center;
 }
 
-.InicioSesion {
+/* BOTÓN INICIAR SESIÓN (Pink elegant style) */
+.InicioSesion-Boton {
   width: 100%;
-  height: 40px;
-  font-size: 17px;
-  padding: 0.5em;
-  padding-left: 1.1em;
-  padding-right: 1.1em;
-  border-radius: 5px;
-  margin-right: 0.5em;
+  height: 42px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 11px;
   border: none;
   outline: none;
-  transition: .4s ease-in-out;
-  background-color: #ba2e4a9a;
-  color: white;
-}
-.InicioSesion:hover {
-  background-color: #BA2E4B;
-  color: white;
+  background-color: #ffdce8; /* Rosado pastel idéntico al mockup */
+  color: #703c5e;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 5px;
 }
 
-.Opcion-Registro {
-  width: 90%;
-  height: 35px;
-  margin-left: 5%;
+.InicioSesion-Boton:hover {
+  background-color: #fca9c9;
+  transform: translateY(-1px);
+}
+
+.InicioSesion-Boton:active {
+  transform: translateY(0);
+}
+
+/* DIVISOR DE REDES SOCIALES */
+.social-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: #cbb4c2;
+  font-size: 10px;
+}
+
+.social-divider::before,
+.social-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #f5dee8;
+}
+
+.social-divider span {
+  padding: 0 10px;
+}
+
+/* BOTONES SOCIALES */
+.social-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.btn-social {
+  flex: 1;
+  height: 40px;
+  border: 1px solid #eecddc;
+  border-radius: 11px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #703c5e;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-social:hover {
+  background-color: #fff0f6;
+  border-color: #bd4f80;
+}
+
+/* LINK DE ENLACE A REGISTRO */
+.Opcion-Registro-Link {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0.5em;
-  padding-left: 1.1em;
-  padding-right: 1.1em;
-  border-radius: 5px;
-  margin-right: 0.5em;
-  border: none;
-  outline: none;
-  transition: .4s ease-in-out;
-  background-color: #ba2e4a9a;
-  color: white;
-}
-.Opcion-Registro:hover{
-  background-color: #BA2E4B;
-  color: white;
-}
-.Opcion-Registro p {
-  display: inline;
-  margin-right: 5px;
-  color: white;
-  font-size: 15px;
-  outline: none;
+  gap: 6px;
+  padding-top: 15px;
+  border-top: 1px solid #fcf2f6;
+  font-size: 12px;
+  color: #9a6685;
 }
 
-.registro {
+.ir-a-registro {
   border: none;
   background: none;
   padding: 0;
-  font-size: 14px;
-  font-weight: 600; 
   cursor: pointer;
+  color: #bd4f80;
+  font-size: 12px;
+  font-weight: bold;
+  transition: color 0.2s ease;
 }
 
+.ir-a-registro:hover {
+  color: #8b3f68;
+  text-decoration: underline;
+}
 
-@media (max-width: 480px) {
+/* ==========================================================================
+   FOOTER GENERAL (Elegante y ubicado al pie de pantalla)
+   ========================================================================== */
+.footer-sesion {
+  height: 50px;
+  padding: 0 43px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: #9a6685;
+  border-top: 1px solid #f5dee8;
+  background-color: white;
+}
 
-  .InicioSesion-Page {
-    padding: 15px;
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-links button {
+  border: none;
+  background: none;
+  color: #9a6685;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.footer-links button:hover {
+  color: #703c5e;
+}
+
+/* RESPONSIVO */
+@media (max-width: 600px) {
+  .barra-superior-sesion,
+  .footer-sesion {
+    padding: 0 20px;
   }
-
+  
+  .menu-sesion {
+    gap: 12px;
+  }
+  
+  .footer-sesion {
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    height: auto;
+    padding: 15px 20px;
+  }
+  
   .InicioSesion-Container {
-    padding: 30px 22px;
-  }
-
-  .InicioSesion-Header h1 {
-    font-size: 36px;
-  }
-
-  .InicioSesion-Title h2 {
-    font-size: 24px;
+    padding: 30px 20px;
   }
 }

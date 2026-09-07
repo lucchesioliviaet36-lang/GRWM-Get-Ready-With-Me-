@@ -7,7 +7,7 @@ import Publicacion4 from './paginas/publicacion4/publicacion4'
 import InicioSesion from './paginas/inicio_sesion/inicio_sesion'
 import Registro from './paginas/registro/registro'
 
-// IMPORTAMOS TU NUEVA PÁGINA "MI TIENDA"
+
 import MiTienda from './paginas/miTienda/miTienda'
 
 function App() {
@@ -19,7 +19,6 @@ function App() {
         <Route path="/registro" element={<Registro />} />
         <Route path="/perfil_propio" element={<PerfilPropio />} />
 
-        {/* REGISTRAMOS LA NUEVA RUTA PARA TU TIENDA PERSONAL */}
         <Route path="/miTienda" element={<MiTienda />} />
 
         <Route path="/publicacion1" element={<Publicacion1 />} />
