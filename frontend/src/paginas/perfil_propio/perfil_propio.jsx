@@ -140,7 +140,9 @@ function PerfilPropio() {
         <nav className="menu">
           <button onClick={() => navigate('/perfil_propio')}>Mi perfil</button>
           <button onClick={() => navigate('/miTienda')}>Mi Tienda</button>
-          <button onClick={() => navigate('/')}>Página Principal</button>
+          <button onClick={() => navigate('/pagina_principal')}>
+            Página Principal
+          </button>
           <button onClick={() => navigate('/configuracion')}>Configuración</button>
           <div className="mini-avatar">
             <img src={fotoPerfilPropio} alt="Foto de perfil" />
