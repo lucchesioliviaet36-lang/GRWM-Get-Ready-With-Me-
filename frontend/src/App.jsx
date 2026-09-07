@@ -11,6 +11,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/pagina_principal" element={<Feed />} />
+        <Route path="/perfil_propio" element={<PerfilPropio />} />
 
         <Route path="/" element={<PerfilPropio />} />
         <Route path="/publicacion1" element={<Publicacion1 />} />

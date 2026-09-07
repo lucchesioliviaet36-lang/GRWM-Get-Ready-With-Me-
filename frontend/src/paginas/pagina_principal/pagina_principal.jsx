@@ -1,7 +1,10 @@
 import React from 'react';
 import './pagina_principal.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function Feed() {
+  const navigate = useNavigate();
+
   const historias = [
     { id: 1, usuario: 'Tu historia', img: 'https://i.pravatar.cc/150?img=11', esUsuario: true },
     { id: 2, usuario: 'clara.v', img: 'https://i.pravatar.cc/150?img=5' },
