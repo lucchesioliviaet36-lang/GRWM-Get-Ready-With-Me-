@@ -13,9 +13,7 @@ body {
   color: #703c5e;
 }
 
-/* =========================
-BARRA SUPERIOR
-========================= */
+/* ========================= BARRA SUPERIOR ========================= */
 .barra-superior {
   height: 60px;
   background: white;
@@ -26,7 +24,6 @@ BARRA SUPERIOR
   padding: 0 43px;
 }
 
-/* LOGO ESTÁTICO (YA NO ES UN BOTÓN) */
 .logo {
   border: 1px solid #f0cddd;
   border-radius: 20px;
@@ -37,7 +34,7 @@ BARRA SUPERIOR
   background: transparent;
   display: flex;
   align-items: center;
-  user-select: none; /* Evita que se resalte como texto al hacer doble clic */
+  user-select: none;
 }
 
 .logo span {
@@ -85,11 +82,11 @@ BARRA SUPERIOR
   flex-shrink: 0;
 }
 
-/* MENU CON NUEVOS ACCESOS UNIFICADOS */
+/* MENU */
 .menu {
   display: flex;
   align-items: center;
-  gap: 15px; /* Reducimos el espacio para que entren los nuevos botones holgadamente */
+  gap: 15px;
   font-size: 11px;
   color: #5d294b;
 }
@@ -111,6 +108,14 @@ BARRA SUPERIOR
   transform: translateY(-2px);
 }
 
+/* =========================
+ESTILOS DEL MENÚ FLOTANTE DEL AVATAR
+========================= */
+.mini-avatar-contenedor {
+  position: relative;
+  display: inline-block;
+}
+
 .mini-avatar {
   width: 27px;
   height: 27px;
@@ -120,6 +125,9 @@ BARRA SUPERIOR
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1.5px solid transparent;
 }
 
 .mini-avatar img {
@@ -129,17 +137,97 @@ BARRA SUPERIOR
   display: block;
 }
 
-/* =========================
-CONTENIDO
-========================= */
+.mini-avatar:hover, .mini-avatar.activo {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 2px #f0cddd;
+}
+
+/* Menú desplegable flotante */
+.menu-desplegable-perfil {
+  position: absolute;
+  top: 38px;
+  right: 0;
+  background: white;
+  border: 1px solid #f0dbe5;
+  border-radius: 14px;
+  width: 200px;
+  box-shadow: 0 8px 24px rgba(112, 60, 94, 0.12);
+  z-index: 1000;
+  padding: 8px 0;
+  animation: slideDownDropdown 0.2s ease-out;
+}
+
+.menu-usuario-detalles {
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-usuario-detalles strong {
+  font-family: Georgia, serif;
+  font-size: 13px;
+  color: #70345c;
+}
+
+.menu-usuario-detalles span {
+  font-size: 10px;
+  color: #9a6685;
+  margin-top: 2px;
+}
+
+.menu-divisor {
+  height: 1px;
+  background: #fdf0f5;
+  margin: 6px 0;
+}
+
+.menu-desplegable-perfil button {
+  width: 100% !important;
+  text-align: left !important;
+  padding: 8px 16px !important;
+  border: none !important;
+  background: transparent !important;
+  font-size: 11px !important;
+  color: #703c5e !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  border-radius: 0 !important;
+  transform: none !important;
+  transition: all 0.2s ease !important;
+  box-shadow: none !important;
+}
+
+.menu-desplegable-perfil button:hover {
+  background-color: #fff0f6 !important;
+  color: #bd4f80 !important;
+  padding-left: 20px !important;
+}
+
+.menu-btn-logout {
+  color: #bd4f80 !important;
+  font-weight: bold !important;
+}
+
+@keyframes slideDownDropdown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================= CONTENIDO ========================= */
 .contenido {
   width: 814px;
   margin: 24px auto 0;
 }
 
-/* =========================
-TARJETA DEL PERFIL
-========================= */
+/* ========================= TARJETA DEL PERFIL ========================= */
 .tarjeta-perfil {
   background: white;
   border: 1px solid #f0d4e0;
@@ -150,11 +238,10 @@ TARJETA DEL PERFIL
 /* PORTADA */
 .portada {
   height: 160px;
-  background: linear-gradient(
-      rgba(235, 220, 211, 0.25),
-      rgba(235, 220, 211, 0.25)
-    ),
-    #d8c2af;
+  background: linear-gradient( rgba(235, 220, 211, 0.25), rgba(235, 220, 211, 0.25) ), #d8c2af;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* DATOS */
@@ -213,9 +300,7 @@ TARJETA DEL PERFIL
   color: #956d82;
 }
 
-/* =========================
-ESTADÍSTICAS
-========================= */
+/* ========================= ESTADÍSTICAS ========================= */
 .estadisticas {
   display: flex;
   align-items: center;
@@ -287,9 +372,7 @@ ESTADÍSTICAS
   box-shadow: 0 3px 8px rgba(112, 60, 94, 0.12);
 }
 
-/* =========================
-PESTAÑAS
-========================= */
+/* ========================= PESTAÑAS ========================= */
 .pestanas {
   height: 54px;
   display: flex;
@@ -342,9 +425,7 @@ PESTAÑAS
   width: 100%;
 }
 
-/* =========================
-PUBLICACIONES (GRID Y ZOOM)
-========================= */
+/* ========================= PUBLICACIONES (GRID PERFECTA DE 4 COLUMNAS) ========================= */
 .grid-publicaciones {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -362,10 +443,7 @@ PUBLICACIONES (GRID Y ZOOM)
   cursor: pointer;
   font-family: Arial, sans-serif;
   text-align: left;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .post:hover {
@@ -390,21 +468,10 @@ PUBLICACIONES (GRID Y ZOOM)
 }
 
 /* Ajuste individual de cada foto */
-.post:nth-child(1) img {
-  object-position: center 45%;
-}
-
-.post:nth-child(2) img {
-  object-position: center 35%;
-}
-
-.post:nth-child(3) img {
-  object-position: center 40%;
-}
-
-.post:nth-child(4) img {
-  object-position: center 30%;
-}
+.post:nth-child(1) img { object-position: center 45%; }
+.post:nth-child(2) img { object-position: center 35%; }
+.post:nth-child(3) img { object-position: center 40%; }
+.post:nth-child(4) img { object-position: center 30%; }
 
 /* PIE DE FOTO */
 .pie-post {
@@ -429,73 +496,20 @@ PUBLICACIONES (GRID Y ZOOM)
   text-transform: uppercase;
 }
 
-/* TEXTO DE SECCIÓN VACÍA (FAVORITOS / CLOSET VACÍO) CORREGIDA */
 .sin-contenido {
-  grid-column: 1 / -1;            /* Hace que el texto se centre en toda la grilla */
+  grid-column: 1 / -1;
   text-align: center;
   padding: 50px 20px;
-  color: #9a6685;                 /* Color rosa/borgoña suave a tono con tu app */
-  font-family: Arial, sans-serif; /* Usamos Arial para mantener la consistencia */
+  color: #9a6685;
+  font-family: Arial, sans-serif;
   font-size: 13px;
-  font-style: normal;             /* Letra derecha (sin cursiva) para que se lea perfecto */
+  font-style: normal;
   letter-spacing: 0.5px;
-}
-
-/* =========================
-PANTALLAS PEQUEÑAS
-========================= */
-@media (max-width: 850px) {
-  .contenido {
-    width: calc(100% - 30px);
-  }
-
-  .barra-superior {
-    padding: 0 15px;
-  }
-
-  .buscador {
-    display: none;
-  }
-
-  .grid-publicaciones {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .estadisticas {
-    gap: 10px;
-  }
-}
-
-@media (max-width: 600px) {
-  .menu span {
-    display: none;
-  }
-
-  .datos-perfil {
-    flex-wrap: wrap;
-  }
-
-  .estadisticas {
-    width: 100%;
-    margin-top: 15px;
-    justify-content: center;
-  }
-
-  .grid-publicaciones {
-    grid-template-columns: 1fr;
-  }
-}
-
-.portada {
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
 }
 
 /* ==========================================================================
    ESTILOS COMPLEMENTARIOS PARA LA SUBIDA DE ARCHIVOS Y EL FORMULARIO MODAL
    ========================================================================== */
-
 .btn-cargar {
   background: #bd4f80 !important;
   border: 1px solid #bd4f80 !important;
@@ -702,13 +716,21 @@ PANTALLAS PEQUEÑAS
   transform: translateY(-1px);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* ========================= PANTALLAS PEQUEÑAS ========================= */
+@media (max-width: 850px) {
+  .contenido { width: calc(100% - 30px); }
+  .barra-superior { padding: 0 15px; }
+  .buscador { display: none; }
+  .grid-publicaciones { grid-template-columns: repeat(2, 1fr); }
+  .estadisticas { gap: 10px; }
 }
 
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+@media (max-width: 600px) {
+  .menu span { display: none; }
+  .datos-perfil { flex-wrap: wrap; }
+  .estadisticas { width: 100%; margin-top: 15px; justify-content: center; }
+  .grid-publicaciones { grid-template-columns: 1fr; }
 }
-

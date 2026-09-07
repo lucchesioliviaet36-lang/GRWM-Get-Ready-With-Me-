@@ -7,7 +7,7 @@ import fotoPropia2 from '../../assets/imagenes/fotoPropia2.jpg'
 import fotoPropia3 from '../../assets/imagenes/fotoPropia3.jpg'
 import fotoPropia4 from '../../assets/imagenes/fotoPropia4.jpg'
 
-// Importamos tus hermosos cardigans reales (que ahora sí existen en tu carpeta)
+// Importamos tus hermosos cardigans reales
 import closetPropio1 from '../../assets/imagenes/closetPropio1.jpg'
 import closetPropio2 from '../../assets/imagenes/closetPropio2.jpg'
 
@@ -16,6 +16,9 @@ import './perfil_propio.css'
 function PerfilPropio() {
   const navigate = useNavigate();
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
+
+  // Estado para controlar si el menú de la foto de perfil está abierto o cerrado
+  const [menuAbierto, setMenuAbierto] = useState(false);
 
   // LISTA 1: Publicaciones del feed (con persistencia local en el navegador)
   const publicacionesPorDefecto = [
@@ -35,13 +38,13 @@ function PerfilPropio() {
     return publicacionesPorDefecto;
   });
 
-  // LISTA 2: Tu closet personal (Tus cardigans reales de exhibición, NO SE VENDEN)
+  // LISTA 2: Tu closet personal (Tus cardigans reales de exhibición, NO SE VENDEN) [1, 2]
   const prendasCloset = [
     { id: 1, img: closetPropio1, nombre: 'Folklore Cardigan', categoria: 'Cardigans' },
     { id: 2, img: closetPropio2, nombre: 'Midnight Cardigan', categoria: 'Cardigans' }
   ];
 
-  // ESTADOS DEL MODAL Y FORMULARIO DE CARGA
+  // ESTADOS DEL MODAL Y FORMULARIO DE CARGA [3]
   const [mostrarModal, setMostrarModal] = useState(false);
   const [imagenArchivo, setImagenArchivo] = useState(null);
   const [imagenPreview, setImagenPreview] = useState('');
@@ -53,23 +56,20 @@ function PerfilPropio() {
 
   const publicacionesFavoritas = listaPublicaciones.filter(post => post.esFavorito);
 
-  
+  // MANEJAR LA SELECCIÓN DEL ARCHIVO LOCAL [3]
   const handleFileChange = (e) => {
-    // Usamos .item(0) para seleccionar de forma segura el primer archivo de la lista
-    const file = e.target.files.item(0); 
-    
+    const file = e.target.files.item(0);
     if (file) {
       setImagenArchivo(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagenPreview(reader.result); // Genera el Base64 correcto de la foto seleccionada
+        setImagenPreview(reader.result);
       };
       reader.readAsDataURL(file);
     }
   };
 
-
-  // Enviar el formulario y decidir el destino (Feed de fotos o "Mi Tienda")
+  // Enviar el formulario y decidir el destino (Feed de fotos o "Mi Tienda") [3]
   const handleCrearPublicacion = (e) => {
     e.preventDefault();
     if (!imagenPreview) {
@@ -78,7 +78,6 @@ function PerfilPropio() {
     }
 
     if (tipoPublicacion === 'feed') {
-      // Caso A: Se publica al Feed social común
       const nuevoPost = {
         id: Date.now(),
         ruta: `/publicacion_nueva_${Date.now()}`,
@@ -93,7 +92,6 @@ function PerfilPropio() {
       localStorage.setItem('grwm_publicaciones', JSON.stringify(nuevasPublicaciones));
       alert("¡Tu outfit ha sido publicado en tu Feed!");
     } else {
-      // Caso B: Se publica como artículo en venta en "Mi Tienda"
       const nuevoProducto = {
         id: Date.now(),
         nombre: nombrePrenda || 'Prenda de Closet',
@@ -104,7 +102,6 @@ function PerfilPropio() {
         disponible: true
       };
 
-      // Leemos del almacenamiento local de la tienda, añadimos el artículo y guardamos
       const tiendaActual = JSON.parse(localStorage.getItem('grwm_tienda_productos')) || [];
       const nuevaTienda = [nuevoProducto, ...tiendaActual];
       localStorage.setItem('grwm_tienda_productos', JSON.stringify(nuevaTienda));
@@ -112,7 +109,6 @@ function PerfilPropio() {
       alert("¡Prenda cargada con éxito! Ya se encuentra disponible en 'Mi Tienda'.");
     }
 
-    // Limpiamos los campos y cerramos el modal
     setImagenArchivo(null);
     setImagenPreview('');
     setTipoPublicacion('feed');
@@ -126,7 +122,7 @@ function PerfilPropio() {
   return (
     <div className="pagina-perfil">
       
-      {/* BARRA SUPERIOR */}
+      {/* BARRA SUPERIOR ACTUALIZADA */}
       <header className="barra-superior">
         <div className="logo">
           ✧ <span>GRWM</span>
@@ -137,13 +133,55 @@ function PerfilPropio() {
           <input type="text" placeholder="Buscar outfits, marcas, tendencias..." />
         </div>
 
+        {/* El menú queda limpio: eliminamos el botón Configuración clásico */}
         <nav className="menu">
           <button onClick={() => navigate('/perfil_propio')}>Mi perfil</button>
           <button onClick={() => navigate('/miTienda')}>Mi Tienda</button>
           <button onClick={() => navigate('/')}>Página Principal</button>
-          <button onClick={() => navigate('/configuracion')}>Configuración</button>
-          <div className="mini-avatar">
-            <img src={fotoPerfilPropio} alt="Foto de perfil" />
+          
+          {/* CONTENEDOR DE LA FOTO DE PERFIL CON MENU DESPLEGABLE */}
+          <div className="mini-avatar-contenedor">
+            <div 
+              className={`mini-avatar ${menuAbierto ? 'activo' : ''}`} 
+              onClick={() => setMenuAbierto(!menuAbierto)}
+            >
+              <img src={fotoPerfilPropio} alt="Foto de perfil" />
+            </div>
+
+            {/* MENÚ FLOTANTE INTERACTIVO */}
+            {menuAbierto && (
+              <div className="menu-desplegable-perfil">
+                <div className="menu-usuario-detalles">
+                  <strong>Taylor Swift</strong>
+                  <span>@taylor_swift13</span>
+                </div>
+                <div className="menu-divisor"></div>
+                
+                <button onClick={() => { alert("Contacta al equipo de GRWM: soporteGRWM@gmail.com"); setMenuAbierto(false); }}>
+                  ✉ Ayuda y Soporte
+                </button>
+                
+                <div className="menu-divisor"></div>
+                
+                <button className="menu-btn-logout" onClick={() => {
+                  if (window.confirm("¿Seguro que querés cerrar sesión en GRWM?")) {
+                    setMenuAbierto(false);
+                    navigate('/'); // Redirige al login original de tu amiga
+                  }
+                }}>
+                   Cerrar Sesión
+                </button>
+
+                                <button className="menu-btn-logout" onClick={() => {
+                  if (window.confirm("¿Seguro que querés eliminar tu cuenta de GRWM")) {
+                    setMenuAbierto(false);
+                    navigate('/registro'); // Redirige al login original de tu amiga
+                  }
+                }}>
+                   Eliminar Cuenta
+                </button>
+              </div>
+            )}
           </div>
         </nav>
       </header>
@@ -162,7 +200,7 @@ function PerfilPropio() {
               <h1>Taylor Swift</h1>
               <p className="usuario">@taylor_swift13</p>
               <p className="descripcion">
-                Cantante, compositora y amante de la moda -`𖹭´- <br />
+                Cantante, compositora y amante de la moda <br />
                 Compartiendo looks de cada era ♬⋆.˚
               </p>
             </div>
@@ -184,9 +222,8 @@ function PerfilPropio() {
                 <button className="btn-tienda" onClick={() => navigate('/miTienda')}>
                   Mi Tienda
                 </button>
-                {/* BOTÓN "PUBLICAR PRENDA" */}
                 <button className="btn-cargar" onClick={() => setMostrarModal(true)}>
-                  ✚ Publicar
+                  + Publicar
                 </button>
               </div>
             </div>
@@ -206,10 +243,10 @@ function PerfilPropio() {
           </button>
         </div>
 
-        {/* GRID DE CONTENIDO SEGÚN LA PESTAÑA */}
+        {/* GRID DE CONTENIDO ORIGINAL DE TU AMIGA (Inmune a roturas de diseño) [4] */}
         <section className="grid-publicaciones">
           
-          {/* VISTA 1: PUBLICACIONES SOCIALES (FEED) */}
+          {/* VISTA 1: PUBLICACIONES SOCIALES (SÍ CLIQUEABLES) */}
           {pestanaActiva === 'publicaciones' && listaPublicaciones.map((post) => (
             <button key={post.id} className="post" type="button" onClick={() => navigate(post.ruta)}>
               <div className="foto-post">
@@ -221,7 +258,7 @@ function PerfilPropio() {
             </button>
           ))}
 
-          {/* VISTA 2: CLOSET VIRTUAL (Tus cardigans reales de exhibición que NO se venden) */}
+          {/* VISTA 2: CLOSET VIRTUAL */}
           {pestanaActiva === 'closet' && prendasCloset.map((prenda) => (
             <div key={prenda.id} className="post" style={{ cursor: 'default' }}>
               <div className="foto-post">
@@ -254,7 +291,6 @@ function PerfilPropio() {
             
             <form onSubmit={handleCrearPublicacion}>
               
-              {/* COMPONENTE DE SUBIDA DE ARCHIVO LOCAL */}
               <div className="form-grupo">
                 <label>Sube una foto de tu prenda:</label>
                 <div className="upload-container">
@@ -275,7 +311,6 @@ function PerfilPropio() {
                 </div>
               </div>
 
-              {/* SELECTOR DE DESTINO */}
               <div className="form-grupo">
                 <label>¿Qué tipo de publicación es?</label>
                 <select 
@@ -288,7 +323,6 @@ function PerfilPropio() {
                 </select>
               </div>
 
-              {/* CAMPOS COMPLEMENTARIOS PARA LA TIENDA DE VENTAS */}
               {tipoPublicacion === 'tienda' && (
                 <>
                   <div className="form-grupo">
@@ -332,7 +366,6 @@ function PerfilPropio() {
                 </>
               )}
 
-              {/* DESCRIPCIÓN */}
               <div className="form-grupo">
                 <label>Descripción:</label>
                 <textarea
@@ -345,7 +378,6 @@ function PerfilPropio() {
                 />
               </div>
 
-              {/* BOTONES ACCIONES */}
               <div className="modal-acciones">
                 <button 
                   type="button" 
