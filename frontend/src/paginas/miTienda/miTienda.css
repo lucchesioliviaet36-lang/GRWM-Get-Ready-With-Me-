@@ -1,0 +1,236 @@
+.pagina-tienda {
+  min-height: 100vh;
+  background: #fff7fa;
+  color: #703c5e;
+}
+
+/* BARRA SUPERIOR */
+.barra-superior-tienda {
+  height: 60px;
+  background: white;
+  border-bottom: 1px solid #f0dbe5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 43px;
+}
+
+.logo-tienda {
+  border: 1px solid #f0cddd;
+  border-radius: 20px;
+  padding: 6px 13px;
+  background: white;
+  font-family: Georgia, serif;
+  font-size: 17px;
+  color: #8b3f68;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.logo-tienda:hover {
+  background: #fff0f6;
+  border-color: #c989a9;
+}
+
+.logo-tienda span {
+  margin-left: 4px;
+}
+
+.buscador-tienda {
+  width: 290px;
+  height: 30px;
+  border: 1px solid #edcfdd;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  color: #8b6378;
+}
+
+.buscador-tienda input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 11px;
+  color: #703c5e;
+  margin-left: 8px;
+}
+
+.menu-tienda {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.menu-tienda button {
+  border: none;
+  background: transparent;
+  color: #703c5e;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.menu-tienda button:hover {
+  background: #fff0f6;
+  color: #9a4f78;
+}
+
+.mini-avatar-tienda {
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.mini-avatar-tienda img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* CONTENIDO */
+.contenido-tienda {
+  width: 814px;
+  margin: 24px auto 0;
+  padding-bottom: 40px;
+}
+
+.volver-tienda {
+  border: none;
+  background: transparent;
+  color: #8b5274;
+  font-size: 12px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: transform 0.2s ease;
+}
+
+.volver-tienda:hover {
+  color: #703c5e;
+  transform: translateX(-4px);
+}
+
+.cabecera-tienda {
+  margin-bottom: 30px;
+}
+
+.cabecera-tienda h1 {
+  font-family: Georgia, serif;
+  font-size: 25px;
+  color: #70345c;
+  margin: 0 0 8px;
+}
+
+.cabecera-tienda p {
+  font-size: 12px;
+  color: #956d82;
+  margin: 0;
+}
+
+/* GRID DE PRODUCTOS */
+.grid-productos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.tarjeta-producto {
+  background: white;
+  border: 1px solid #efd5e0;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(112, 60, 94, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.tarjeta-producto:hover {
+  transform: translateY(-4px);
+  border-color: #e2b8cb;
+  box-shadow: 0 7px 16px rgba(112, 60, 94, 0.14);
+}
+
+.contenedor-foto-producto {
+  height: 250px;
+  background: #fdf6f9;
+  position: relative;
+  overflow: hidden;
+}
+
+.contenedor-foto-producto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.talle-tag {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(112, 60, 94, 0.85);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.info-producto {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.info-producto h3 {
+  font-family: Georgia, serif;
+  font-size: 17px;
+  color: #70345c;
+  margin: 0 0 10px;
+}
+
+.descripcion-producto {
+  font-size: 11px;
+  color: #956d82;
+  line-height: 1.4;
+  margin: 0 0 20px;
+  flex: 1;
+}
+
+.precio-y-accion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.precio-tag {
+  font-size: 18px;
+  font-weight: bold;
+  color: #bd4f80;
+}
+
+.btn-comprar {
+  background: #bd4f80;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-comprar:hover {
+  background: #9a3f68;
+  transform: translateY(-2px);
+}
+
