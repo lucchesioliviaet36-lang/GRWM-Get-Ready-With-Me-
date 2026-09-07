@@ -38,6 +38,19 @@ export default function Feed() {
     <div className="layout-container">
       {/* Sidebar Izquierdo */}
       <aside className="sidebar">
+
+        <div className="card-box">
+          <ul className='perfilPagPrincipal'>
+            <button onClick={() => navigate('/perfil_propio')}>
+              <img src="https://i.pravatar.cc/150?img=32" alt="user" />
+            </button>
+            <button onClick={() => navigate('/perfil_propio')}>
+              Tu perfil
+            </button>
+          </ul>
+            
+        </div>
+
         <div className="card-box">
           <h3>Tendencias para ti</h3>
           <ul className="trends-list">
