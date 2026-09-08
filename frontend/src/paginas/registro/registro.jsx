@@ -4,15 +4,11 @@ import "./registro.css";
 
 function Registro() {
   const navigate = useNavigate();
-  
-  // Estados originales de tu amiga (¡respetando al 100% su lógica de funcionamiento!)
   const [usuario, setUsuario] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repetirPassword, setRepetirPassword] = useState("");
   const [error, setError] = useState("");
-  
-  // Estados para mostrar/ocultar contraseñas dinámicamente con el ojito
   const [showPassword, setShowPassword] = useState(false);
   const [showRepetirPassword, setShowRepetirPassword] = useState(false);
 
@@ -20,7 +16,6 @@ function Registro() {
     e.preventDefault();
     setError("");
 
-    // Validación original de tu amiga
     if (
       usuario.trim() === "" ||
       email.trim() === "" ||
@@ -41,7 +36,7 @@ function Registro() {
     console.log("Password:", password);
 
     alert("¡Registro realizado correctamente!");
-    navigate("/perfil_propio"); // Redirige al perfil propio
+    navigate("/perfil_propio"); 
   };
 
   const volverInicioSesion = () => {
@@ -51,24 +46,19 @@ function Registro() {
   return (
     <div className="Registro-Page">
       
-      {/* BARRA SUPERIOR (Idéntica a la del mockup que te gustó) */}
       <header className="barra-superior-registro">
         <div className="logo-registro">
           ✧ <span>GRWM</span>
         </div>
         <nav className="menu-registro">
-          <button onClick={() => navigate('/comunidad')}>Comunidad</button>
           <button onClick={() => navigate('/tienda')}>Tienda</button>
           <button onClick={() => navigate('/soporte')}>Soporte</button>
         </nav>
       </header>
 
-      {/* CONTENIDO CENTRAL DE LA TARJETA */}
       <main className="registro-contenido-principal">
         <div className="Registro-Container">
           
-
-          {/* Cabecera del Formulario */}
           <div className="Registro-Header">
             <h1>Crea tu cuenta en GRWM</h1>
             <p>Únete a la comunidad de moda más grande para inspirarte y vender tu estilo.</p>
@@ -76,7 +66,6 @@ function Registro() {
 
           <form onSubmit={handleSubmit} className="Registro-Formulario">
             
-            {/* NOMBRE DE USUARIO */}
             <div className="form-group-registro">
               <label htmlFor="usuario">Nombre de Usuario</label>
               <div className="input-with-icon">
@@ -96,7 +85,6 @@ function Registro() {
               </div>
             </div>
 
-            {/* CORREO ELECTRÓNICO */}
             <div className="form-group-registro">
               <label htmlFor="email">Correo Electrónico</label>
               <div className="input-with-icon">
@@ -116,7 +104,6 @@ function Registro() {
               </div>
             </div>
 
-            {/* CONTRASEÑA */}
             <div className="form-group-registro">
               <label htmlFor="password">Contraseña</label>
               <div className="input-with-icon">
@@ -153,7 +140,6 @@ function Registro() {
               </div>
             </div>
 
-            {/* CONFIRMAR CONTRASEÑA */}
             <div className="form-group-registro">
               <label htmlFor="repetirPassword">Confirmar Contraseña</label>
               <div className="input-with-icon">
@@ -197,12 +183,10 @@ function Registro() {
             </button>
           </form>
 
-          {/* DIVISOR DE REDES SOCIALES */}
           <div className="social-divider">
             <span>o regístrate con</span>
           </div>
 
-          {/* BOTONES SOCIALES */}
           <div className="social-buttons">
             <button className="btn-social google" onClick={() => alert("Registro con Google simulado")}>
               <svg viewBox="0 0 24 24" width="16" height="16">
@@ -221,7 +205,6 @@ function Registro() {
             </button>
           </div>
 
-          {/* REDIRECCIÓN AL LOGIN */}
           <div className="Opcion-InicioSesion">
             <span>¿Ya tienes una cuenta?</span>
             <button type="button" className="volver-login" onClick={volverInicioSesion}>
@@ -231,7 +214,6 @@ function Registro() {
         </div>
       </main>
 
-      {/* FOOTER DEL SITIO (Idéntico al mockup) */}
       <footer className="footer-registro">
         <div className="footer-derechos">
           © 2025 GRWM. Todos los derechos reservados.

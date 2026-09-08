@@ -4,21 +4,16 @@ import "./inicio_sesion.css";
 
 function InicioSesion() {
   const navigate = useNavigate();
-  
-  // Estados originales de tu amiga para el login
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [flipped, setFlipped] = useState(false);
-  
-  // Nuevo estado para mostrar/ocultar la contraseña
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
 
-    // Validación original de tu amiga
     if (usuario.trim() === "" || password.trim() === ""){
         setError("Complete todos los campos");
         return;
@@ -28,15 +23,11 @@ function InicioSesion() {
     console.log("Password: ", password);
 
     alert("¡Inicio de sesión correcto!");
-    navigate("/perfil_propio"); // Redirige al perfil propio de GRWM
+    navigate("/perfil_propio"); 
   };
 
   const irARegistro = () => {
-    setFlipped(true);
-    // Transición suave de 600ms antes de cambiar de página
-    setTimeout(() => {
-      navigate("/registro");
-    }, 600);
+    navigate("/registro");
   };
 
   return (
@@ -48,17 +39,14 @@ function InicioSesion() {
           ✧ <span>GRWM</span>
         </div>
         <nav className="menu-sesion">
-          <button onClick={() => navigate('/comunidad')}>Comunidad</button>
           <button onClick={() => navigate('/tienda')}>Tienda</button>
           <button onClick={() => navigate('/soporte')}>Soporte</button>
         </nav>
       </header>
 
-      {/* CONTENIDO CENTRAL */}
       <main className="sesion-contenido-principal">
-        <div className={`InicioSesion-Container ${flipped ? "flipped" : ""}`}>
+        <div className="InicioSesion-Container">
 
-          {/* Cabecera de la tarjeta */}
           <div className="InicioSesion-Header">
             <h1>Iniciar Sesión en GRWM</h1>
             <p>Ingresa a tu cuenta para compartir tus outfits y descubrir nuevas tendencias.</p>

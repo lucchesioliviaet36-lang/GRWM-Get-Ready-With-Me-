@@ -8,7 +8,7 @@ body {
   background-color: #fff7fa;
 }
 
-/* CONTENEDOR PRINCIPAL CON EL DEGRADADO DE FONDO */
+
 .Registro-Page {
   min-height: 100vh;
   width: 100%;
@@ -18,9 +18,6 @@ body {
   justify-content: space-between;
 }
 
-/* ==========================================================================
-   BARRA SUPERIOR (Elegante y minimalista)
-   ========================================================================== */
 .barra-superior-registro {
   height: 60px;
   background: white;
@@ -59,21 +56,17 @@ body {
   border: none;
   background: transparent;
   color: #703c5e;
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
-  padding: 8px 10px;
+  padding: 8px ;
   border-radius: 8px;
   transition: all 0.2s ease;
 }
 
 .menu-registro button:hover {
-  background: #fff0f6;
-  color: #9a4f78;
+  color: #c74c90;
 }
 
-/* ==========================================================================
-   FORMULARIO CENTRAL
-   ========================================================================== */
 .registro-contenido-principal {
   flex: 1;
   display: flex;
@@ -82,7 +75,6 @@ body {
   padding: 40px 20px;
 }
 
-/* TARJETA BLANCA DE REGISTRO */
 .Registro-Container {
   width: 100%;
   max-width: 440px;
@@ -92,39 +84,13 @@ body {
   border: 1px solid #f9ebf1;
   box-shadow: 0 10px 30px rgba(112, 60, 94, 0.04);
   position: relative;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.4s ease;
 }
-
 .Registro-Container:hover {
-  transform: translateY(-2px);
+  transform: translateY(-5px);
   box-shadow: 0 14px 40px rgba(112, 60, 94, 0.07);
 }
 
-/* Corazón flotante arriba a la derecha */
-.corazon-flotante {
-  position: absolute;
-  top: 25px;
-  right: 25px;
-  background: white;
-  border: 1px solid #f5dee8;
-  color: #bd4f80;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.corazon-flotante:hover {
-  background: #fff0f6;
-  transform: scale(1.1);
-  border-color: #bd4f80;
-}
-
-/* CABECERA */
 .Registro-Header {
   text-align: center;
   margin-bottom: 25px;
@@ -146,7 +112,6 @@ body {
   color: #9a6685;
 }
 
-/* CONTENEDORES DE ENTRADA (Aislados para no colisionar con el CSS de tu amiga) */
 .Registro-Formulario {
   width: 100%;
 }
@@ -166,7 +131,6 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* Contenedor elegante de input */
 .input-with-icon {
   display: flex;
   align-items: center;
@@ -190,7 +154,6 @@ body {
   align-items: center;
 }
 
-/* Limpieza de inputs dentro de este contenedor para que no hereden efectos 3D de tu amiga */
 .input-with-icon input {
   border: none !important;
   outline: none !important;
@@ -209,7 +172,6 @@ body {
   color: #cbb4c2 !important;
 }
 
-/* Botón de ojito para mostrar/ocultar contraseñas */
 .btn-password-toggle {
   border: none;
   background: transparent;
@@ -226,7 +188,6 @@ body {
   color: #bd4f80;
 }
 
-/* Mensajes de Error */
 .Error-Registro {
   padding: 8px 12px;
   margin-bottom: 15px;
@@ -238,7 +199,6 @@ body {
   text-align: center;
 }
 
-/* BOTÓN CREAR CUENTA (Pink elegant style) */
 .Registro-Boton {
   width: 100%;
   height: 42px;
@@ -247,7 +207,7 @@ body {
   border-radius: 11px;
   border: none;
   outline: none;
-  background-color: #ffdce8; /* Rosado pastel idéntico al mockup */
+  background-color: #ffdce8; 
   color: #703c5e;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -263,7 +223,6 @@ body {
   transform: translateY(0);
 }
 
-/* DIVISOR DE REDES SOCIALES */
 .social-divider {
   display: flex;
   align-items: center;
@@ -284,7 +243,6 @@ body {
   padding: 0 10px;
 }
 
-/* BOTONES DE REDES SOCIALES */
 .social-buttons {
   display: flex;
   gap: 15px;
@@ -313,7 +271,6 @@ body {
   border-color: #bd4f80;
 }
 
-/* REDIRECCIÓN AL LOGIN */
 .Opcion-InicioSesion {
   display: flex;
   justify-content: center;
@@ -341,9 +298,6 @@ body {
   text-decoration: underline;
 }
 
-/* ==========================================================================
-   FOOTER GENERAL (Elegante y ubicado al pie de pantalla)
-   ========================================================================== */
 .footer-registro {
   height: 50px;
   padding: 0 43px;
@@ -375,7 +329,6 @@ body {
   color: #703c5e;
 }
 
-/* RESPONSIVO PARA PANTALLAS PEQUEÑAS */
 @media (max-width: 600px) {
   .barra-superior-registro,
   .footer-registro {
