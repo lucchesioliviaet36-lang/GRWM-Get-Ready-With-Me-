@@ -33,6 +33,7 @@ class AuthService{
         const nuevoUsuario = await usuarioDAO.crear({
             nombre,
             apellido,
+            username,
             contraseña: contraseñaHash,
             rol: "usuario",
             mail,
