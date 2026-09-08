@@ -1,5 +1,4 @@
 const authService = require("../services/authService");
-const AuthService = require("../services/authService");
 
 class authController{
 
@@ -22,6 +21,35 @@ class authController{
 
         catch (error) {
             res.status(400).json({
+                mensaje: error.message
+            });
+        }
+    }
+
+    async iniciar_sesion(req, res) {
+
+        try {
+            const {
+                username,
+                contraseña
+            } = req.body;
+
+            const resultado =
+                await authService.iniciar_sesion(
+                    username,
+                    contraseña
+                );
+
+            res.status(200).json({
+                mensaje: "Inicio de sesión exitoso",
+                token: resultado.token,
+                usuario: resultado.usuario
+            });
+
+        }
+        catch (error) {
+            console.error("Error en login:", error);
+            res.status(401).json({
                 mensaje: error.message
             });
         }

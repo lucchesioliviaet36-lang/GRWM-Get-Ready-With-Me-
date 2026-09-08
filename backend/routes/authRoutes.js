@@ -7,4 +7,8 @@ router.post("/registrar", (req, res) => {
     authController.registrar(req, res);
 });
 
+router.post("/iniciar_sesion", (req, res) => {
+    authController.iniciar_sesion(req, res);
+});
+
 module.exports = router;
