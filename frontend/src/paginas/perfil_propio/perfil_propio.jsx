@@ -136,7 +136,7 @@ function PerfilPropio() {
         {/* El menú queda limpio: eliminamos el botón Configuración clásico */}
         <nav className="menu">
           <button onClick={() => navigate('/perfil_propio')}>Mi perfil</button>
-          <button onClick={() => navigate('/')}>Tienda</button>
+          <button onClick={() => navigate('/tienda_principal')}>Tienda</button>
           <button onClick={() => navigate('/')}>Página Principal</button>
           
           {/* CONTENEDOR DE LA FOTO DE PERFIL CON MENU DESPLEGABLE */}
