@@ -31,13 +31,7 @@ const Usuario = sequelize.define(
             type: DataTypes.STRING(255),
             allowNull: false
         },
-
-        rol: {
-            type: DataTypes.STRING(50),
-            allowNull: false,
-            defaultValue: "usuario"
-        },
-
+        
         mail: {
             type: DataTypes.STRING(50),
             allowNull: false,

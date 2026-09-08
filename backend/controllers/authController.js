@@ -20,8 +20,21 @@ class authController{
         }
 
         catch (error) {
+            console.error("❌ ERROR COMPLETO:");
+            console.error(error);
+            console.error("NAME:", error.name);
+            console.error("MESSAGE:", error.message);
+            console.error("ERRORS:", error.errors);
+
             res.status(400).json({
-                mensaje: error.message
+                mensaje: error.message,
+                errores: error.errors
+                    ? error.errors.map(e => ({
+                        campo: e.path,
+                        mensaje: e.message,
+                        valor: e.value
+                    }))
+                    : []
             });
         }
     }
