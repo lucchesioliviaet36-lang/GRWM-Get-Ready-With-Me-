@@ -128,10 +128,10 @@ function PerfilPropio() {
           ✧ <span>GRWM</span>
         </div>
         
-        <div className="buscador">
-          <span className="icono-busqueda">🔍︎</span>
-          <input type="text" placeholder="Buscar outfits, marcas, tendencias..." />
-        </div>
+        <button className="boton-busqueda"
+          type="button"
+          onClick={() => navigate('/busqueda')}>🔍︎
+        </button>
 
         {/* El menú queda limpio: eliminamos el botón Configuración clásico */}
         <nav className="menu">

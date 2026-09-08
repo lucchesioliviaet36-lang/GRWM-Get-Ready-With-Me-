@@ -55,11 +55,12 @@ function MiTienda() {
         >
           ✧ <span>GRWM</span>
         </button>
-
-        <div className="buscador-tienda">
-          <span>🔍︎</span>
-          <input type="text" placeholder="Buscar en mi tienda..." />
-        </div>
+        
+        <button className="boton-busqueda"
+          type="button"
+          onClick={() => navigate('/busqueda')}>🔍︎
+        </button>
+        
 
         <nav className="menu-tienda">
           <button onClick={() => navigate('/perfil_propio')}>Mi perfil</button>

@@ -24,63 +24,39 @@ body {
   padding: 0 43px;
 }
 
-.logo {
+.logo{
   border: 1px solid #f0cddd;
   border-radius: 20px;
   padding: 6px 13px;
+  background: white;
   font-family: Georgia, serif;
   font-size: 17px;
   color: #8b3f68;
-  background: transparent;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.logo:hover:hover {
+  background: #fff0f6;
+  border-color: #c989a9;
 }
 
 .logo span {
   margin-left: 4px;
 }
 
-/* BUSCADOR */
-.buscador {
-  width: 250px;
-  height: 30px;
-  border: 1px solid #edcfdd;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  color: #8b6378;
-  font-size: 11px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.buscador input {
-  width: 100%;
+.boton-busqueda{
+  background-color: white;
+  margin-right: 60%;
+  padding-bottom: 5px;
   border: none;
-  outline: none;
-  box-shadow: none;
-  background: transparent;
-  font-size: 11px;
-  color: #703c5e;
-  padding: 0;
-  margin: 0;
+  color: #70345c;
+  cursor: pointer;
+  font-size: 18px;
 }
 
-.buscador input::placeholder {
-  color: #9a7188;
-}
-
-.buscador:focus-within {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 10px rgba(112, 60, 94, 0.12);
-  border-color: #c989a9;
-}
-
-.icono-busqueda {
-  margin-right: 12px;
-  flex-shrink: 0;
-}
 
 /* MENU */
 .menu {
