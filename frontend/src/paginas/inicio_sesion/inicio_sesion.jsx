@@ -7,7 +7,6 @@ function InicioSesion() {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [flipped, setFlipped] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e) => {
@@ -33,7 +32,6 @@ function InicioSesion() {
   return (
     <div className="InicioSesion-Page">
       
-      {/* BARRA SUPERIOR DE INICIO DE SESIÓN */}
       <header className="barra-superior-sesion">
         <div className="logo-sesion">
           ✧ <span>GRWM</span>
@@ -54,7 +52,6 @@ function InicioSesion() {
 
           <form onSubmit={handleSubmit} className="InicioSesion-Formulario">
 
-            {/* CAMPO USUARIO O EMAIL */}
             <div className="form-group-sesion">
               <label htmlFor="usuario">Usuario o email</label>
               <div className="input-with-icon">
@@ -74,7 +71,6 @@ function InicioSesion() {
               </div>
             </div>
 
-            {/* CAMPO PASSWORD */}
             <div className="form-group-sesion">
               <label htmlFor="password">Contraseña</label>
               <div className="input-with-icon">
@@ -111,7 +107,6 @@ function InicioSesion() {
               </div>
             </div>
 
-            {/* RECUPERACIÓN DE CONTRASEÑA */}
             <div className="Olvidar-Password">
               <button type="button" onClick={() => alert("Simulación de recuperación enviada a tu correo.")}>
                 ¿Olvidaste tu contraseña?
@@ -124,19 +119,16 @@ function InicioSesion() {
               </div>
             )}
 
-            {/* BOTÓN INICIAR SESIÓN */}
             <button type="submit" className="InicioSesion-Boton">
               Iniciar Sesión
             </button>
 
           </form>
 
-          {/* SECCIÓN REDES SOCIALES DIVISOR */}
           <div className="social-divider">
-            <span>o ingresa con</span>
+            <span>ingresa con</span>
           </div>
 
-          {/* BOTONES SOCIALES */}
           <div className="social-buttons">
             <button className="btn-social google" onClick={() => alert("Inicio con Google simulado")}>
               <svg viewBox="0 0 24 24" width="16" height="16">
@@ -155,7 +147,6 @@ function InicioSesion() {
             </button>
           </div>
 
-          {/* ACCESO A REGISTRO */}
           <div className="Opcion-Registro-Link">
             <span>¿No tienes una cuenta?</span>
             <button type="button" className="ir-a-registro" onClick={irARegistro}>
@@ -166,7 +157,6 @@ function InicioSesion() {
         </div>
       </main>
 
-      {/* FOOTER GENERAL */}
       <footer className="footer-sesion">
         <div className="footer-derechos">
           © 2025 GRWM. Todos los derechos reservados.

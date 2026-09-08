@@ -184,7 +184,7 @@ function Registro() {
           </form>
 
           <div className="social-divider">
-            <span>o regístrate con</span>
+            <span>regístrate con</span>
           </div>
 
           <div className="social-buttons">
