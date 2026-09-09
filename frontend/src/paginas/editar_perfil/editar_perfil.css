@@ -1,0 +1,320 @@
+<<<<<<< HEAD
+=======
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap');
+
+.EditarPerfil-Page {
+  min-height: 100vh;
+  background-color: #FDF2F5;
+  color: #5A3846;
+  font-family: 'Inter', sans-serif;
+  padding-bottom: 60px;
+  position: relative;
+}
+
+/* Notificación flotante tipo Toast */
+.toast-notification {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  background-color: #6D2843;
+  color: white;
+  padding: 14px 24px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 10px 25px rgba(109, 40, 67, 0.2);
+  z-index: 1000;
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.EditarPerfil-Container {
+  max-width: 800px;
+  margin: 40px auto 0;
+  background-color: #ffffff;
+  border-radius: 32px;
+  box-shadow: 0 24px 48px rgba(109, 40, 67, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Banner horizontal superior */
+.editar-portada {
+  width: 100%;
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.btn-cambiar-portada {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-cambiar-portada:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Header de edición con avatar superpuesto */
+.EditarPerfil-Header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 40px 25px 40px;
+  border-bottom: 1px solid #F8F0F3;
+  position: relative;
+}
+
+.editar-avatar-wrapper {
+  position: relative;
+  margin-top: -50px;
+}
+
+.editar-avatar-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Botón estilizado para cambiar foto (Sin emojis) */
+.btn-cambiar-avatar {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #6D2843;
+  color: white;
+  border: 2px solid white;
+  padding: 4px 12px;
+  border-radius: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(109, 40, 67, 0.2);
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.btn-cambiar-avatar:hover {
+  background-color: #B24E71;
+  transform: translateX(-50%) scale(1.05);
+}
+
+.editar-info-textos h1 {
+  margin: 15px 0 0 0;
+  font-size: 26px;
+  color: #6D2843;
+  font-family: 'Playfair Display', serif;
+}
+
+.editar-info-textos p {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  color: #997382;
+}
+
+.EditarPerfil-Formulario {
+  padding: 10px 40px;
+}
+
+.form-seccion {
+  padding: 25px 0;
+}
+
+.form-seccion h2 {
+  font-size: 20px;
+  color: #6D2843;
+  margin-bottom: 24px;
+  font-family: 'Playfair Display', serif;
+}
+
+.form-fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 15px;
+}
+
+.form-fila-tres {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group-perfil {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.form-group-perfil label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #997382;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group-perfil input, 
+.form-group-perfil textarea {
+  padding: 14px 18px;
+  background-color: #F8F0F3;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  font-size: 14px;
+  color: #5A3846;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.form-group-perfil input.input-error {
+  border-color: #E57373;
+  background-color: #FFF5F5;
+}
+
+.form-group-perfil textarea {
+  resize: none;
+  min-height: 100px;
+}
+
+.form-group-perfil input:focus, 
+.form-group-perfil textarea:focus {
+  background-color: #ffffff;
+  border-color: #B24E71;
+  box-shadow: 0 0 0 4px rgba(178, 78, 113, 0.1);
+}
+
+.separador {
+  border: none;
+  border-top: 1px solid #F8F0F3;
+  margin: 0;
+}
+
+.subtitulo-estilos {
+  font-size: 13px;
+  color: #997382;
+  margin-bottom: 20px;
+  margin-top: -15px;
+}
+
+.contenedor-estilos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.btn-estilo {
+  padding: 8px 20px;
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-estilo:hover {
+  transform: scale(1.05);
+}
+
+.btn-estilo.activo {
+  background-color: #B24E71;
+  color: white;
+  box-shadow: 0 4px 12px rgba(178, 78, 113, 0.3);
+}
+
+.btn-estilo.inactivo {
+  background-color: #F8F0F3;
+  color: #7C5263;
+}
+
+.Error-Mensaje {
+  color: #C62828;
+  background-color: #FFEBEE;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.botones-accion {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 30px 0 40px;
+  margin-top: 20px;
+}
+
+.btn-cancelar {
+  padding: 12px 28px;
+  border-radius: 30px;
+  background-color: transparent;
+  border: none;
+  color: #7C5263;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-cancelar:hover {
+  background-color: #F8F0F3;
+}
+
+.btn-guardar {
+  padding: 12px 28px;
+  border-radius: 30px;
+  background-color: #B24E71;
+  border: none;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(178, 78, 113, 0.4);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-guardar:hover:not(:disabled) {
+  background-color: #9A3E5D;
+  transform: translateY(-2px);
+}
+
+.btn-guardar:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.label-con-contador {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.contador-caracteres {
+  font-size: 11px;
+  color: #B2A4A9;
+  font-weight: 500;
+}
+>>>>>>> 3f1eb82 (termine la vista Editar_Perfil)

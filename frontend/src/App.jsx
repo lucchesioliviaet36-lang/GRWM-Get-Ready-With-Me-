@@ -10,6 +10,7 @@ import Registro from './paginas/registro/registro'
 import MiTienda from './paginas/miTienda/miTienda'
 import TiendaPrincipal from './paginas/tienda_principal/tienda_principal'
 import Busqueda from './paginas/busqueda/busqueda'
+import EditarPerfil from './paginas/editar_perfil/editar_perfil';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/IniciarSesion" element={<InicioSesion />} /> 
         <Route path="/registro" element={<Registro />} />
         <Route path="/perfil_propio" element={<PerfilPropio />} />
+        <Route path="/editar_perfil" element={<EditarPerfil />} />
         <Route path="/miTienda" element={<MiTienda />} />
         <Route path="/paginaPrincipal" element={<PaginaPrincipal />} />
         <Route path="/publicacion1" element={<Publicacion1 />} />

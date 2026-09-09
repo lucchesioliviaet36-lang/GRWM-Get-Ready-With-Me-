@@ -218,7 +218,7 @@ function PerfilPropio() {
                 <span>Siguiendo</span>
               </div>
               <div className="botones">
-                <button className="btn-editar">Editar Perfil</button>
+                <button className="btn-editar" onClick={() => navigate('/editar_perfil')}>Editar Perfil</button>
                 <button className="btn-tienda" onClick={() => navigate('/miTienda')}>
                   Mi Tienda
                 </button>
