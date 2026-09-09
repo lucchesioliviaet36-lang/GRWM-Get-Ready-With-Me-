@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import PaginaPrincipal from './paginas/pagina_principal/pagina_principal';
+import PaginaPrincipal from './paginas/pagina_principal/pagina_principal'
 import PerfilPropio from './paginas/perfil_propio/perfil_propio'
 import Publicacion1 from './paginas/publicacion1/publicacion1'
 import Publicacion2 from './paginas/publicacion2/publicacion2'
@@ -10,7 +10,8 @@ import Registro from './paginas/registro/registro'
 import MiTienda from './paginas/miTienda/miTienda'
 import TiendaPrincipal from './paginas/tienda_principal/tienda_principal'
 import Busqueda from './paginas/busqueda/busqueda'
-import EditarPerfil from './paginas/editar_perfil/editar_perfil';
+import EditarPerfil from './paginas/editar_perfil/editar_perfil'
+import Chat from './paginas/chat/chat'
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/publicacion4" element={<Publicacion4 />} />
         <Route path="/tienda_principal" element={<TiendaPrincipal />} />
         <Route path="/busqueda" element={<Busqueda />} />
+        <Route path="/chat" element={<Chat />} />
       </Routes>
     </BrowserRouter>
   );
