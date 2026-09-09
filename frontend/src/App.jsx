@@ -9,6 +9,7 @@ import InicioSesion from './paginas/inicio_sesion/inicio_sesion'
 import Registro from './paginas/registro/registro'
 import MiTienda from './paginas/miTienda/miTienda'
 import TiendaPrincipal from './paginas/tienda_principal/tienda_principal'
+import Busqueda from './paginas/busqueda/busqueda'
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/publicacion3" element={<Publicacion3 />} />
         <Route path="/publicacion4" element={<Publicacion4 />} />
         <Route path="/tienda_principal" element={<TiendaPrincipal />} />
+        <Route path="/busqueda" element={<Busqueda />} />
       </Routes>
     </BrowserRouter>
   );
