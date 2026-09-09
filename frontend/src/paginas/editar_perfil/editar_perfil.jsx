@@ -21,14 +21,14 @@ function EditarPerfil() {
       return JSON.parse(savedData);
     }
     return {
-      fullName: "Elena Gómez",
-      username: "@elenag_style",
+      fullName: "Taylor Swift",
+      username: "@taylor_Swift13",
       bio: "Amante de la moda urbana. Vendiendo joyas de mi clóset vintage 👜🦋",
-      email: "elena.gomez@email.com",
+      email: "taylor.swift@email.com",
       phone: "+34 612 345 678",
-      instagram: "@elenag_style",
-      tiktok: "@elenag_style",
-      website: "www.elenagstyle.com",
+      instagram: "@taylor_swift",
+      tiktok: "@taylor_swift",
+      website: "www.TaylorStyle.com",
     };
   });
 
