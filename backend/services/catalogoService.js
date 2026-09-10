@@ -1,6 +1,6 @@
 const URL = "https://dummyjson.com/products";
 
-const asignacionCaregoria ={
+const asignacionCategoria ={
   remeras: ["tops"],
   zapatos: ["womens-shoes"],
   carteras: ["womens-bags"],
@@ -33,7 +33,7 @@ const obtenerPorCategoria = async (categoria) => {
 };
 
 const obtenerParaGRWM = async (categoriasInternas) => {
-    const categoriasExternas = asignacionCaregoria[categoriasInternas];
+    const categoriasExternas = asignacionCategoria[categoriasInternas];
 
     if (!categoriasExternas){
         return[];
