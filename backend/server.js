@@ -4,15 +4,15 @@ const { sequelize } = require("./config/database.js");
 const Usuario = require("./models/usuarioModels.js");
 const authRoutes = require("./routes/authRoutes");
 const catalogoRoutes = require("./routes/catalogoRoutes.js");
+const prendaRoutes = require("./routes/prendaRoutes");
 const app = express();
 const PORT = 3000;
-
-
 
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/catalogo", catalogoRoutes);
+app.use("/api/prendas", prendaRoutes);
 
 app.get("/", (req, res) => {
     res.json({

@@ -1,60 +1,61 @@
-module.exports = (sequelize, DataTypes) => {
+const { DataTypes } = require("sequelize");
+const { sequelize } = require("../config/database.js");
+const { type } = require("node:os");
 
-    const Prenda = sequelize.define(
-        "Prenda",
-        {
-            id_prenda: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
-                autoIncrement: true
-            },
-
-            nombre: {
-                type: DataTypes.STRING(100),
-                allowNull: false
-            },
-
-            categoria: {
-                type: DataTypes.STRING(50),
-                allowNull: false
-            },
-
-            color: {
-                type: DataTypes.STRING(50),
-                allowNull: true
-            },
-
-            descripcion: {
-                type: DataTypes.STRING(255),
-                allowNull: true
-            },
-
-            imagen_url: {
-                type: DataTypes.STRING(500),
-                allowNull: true
-            },
-
-            origen: {
-                type: DataTypes.STRING(50),
-                allowNull: true
-            },
-
-            id_externo: {
-                type: DataTypes.INTEGER,
-                allowNull: true
-            },
-
-            id_usuario: {
-                type: DataTypes.INTEGER,
-                allowNull: false
-            }
-            
+const Prenda = sequelize.define(
+    "Prenda",
+    {
+        id_prenda: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
         },
-        {
-            tableName: "prenda",
-            timestamps: false
-        }
-    );
 
-    return Prenda;
-};
+        nombre: {
+            type: DataTypes.STRING(100),
+            allowNull: false
+        },
+
+        categoria: {
+            type: DataTypes.STRING(50),
+            allowNull: false
+        },
+
+        color: {
+            type: DataTypes.STRING(50),
+            allowNull: true
+        },
+
+        descripcion: {
+            type: DataTypes.STRING(255),
+            allowNull: true
+        },
+
+        imagen_url: {
+            type: DataTypes.STRING(500),
+            allowNull: true
+        },
+
+        origen: {
+            type: DataTypes.STRING(50),
+            allowNull: true
+        },
+
+        id_externo: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+
+        id_usuario: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        }
+
+    },
+    {
+        tableName: "prenda",
+        timestamps: false
+    }
+);
+
+return Prenda;

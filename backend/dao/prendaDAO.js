@@ -1,5 +1,5 @@
 const { where } = require("sequelize");
-const db = require("../models");
+const db = require("../models/prenda");
 const Prenda = db.Prenda;
 
 const crear = async(datos) => {
