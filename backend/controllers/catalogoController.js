@@ -1,4 +1,4 @@
-import catalogoService from "../services/catalogoService";
+const catalogoService = require ("../services/catalogoService");
 
 const obtenerPorCategoria = async (req, res) => {
     try{
@@ -21,4 +21,4 @@ const obtenerPorCategoria = async (req, res) => {
     }
 };
 
-export default {obtenerPorCategoria};
+module.exports = { obtenerPorCategoria };

@@ -20,4 +20,4 @@ const obtenerPorCategoria = async (categoria) => {
     })); 
 };
 
-export default {obtenerPorCategoria};
+module.exports = { obtenerPorCategoria };
