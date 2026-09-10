@@ -3,7 +3,14 @@ const catalogoService = require ("../services/catalogoService");
 const obtenerPorCategoria = async (req, res) => {
     try{
         const {categoria} = req.params;
-        const productos = await catalogoService.obtenerPorCategoria(categoria);
+        const productos = await catalogoService.obtenerParaGRWM(categoria);
+
+        if(productos.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message:"Categoria no encontrada"
+            });
+        }
 
         return res.status(200).json({
             success: true,

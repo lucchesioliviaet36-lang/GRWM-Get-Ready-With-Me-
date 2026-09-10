@@ -1,5 +1,16 @@
 const URL = "https://dummyjson.com/products";
 
+const asignacionCaregoria ={
+  remeras: ["tops"],
+  zapatos: ["womens-shoes"],
+  carteras: ["womens-bags"],
+  accesorios: [
+    "womens-jewellery",
+    "sunglasses",
+    "womens-watches"
+    ]
+};
+
 const obtenerPorCategoria = async (categoria) => {
     const response = await fetch(`${URL}/category/${encodeURIComponent(categoria)}`);
 
@@ -18,6 +29,24 @@ const obtenerPorCategoria = async (categoria) => {
         imagenes: producto.images,
         origen: "catalogo_externo"
     })); 
+
 };
 
-module.exports = { obtenerPorCategoria };
+const obtenerParaGRWM = async (categoriasInternas) => {
+    const categoriasExternas = asignacionCaregoria[categoriasInternas];
+
+    if (!categoriasExternas){
+        return[];
+    }
+
+    const resultados = [];
+        
+    for (const categoria of categoriasExternas) {
+        const productos = await obtenerPorCategoria(categoria);
+        resultados.push(...productos);
+    }
+
+    return resultados;
+};
+
+module.exports = { obtenerPorCategoria, obtenerParaGRWM};
