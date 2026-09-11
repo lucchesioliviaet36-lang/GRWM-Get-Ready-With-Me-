@@ -63,6 +63,19 @@ class authController{
             });
         }
     }
+
+    async cerrar_sesion(req, res) {
+        try {
+            res.status(200).json({
+                mensaje: "Sesión cerrada correctamente"
+            });
+        } catch (error) {
+            console.error("Error en logout:", error);
+            res.status(500).json({
+                mensaje: "Error al cerrar sesión"
+            });
+        }
+    }
 }
 
 module.exports = new authController();

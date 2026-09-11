@@ -7,14 +7,18 @@ const authRoutes = require("./routes/authRoutes");
 const catalogoRoutes = require("./routes/catalogoRoutes.js");
 const prendaRoutes = require("./routes/prendaRoutes");
 const Prenda = require("./models/prenda.js");
+const usuarioRoutes = require("./routes/usuarioRoutes");
+const publicacionRoutes = require("./routes/publicacionRoutes");
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
+app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/catalogo", catalogoRoutes);
 app.use("/api/prendas", prendaRoutes);
+app.use("/api/publicaciones", publicacionRoutes);
 
 app.get("/", (req, res) => {
     res.json({

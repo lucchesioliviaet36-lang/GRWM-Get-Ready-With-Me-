@@ -26,6 +26,14 @@ class UsuarioDao {
         return await Usuario.create(usuario);
     }
 
+    async eliminar(id_usuario) {
+        return await Usuario.destroy({
+            where: {
+                id_usuario: id_usuario
+            }
+        });
+    }
+
 }
 
 module.exports = new UsuarioDao();

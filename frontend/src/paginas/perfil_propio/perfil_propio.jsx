@@ -173,7 +173,7 @@ function PerfilPropio() {
                    Cerrar Sesión
                 </button>
 
-                                <button className="menu-btn-logout" onClick={() => {
+                <button className="menu-btn-logout" onClick={() => {
                   if (window.confirm("¿Seguro que querés eliminar tu cuenta de GRWM")) {
                     setMenuAbierto(false);
                     navigate('/registro'); // Redirige al login original de tu amiga
