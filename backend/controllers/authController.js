@@ -47,11 +47,7 @@ class authController{
                 contraseña
             } = req.body;
 
-            const resultado =
-                await authService.iniciar_sesion(
-                    username,
-                    contraseña
-                );
+            const resultado = await authService.iniciar_sesion(username, contraseña);
 
             res.status(200).json({
                 mensaje: "Inicio de sesión exitoso",
