@@ -13,6 +13,7 @@ import Busqueda from './paginas/busqueda/busqueda'
 import EditarPerfil from './paginas/editar_perfil/editar_perfil'
 import Chat from './paginas/chat/chat'
 import MiArmario from './paginas/miArmario/miArmario'
+import AgregarPrenda from './paginas/agregar_prenda/agregar_prenda'
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         <Route path="/busqueda" element={<Busqueda />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/miArmario" element={<MiArmario />} />
+        <Route path="/agregar_prenda" element={<AgregarPrenda />} />
       </Routes>
     </BrowserRouter>
   );

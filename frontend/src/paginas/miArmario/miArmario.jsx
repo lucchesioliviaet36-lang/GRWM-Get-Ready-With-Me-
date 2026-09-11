@@ -110,7 +110,7 @@ function MiArmario() {
             <h1>Mi Armario</h1>
             <p>Organizá tus prendas favoritas y dejá que GRWM las use para crear outfits pensados para vos.</p>
           </div>
-          <button className="boton-agregar-prenda" onClick={() => navigate("/agregar-prenda")}>
+          <button className="boton-agregar-prenda" onClick={() => navigate("/agregar_prenda")}>
             + Agregar prenda
           </button>
         </section>
@@ -129,7 +129,7 @@ function MiArmario() {
             <h2>Tu armario está esperando</h2>
             <p>Todavía no agregaste ninguna prenda. Podés comenzar cargando una prenda tuya o explorar inspiración.</p>
             <div className="armario-vacio-botones">
-              <button className="boton-principal-armario" onClick={() => navigate("/agregar-prenda")}>
+              <button className="boton-principal-armario" onClick={() => navigate("/agregar_prenda")}>
                 + Agregar mi primera prenda
               </button>
               <button className="boton-secundario-armario" onClick={() => navigate("/explorar-prendas")}>
