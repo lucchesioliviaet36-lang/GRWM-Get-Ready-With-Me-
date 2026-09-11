@@ -1,0 +1,804 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #fff7fa;
+}
+
+
+/* =========================================================
+   PÁGINA
+   ========================================================= */
+
+.Armario-Page {
+  min-height: 100vh;
+  width: 100%;
+
+  background:
+    radial-gradient(
+      circle at 15% 10%,
+      rgba(255, 214, 229, 0.75),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      #fff7fa 0%,
+      #ffe9f1 100%
+    );
+
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* =========================================================
+   BARRA SUPERIOR
+   ========================================================= */
+
+.barra-superior-armario {
+  height: 60px;
+
+  background: white;
+
+  border-bottom: 1px solid #f0dbe5;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 43px;
+
+  width: 100%;
+}
+
+
+.logo-armario {
+  border: 1px solid #f0cddd;
+
+  border-radius: 20px;
+
+  padding: 6px 13px;
+
+  font-family: Georgia, serif;
+
+  font-size: 17px;
+
+  color: #8b3f68;
+
+  background: white;
+
+  display: flex;
+  align-items: center;
+
+  cursor: pointer;
+}
+
+
+.logo-armario span {
+  margin-left: 4px;
+}
+
+
+.menu-armario {
+  display: flex;
+  align-items: center;
+
+  gap: 22px;
+}
+
+
+.menu-armario button {
+  border: none;
+
+  background: transparent;
+
+  color: #703c5e;
+
+  font-size: 14px;
+
+  cursor: pointer;
+
+  padding: 8px;
+
+  border-radius: 8px;
+
+  transition: all 0.2s ease;
+}
+
+
+.menu-armario button:hover {
+  color: #c74c90;
+
+  background: #fff3f7;
+}
+
+
+.menu-armario .menu-activo {
+  color: #bd4f80;
+
+  background: #fff0f6;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   CONTENIDO
+   ========================================================= */
+
+.armario-contenido {
+  flex: 1;
+
+  width: 100%;
+
+  max-width: 1200px;
+
+  margin: 0 auto;
+
+  padding: 50px 35px 70px;
+}
+
+
+/* =========================================================
+   PRESENTACIÓN
+   ========================================================= */
+
+.armario-presentacion {
+  display: flex;
+
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 30px;
+
+  margin-bottom: 40px;
+}
+
+
+.armario-subtitulo {
+  font-size: 10px;
+
+  font-weight: bold;
+
+  letter-spacing: 1.5px;
+
+  color: #bd4f80;
+}
+
+
+.armario-presentacion h1 {
+  margin: 7px 0 8px;
+
+  font-family: Georgia, serif;
+
+  font-size: 38px;
+
+  font-weight: normal;
+
+  color: #70345c;
+}
+
+
+.armario-presentacion p {
+  margin: 0;
+
+  max-width: 600px;
+
+  color: #9a6685;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   BOTÓN AGREGAR
+   ========================================================= */
+
+.boton-agregar-prenda {
+  border: none;
+
+  border-radius: 12px;
+
+  padding: 13px 20px;
+
+  background: #ffdce8;
+
+  color: #703c5e;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition: all 0.2s ease;
+}
+
+
+.boton-agregar-prenda:hover {
+  background: #fca9c9;
+
+  transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   ARMARIO VACÍO
+   ========================================================= */
+
+.armario-vacio {
+  max-width: 600px;
+
+  margin: 55px auto;
+
+  background: white;
+
+  border: 1px solid #f6dfe9;
+
+  border-radius: 24px;
+
+  padding: 55px 40px;
+
+  text-align: center;
+
+  box-shadow:
+    0 10px 30px rgba(112, 60, 94, 0.05);
+}
+
+
+.armario-vacio-icono {
+  width: 70px;
+  height: 70px;
+
+  margin: 0 auto 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #fff0f6;
+
+  color: #bd4f80;
+
+  font-size: 32px;
+}
+
+
+.armario-vacio h2 {
+  margin: 0 0 12px;
+
+  font-family: Georgia, serif;
+
+  font-weight: normal;
+
+  color: #70345c;
+}
+
+
+.armario-vacio p {
+  max-width: 440px;
+
+  margin: 0 auto 25px;
+
+  color: #9a6685;
+
+  line-height: 1.6;
+
+  font-size: 13px;
+}
+
+
+.armario-vacio-botones {
+  display: flex;
+
+  justify-content: center;
+
+  gap: 12px;
+
+  flex-wrap: wrap;
+}
+
+
+.boton-principal-armario {
+  border: none;
+
+  border-radius: 11px;
+
+  padding: 12px 18px;
+
+  background: #ffdce8;
+
+  color: #703c5e;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+
+.boton-principal-armario:hover {
+  background: #fca9c9;
+}
+
+
+.boton-secundario-armario {
+  border: 1px solid #eecddc;
+
+  border-radius: 11px;
+
+  padding: 12px 18px;
+
+  background: white;
+
+  color: #bd4f80;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+
+.boton-secundario-armario:hover {
+  background: #fff0f6;
+
+  border-color: #bd4f80;
+}
+
+
+/* =========================================================
+   HEADER LISTADO
+   ========================================================= */
+
+.armario-listado-header {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 20px;
+}
+
+
+.armario-listado-header h2 {
+  margin: 0 0 4px;
+
+  font-family: Georgia, serif;
+
+  font-weight: normal;
+
+  color: #70345c;
+
+  font-size: 22px;
+}
+
+
+.armario-listado-header p {
+  margin: 0;
+
+  color: #9a6685;
+
+  font-size: 12px;
+}
+
+
+.boton-explorar {
+  border: 1px solid #eecddc;
+
+  border-radius: 11px;
+
+  padding: 10px 16px;
+
+  background: white;
+
+  color: #bd4f80;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+
+.boton-explorar:hover {
+  background: #fff0f6;
+
+  border-color: #bd4f80;
+}
+
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.prendas-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fill, minmax(220px, 1fr));
+
+  gap: 22px;
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.prenda-card {
+  background: white;
+
+  border: 1px solid #f0dbe5;
+
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 6px 20px rgba(112, 60, 94, 0.04);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+
+.prenda-card:hover {
+  transform: translateY(-5px);
+
+  border-color: #e8bfd2;
+
+  box-shadow:
+    0 12px 30px rgba(112, 60, 94, 0.08);
+}
+
+
+/* =========================================================
+   IMAGEN
+   ========================================================= */
+
+.prenda-imagen {
+  width: 100%;
+
+  height: 240px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff6f9,
+      #fce5ee
+    );
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+
+.prenda-imagen img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  padding: 10px;
+}
+
+
+.prenda-sin-imagen {
+  width: 70px;
+  height: 70px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: white;
+
+  border-radius: 50%;
+
+  color: #c78ba9;
+
+  font-size: 30px;
+}
+
+
+/* =========================================================
+   INFORMACIÓN
+   ========================================================= */
+
+.prenda-contenido {
+  padding: 17px 17px 10px;
+}
+
+
+.prenda-categoria {
+  display: inline-block;
+
+  padding: 4px 9px;
+
+  border-radius: 20px;
+
+  background: #fff0f6;
+
+  color: #bd4f80;
+
+  font-size: 9px;
+
+  font-weight: bold;
+
+  letter-spacing: 0.5px;
+
+  text-transform: uppercase;
+}
+
+
+.prenda-contenido h3 {
+  margin: 11px 0 6px;
+
+  font-family: Georgia, serif;
+
+  font-size: 17px;
+
+  font-weight: normal;
+
+  color: #70345c;
+}
+
+
+.prenda-contenido p {
+  margin: 4px 0;
+
+  color: #9a6685;
+
+  font-size: 12px;
+}
+
+
+.prenda-descripcion {
+  line-height: 1.45;
+}
+
+
+.prenda-origen {
+  display: inline-block;
+
+  margin-top: 10px;
+
+  color: #bd4f80;
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   ACCIONES
+   ========================================================= */
+
+.prenda-acciones {
+  padding: 8px 17px 17px;
+}
+
+
+.boton-eliminar-prenda {
+  width: 100%;
+
+  padding: 9px;
+
+  border: 1px solid #f3cedd;
+
+  border-radius: 9px;
+
+  background: white;
+
+  color: #b65c7f;
+
+  font-size: 11px;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+
+.boton-eliminar-prenda:hover {
+  background: #fff0f5;
+
+  border-color: #df9db7;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.armario-error {
+  margin-bottom: 25px;
+
+  padding: 10px 15px;
+
+  border-radius: 10px;
+
+  background: #fff0f5;
+
+  border: 1px solid #ffd2e1;
+
+  color: #bd4f80;
+
+  font-size: 12px;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.armario-cargando {
+  min-height: 300px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #9a6685;
+
+  font-size: 12px;
+}
+
+
+.loader-armario {
+  width: 30px;
+  height: 30px;
+
+  border-radius: 50%;
+
+  border: 3px solid #f5dce7;
+
+  border-top-color: #bd4f80;
+
+  animation: girar 0.8s linear infinite;
+
+  margin-bottom: 12px;
+}
+
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer-armario {
+  min-height: 50px;
+
+  padding: 0 43px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-size: 11px;
+
+  color: #9a6685;
+
+  border-top: 1px solid #f5dee8;
+
+  background: white;
+}
+
+
+.footer-armario-links {
+  display: flex;
+
+  gap: 20px;
+}
+
+
+.footer-armario-links button {
+  border: none;
+
+  background: transparent;
+
+  color: #9a6685;
+
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+
+.footer-armario-links button:hover {
+  color: #703c5e;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 750px) {
+
+  .barra-superior-armario {
+    padding: 0 20px;
+  }
+
+
+  .menu-armario {
+    gap: 5px;
+  }
+
+
+  .menu-armario button {
+    font-size: 11px;
+
+    padding: 7px 5px;
+  }
+
+
+  .armario-contenido {
+    padding: 35px 20px 55px;
+  }
+
+
+  .armario-presentacion {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+
+  .armario-presentacion h1 {
+    font-size: 30px;
+  }
+
+
+  .boton-agregar-prenda {
+    width: 100%;
+  }
+
+
+  .armario-listado-header {
+    align-items: flex-start;
+
+    gap: 15px;
+
+    flex-direction: column;
+  }
+
+
+  .armario-vacio {
+    padding: 40px 20px;
+  }
+
+
+  .footer-armario {
+    flex-direction: column;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 15px 20px;
+  }
+}

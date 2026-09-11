@@ -1,6 +1,6 @@
 import './pagina_principal.css';
 import { useNavigate } from 'react-router-dom';
-import React, { useState } from 'react';
+import { useEffect, useState } from "react";
 
 
 export default function Feed() {

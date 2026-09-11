@@ -5,6 +5,7 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
+  overflow-x: hidden; /* Seguridad extra para evitar desplazamiento horizontal */
 }
 
 .pagina-perfil {
@@ -16,18 +17,20 @@ body {
 /* ========================= BARRA SUPERIOR ========================= */
 .barra-superior {
   height: 60px;
+  width: 100%;
   background: white;
   border-bottom: 1px solid #f0dbe5;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 43px;
+  padding: 0 20px;
 }
 
-.logo{
+.logo {
   border: 1px solid #f0cddd;
+  margin: 0;
   border-radius: 20px;
-  padding: 6px 13px;
+  padding: 6px 10px;
   background: white;
   font-family: Georgia, serif;
   font-size: 17px;
@@ -38,7 +41,7 @@ body {
   transition: all 0.2s ease;
 }
 
-.logo:hover:hover {
+.logo:hover {
   background: #fff0f6;
   border-color: #c989a9;
 }
@@ -47,9 +50,8 @@ body {
   margin-left: 4px;
 }
 
-.boton-busqueda{
+.boton-busqueda {
   background-color: white;
-  margin-right: 60%;
   padding-bottom: 5px;
   border: none;
   color: #70345c;
@@ -57,12 +59,15 @@ body {
   font-size: 18px;
 }
 
+.boton-busqueda button {
+  margin: 0;
+}
 
 /* MENU */
 .menu {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 15px;
   font-size: 11px;
   color: #5d294b;
 }
@@ -72,8 +77,11 @@ body {
   background: transparent;
   color: #703c5e;
   font-size: 12px;
+  gap: 16px;
   cursor: pointer;
-  padding: 8px 10px;
+  margin: 0 4px;
+  white-space: nowrap;
+  padding: 10px 10px;
   border-radius: 8px;
   transition: all 0.2s ease;
 }
@@ -88,6 +96,8 @@ body {
 ESTILOS DEL MENÚ FLOTANTE DEL AVATAR
 ========================= */
 .mini-avatar-contenedor {
+  margin-left: 10px;
+  margin-right: 10px;
   position: relative;
   display: inline-block;
 }
@@ -199,8 +209,10 @@ ESTILOS DEL MENÚ FLOTANTE DEL AVATAR
 
 /* ========================= CONTENIDO ========================= */
 .contenido {
-  width: 814px;
+  width: 100%;
+  max-width: 814px;
   margin: 24px auto 0;
+  padding: 0 15px;
 }
 
 /* ========================= TARJETA DEL PERFIL ========================= */
@@ -352,7 +364,7 @@ ESTILOS DEL MENÚ FLOTANTE DEL AVATAR
 .pestanas {
   height: 54px;
   display: flex;
-  align-items: end;
+  align-items: flex-end;
   gap: 25px;
   border-bottom: 1px solid #efcfdd;
   margin-top: 18px;
@@ -401,7 +413,7 @@ ESTILOS DEL MENÚ FLOTANTE DEL AVATAR
   width: 100%;
 }
 
-/* ========================= PUBLICACIONES (GRID PERFECTA DE 4 COLUMNAS) ========================= */
+/* ========================= PUBLICACIONES ========================= */
 .grid-publicaciones {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -593,7 +605,8 @@ ESTILOS DEL MENÚ FLOTANTE DEL AVATAR
 /* Caja de Contenido del Modal */
 .modal-contenido {
   background: white;
-  width: 440px;
+  width: 100%;
+  max-width: 440px;
   border-radius: 18px;
   border: 1px solid #f0d4e0;
   padding: 25px;
@@ -697,9 +710,7 @@ ESTILOS DEL MENÚ FLOTANTE DEL AVATAR
 
 /* ========================= PANTALLAS PEQUEÑAS ========================= */
 @media (max-width: 850px) {
-  .contenido { width: calc(100% - 30px); }
   .barra-superior { padding: 0 15px; }
-  .buscador { display: none; }
   .grid-publicaciones { grid-template-columns: repeat(2, 1fr); }
   .estadisticas { gap: 10px; }
 }

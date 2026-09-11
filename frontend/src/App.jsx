@@ -12,6 +12,7 @@ import TiendaPrincipal from './paginas/tienda_principal/tienda_principal'
 import Busqueda from './paginas/busqueda/busqueda'
 import EditarPerfil from './paginas/editar_perfil/editar_perfil'
 import Chat from './paginas/chat/chat'
+import MiArmario from './paginas/miArmario/miArmario'
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/tienda_principal" element={<TiendaPrincipal />} />
         <Route path="/busqueda" element={<Busqueda />} />
         <Route path="/chat" element={<Chat />} />
+        <Route path="/miArmario" element={<MiArmario />} />
       </Routes>
     </BrowserRouter>
   );
