@@ -1,6 +1,5 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/database.js");
-const { type } = require("node:os");
 
 const Prenda = sequelize.define(
     "Prenda",
@@ -58,4 +57,4 @@ const Prenda = sequelize.define(
     }
 );
 
-return Prenda;
+module.exports = Prenda;

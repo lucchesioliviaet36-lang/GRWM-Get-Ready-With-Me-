@@ -1,20 +1,23 @@
-const { where } = require("sequelize");
-const db = require("../models/prenda");
-const Prenda = db.Prenda;
+const Prenda = require("../models/prenda");
 
-const crear = async(datos) => {
+const crear = async (datos) => {
     return await Prenda.create(datos);
 };
 
 const obtenerPorUsuario = async (idUsuario) => {
     return await Prenda.findAll({
-        where: {id_usuario: idUsuario}
+        where: {
+            id_usuario: idUsuario
+        }
     });
 };
 
 const eliminar = async (idPrenda, idUsuario) => {
     return await Prenda.destroy({
-        where:{ id_prenda: idPrenda, id_usuario: idUsuario}
+        where: {
+            id_prenda: idPrenda,
+            id_usuario: idUsuario
+        }
     });
 };
 

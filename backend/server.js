@@ -6,6 +6,7 @@ const Usuario = require("./models/usuarioModels.js");
 const authRoutes = require("./routes/authRoutes");
 const catalogoRoutes = require("./routes/catalogoRoutes.js");
 const prendaRoutes = require("./routes/prendaRoutes");
+const Prenda = require("./models/prenda.js");
 const app = express();
 const PORT = 3000;
 
@@ -34,6 +35,18 @@ async function probarUsuario() {
     }
 }
 
+async function cantPrendas() {
+    try {
+        const prendas = await Prenda.findAll();
+
+        console.log("Prendas encontradas:", prendas.length);
+
+    } catch (error) {
+        console.error("Error consultando prendas:");
+        console.error(error);
+    }
+}
+
 async function startServer() {
     try {
         await sequelize.authenticate();
@@ -42,6 +55,7 @@ async function startServer() {
         console.log("Modelo Usuario cargado");
 
         await probarUsuario();
+        await cantPrendas();
 
         app.listen(PORT, () => {
             console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
