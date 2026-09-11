@@ -11,4 +11,8 @@ router.post("/iniciar_sesion", (req, res) => {
     authController.iniciar_sesion(req, res);
 });
 
+router.post("/cerrar_sesion", (req, res) => {
+    authController.cerrar_sesion(req, res);
+});
+
 module.exports = router;
