@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./miArmario.css";
 import Header from "../../componentes/header/header";
+import Footer from "../../componentes/footer/footer";
 
 function MiArmario() {
   const navigate = useNavigate();
@@ -125,13 +126,8 @@ function MiArmario() {
         )}
       </main>
 
-      <footer className="footer-armario">
-        <div>© 2026 GRWM. Todos los derechos reservados.</div>
-        <div className="footer-armario-links">
-          <button>Privacidad</button>
-          <button>Términos de servicio</button>
-        </div>
-      </footer>
+      <Footer/>  
+
     </div>
   );
 }

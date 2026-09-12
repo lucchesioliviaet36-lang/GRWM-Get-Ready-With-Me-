@@ -1,0 +1,50 @@
+* { 
+    box-sizing: border-box; 
+}
+
+body { 
+    margin: 0; 
+    font-family: 'Inter', Arial, sans-serif; 
+    background-color: #fff7fa; 
+}
+
+.footer{
+  min-height: 50px;
+
+  padding: 0 43px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-size: 11px;
+
+  color: #9a6685;
+
+  border-top: 1px solid #f5dee8;
+
+  background: white;
+}
+
+
+.footer-links {
+  display: flex;
+
+  gap: 20px;
+}
+
+
+.footer-links button {
+  border: none;
+
+  background: transparent;
+
+  color: #9a6685;
+
+  font-size: 11px;
+
+  cursor: pointer;
+}
+.footer-links button:hover {
+  color: #703c5e;
+}

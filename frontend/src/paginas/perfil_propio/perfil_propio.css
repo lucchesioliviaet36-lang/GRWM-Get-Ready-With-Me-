@@ -5,7 +5,10 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
+  overflow-y: visible;
   overflow-x: hidden; /* Seguridad extra para evitar desplazamiento horizontal */
+  height: auto; 
+  min-height: 100%;
 }
 
 .pagina-perfil {
@@ -19,7 +22,8 @@ body {
   width: 100%;
   max-width: 814px;
   margin: 24px auto 0;
-  padding: 0 15px;
+  padding: 0 15px 50px;  
+  flex: 1; 
 }
 
 /* ========================= TARJETA DEL PERFIL ========================= */

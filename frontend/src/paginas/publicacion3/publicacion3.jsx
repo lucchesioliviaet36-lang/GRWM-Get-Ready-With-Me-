@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg'
 import fotoPropia3 from '../../assets/imagenes/fotoPropia3.jpg'
 import '../publicacion1/publicacion1.css'
+import Header from "../../componentes/header/header";
 
 function Publicacion3() {
   const navigate = useNavigate();
@@ -23,24 +24,8 @@ function Publicacion3() {
 
   return (
     <div className="pagina-publicacion">
-      {/* BARRA SUPERIOR */}
-      <header className="barra-superior-publicacion">
-        <button className="logo-publicacion" type="button" onClick={() => navigate('/perfil_propio')}>
-          ✧ <span>GRWM</span>
-        </button>
-        <div className="buscador-publicacion">
-          <span>⌕</span>
-          <input type="text" placeholder="Buscar outfits, marcas, tendencias..." />
-        </div>
-        <nav className="menu-publicacion">
-          <button onClick={() => navigate('/comunidad')}>Comunidad</button>
-          <button onClick={() => navigate('/tienda')}>Tienda</button>
-          <button onClick={() => navigate('/soporte')}>Soporte</button>
-          <div className="mini-avatar-publicacion" onClick={() => navigate('/perfil_propio')} style={{ cursor: 'pointer' }}>
-            <img src={fotoPerfilPropio} alt="Foto de perfil" />
-          </div>
-        </nav>
-      </header>
+
+      <Header/>
 
       {/* CONTENIDO */}
       <main className="contenido-publicacion">

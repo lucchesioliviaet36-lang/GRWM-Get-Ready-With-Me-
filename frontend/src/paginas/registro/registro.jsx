@@ -51,7 +51,6 @@ function Registro() {
           ✧ <span>GRWM</span>
         </div>
         <nav className="menu-registro">
-          <button onClick={() => navigate('/tienda')}>Tienda</button>
           <button onClick={() => navigate('/soporte')}>Soporte</button>
         </nav>
       </header>
