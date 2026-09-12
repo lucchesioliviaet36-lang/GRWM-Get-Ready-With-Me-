@@ -298,37 +298,6 @@ body {
   text-decoration: underline;
 }
 
-.footer-registro {
-  height: 50px;
-  padding: 0 43px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 11px;
-  color: #9a6685;
-  border-top: 1px solid #f5dee8;
-  background-color: white;
-}
-
-.footer-links {
-  display: flex;
-  gap: 20px;
-}
-
-.footer-links button {
-  border: none;
-  background: none;
-  color: #9a6685;
-  font-size: 11px;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.2s ease;
-}
-
-.footer-links button:hover {
-  color: #703c5e;
-}
-
 @media (max-width: 600px) {
   .barra-superior-registro,
   .footer-registro {

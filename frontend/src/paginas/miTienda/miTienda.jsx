@@ -4,6 +4,7 @@ import fotoPropia1 from '../../assets/imagenes/fotoPropia1.jpg';
 import fotoPropia3 from '../../assets/imagenes/fotoPropia3.jpg';
 import './miTienda.css';
 import Header from "../../componentes/header/header";
+import Footer from "../../componentes/footer/footer";
 
 function MiTienda() {
   const navigate = useNavigate();
@@ -88,6 +89,9 @@ function MiTienda() {
           ))}
         </section>
       </main>
+
+      <Footer/>    
+
     </div>
   );
 }

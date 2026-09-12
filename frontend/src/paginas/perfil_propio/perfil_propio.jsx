@@ -13,6 +13,7 @@ import closetPropio2 from '../../assets/imagenes/closetPropio2.jpg'
 
 import './perfil_propio.css'
 import Header from "../../componentes/header/header";
+import Footer from "../../componentes/footer/footer";
 
 function PerfilPropio() {
   const navigate = useNavigate();
@@ -333,6 +334,8 @@ function PerfilPropio() {
           </div>
         </div>
       )}
+
+      <Footer/>
 
     </div>
   );

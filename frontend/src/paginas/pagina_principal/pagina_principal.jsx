@@ -2,6 +2,7 @@ import './pagina_principal.css';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import Header from "../../componentes/header/header";
+import Footer from "../../componentes/footer/footer";
 
 
 export default function Feed() {
@@ -202,6 +203,9 @@ export default function Feed() {
           ))}
         </div>
       </main>
+
+      <Footer/>
+      
     </div>
   );
 }

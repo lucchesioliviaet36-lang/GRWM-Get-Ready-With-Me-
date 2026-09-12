@@ -171,14 +171,3 @@ textarea {
     transform: translateY(-2px); 
 }
 
-.footer-armario { 
-    min-height: 50px; 
-    padding: 0 43px; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    font-size: 11px; 
-    color: #9a6685; 
-    border-top: 1px solid #f5dee8; 
-    background: white; 
-}

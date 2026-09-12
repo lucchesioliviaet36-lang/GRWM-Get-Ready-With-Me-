@@ -2,7 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./chat.css";
 import Header from "../../componentes/header/header";
+import Footer from "../../componentes/footer/footer";
 import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg'
+
 
 function Chat() {
   const navigate = useNavigate();
@@ -192,6 +194,9 @@ function Chat() {
           </div>
         </main>
       </div>
+
+      <Footer/>
+
     </div>
   );
 }

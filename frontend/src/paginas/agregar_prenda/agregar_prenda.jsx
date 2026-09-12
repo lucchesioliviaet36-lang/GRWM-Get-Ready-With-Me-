@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./agregar_prenda.css";
 import Header from "../../componentes/header/header";
+import Footer from "../../componentes/footer/footer";
 
 function AgregarPrenda() {
   const navigate = useNavigate();
@@ -247,11 +248,8 @@ function AgregarPrenda() {
         </form>
       </main>
 
-      <footer className="footer-armario">
-        <div>
-          © 2026 GRWM. Todos los derechos reservados.
-        </div>
-      </footer>
+      <Footer/>
+      
     </div>
   );
 }

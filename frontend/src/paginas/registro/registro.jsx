@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "./registro.css";
+import Footer from "../../componentes/footer/footer";
 
 function Registro() {
   const navigate = useNavigate();
@@ -213,15 +214,8 @@ function Registro() {
         </div>
       </main>
 
-      <footer className="footer-registro">
-        <div className="footer-derechos">
-          © 2025 GRWM. Todos los derechos reservados.
-        </div>
-        <div className="footer-links">
-          <button onClick={() => alert("Privacidad")}>Privacidad</button>
-          <button onClick={() => alert("Términos de servicio")}>Términos de servicio</button>
-        </div>
-      </footer>
+      <Footer/>
+      
     </div>
   );
 }

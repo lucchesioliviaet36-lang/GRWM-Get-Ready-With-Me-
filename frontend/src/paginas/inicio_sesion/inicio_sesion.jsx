@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from "react";
 import "./inicio_sesion.css";
+import Footer from "../../componentes/footer/footer";
 
 function InicioSesion() {
   const navigate = useNavigate();
@@ -147,15 +148,7 @@ function InicioSesion() {
         </div>
       </main>
 
-      <footer className="footer-sesion">
-        <div className="footer-derechos">
-          © 2025 GRWM. Todos los derechos reservados.
-        </div>
-        <div className="footer-links">
-          <button onClick={() => alert("Privacidad")}>Privacidad</button>
-          <button onClick={() => alert("Términos de servicio")}>Términos de servicio</button>
-        </div>
-      </footer>
+      <Footer/>      
 
     </div>
   );

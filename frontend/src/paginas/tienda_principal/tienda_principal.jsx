@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import "./tienda_principal.css"
 import Header from "../../componentes/header/header";
-import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg'
+import Footer from "../../componentes/footer/footer";
 import fotoPropia1 from '../../assets/imagenes/fotoPropia1.jpg'
 import fotoPropia2 from '../../assets/imagenes/fotoPropia2.jpg'
 import fotoPropia3 from '../../assets/imagenes/fotoPropia3.jpg'
@@ -302,6 +302,8 @@ function TiendaPrincipal() {
         </section>
 
       </main>
+
+      <Footer/>
 
     </div>
   )

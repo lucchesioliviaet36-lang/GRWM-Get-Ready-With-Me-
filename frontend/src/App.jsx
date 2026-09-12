@@ -19,9 +19,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<InicioSesion />} />
         <Route path="/IniciarSesion" element={<InicioSesion />} /> 
-        <Route path="/registro" element={<Registro />} />
+        <Route path="/" element={<Registro />} />
         <Route path="/perfil_propio" element={<PerfilPropio />} />
         <Route path="/editar_perfil" element={<EditarPerfil />} />
         <Route path="/miTienda" element={<MiTienda />} />

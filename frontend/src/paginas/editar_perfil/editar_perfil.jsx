@@ -4,6 +4,7 @@ import bannerFotoDePerfilPropio from '../../assets/imagenes/bannerFotoDePerfilPr
 import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg';
 import "./editar_perfil.css"; 
 import Header from "../../componentes/header/header";
+import Footer from "../../componentes/footer/footer";
 
 function EditarPerfil() {
   const navigate = useNavigate();
@@ -264,6 +265,9 @@ function EditarPerfil() {
           </form>
         </div>
       </main>
+
+      <Footer/>
+
     </div>
   );
 }

@@ -592,55 +592,6 @@ body {
   }
 }
 
-
-/* =========================================================
-   FOOTER
-   ========================================================= */
-
-.footer-armario {
-  min-height: 50px;
-
-  padding: 0 43px;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  font-size: 11px;
-
-  color: #9a6685;
-
-  border-top: 1px solid #f5dee8;
-
-  background: white;
-}
-
-
-.footer-armario-links {
-  display: flex;
-
-  gap: 20px;
-}
-
-
-.footer-armario-links button {
-  border: none;
-
-  background: transparent;
-
-  color: #9a6685;
-
-  font-size: 11px;
-
-  cursor: pointer;
-}
-
-
-.footer-armario-links button:hover {
-  color: #703c5e;
-}
-
-
 /* =========================================================
    RESPONSIVE
    ========================================================= */
