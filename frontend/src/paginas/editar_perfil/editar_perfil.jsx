@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import bannerFotoDePerfilPropio from '../../assets/imagenes/bannerFotoDePerfilPropio.jpg';
 import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg';
 import "./editar_perfil.css"; 
+import Header from "../../componentes/header/header";
 
 function EditarPerfil() {
   const navigate = useNavigate();
@@ -115,16 +116,7 @@ function EditarPerfil() {
         </div>
       )}
 
-      <header className="barra-superior-registro">
-        <div className="logo-registro" onClick={() => navigate('/perfil_propio')} style={{cursor: 'pointer'}}>
-          ✧ <span>GRWM</span>
-        </div>
-        <nav className="menu-registro">
-          <button onClick={() => navigate('/perfil_propio')}>Mi perfil</button>
-          <button onClick={() => navigate('/miTienda')}>Tienda</button>
-          <button onClick={() => alert("Contacta a soporteGRWM@gmail.com")}>Soporte</button>
-        </nav>
-      </header>
+      <Header/>
 
       <main className="editar-contenido-principal">
         <div className="EditarPerfil-Container">

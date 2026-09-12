@@ -1,34 +1,36 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg'
-import fotoPropia1 from '../../assets/imagenes/fotoPropia1.jpg' 
-import fotoPropia3 from '../../assets/imagenes/fotoPropia3.jpg'
-import './miTienda.css'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import fotoPropia1 from '../../assets/imagenes/fotoPropia1.jpg';
+import fotoPropia3 from '../../assets/imagenes/fotoPropia3.jpg';
+import './miTienda.css';
+import Header from "../../componentes/header/header";
 
 function MiTienda() {
   const navigate = useNavigate();
+  
+  // Estado para el menú desplegable del header interactivo
+  const [menuAbierto, setMenuAbierto] = useState(false);
 
-  // Lista base (los productos por defecto que Taylor ya vende)
+  // Lista de productos (Lógica original de tu fuente)
   const productosPorDefecto = [
-    {
-      id: 1,
-      nombre: 'Tapado de Hilo (Outfit Publicación 1)',
-      precio: 75000,
-      descripcion: 'El outfit completo modelado en mi publicación número 1. Tejido a mano, talle holgado súper cómodo.',
-      img: fotoPropia1,
-      talle: 'M'
+    { 
+      id: 1, 
+      nombre: 'Tapado de Hilo (Outfit Publicación 1)', 
+      precio: 75000, 
+      descripcion: 'El outfit completo modelado en mi publicación número 1. Tejido a mano, talle holgado súper cómodo.', 
+      img: fotoPropia1, 
+      talle: 'M' 
     },
-    {
-      id: 3,
-      nombre: 'Blazer Sastrero (Outfit Publicación 3)',
-      precio: 95000,
-      descripcion: 'Blazer sastre vintage con corte impecable y hombreras sutiles. Una prenda temporal única.',
-      img: fotoPropia3,
-      talle: 'S'
+    { 
+      id: 3, 
+      nombre: 'Blazer Sastrero (Outfit Publicación 3)', 
+      precio: 95000, 
+      descripcion: 'Blazer sastre vintage con corte impecable y hombreras sutiles. Una prenda temporal única.', 
+      img: fotoPropia3, 
+      talle: 'S' 
     }
   ];
 
-  // Leemos del localStorage lo subido, y si no hay nada guardado aún, usamos los valores por defecto
   const [productos] = useState(() => {
     const tiendaGuardada = localStorage.getItem('grwm_tienda_productos');
     if (tiendaGuardada) {
@@ -45,40 +47,11 @@ function MiTienda() {
 
   return (
     <div className="pagina-tienda">
-      
-      {/* BARRA SUPERIOR CONSTANTE */}
-      <header className="barra-superior-tienda">
-        <button
-          className="logo-tienda"
-          type="button"
-          onClick={() => navigate('/perfil_propio')}
-        >
-          ✧ <span>GRWM</span>
-        </button>
-        
-        <button className="boton-busqueda"
-          type="button"
-          onClick={() => navigate('/busqueda')}>🔍︎
-        </button>
-        
 
-        <nav className="menu-tienda">
-          <button onClick={() => navigate('/perfil_propio')}>Mi perfil</button>
-          <button onClick={() => navigate('/miTienda')} className="activo">Mi Tienda</button>
-          <button onClick={() => navigate('/')}>Página Principal</button>
-          <div 
-            className="mini-avatar-tienda" 
-            onClick={() => navigate('/perfil_propio')}
-            style={{ cursor: 'pointer' }}
-          >
-            <img src={fotoPerfilPropio} alt="Foto de perfil" />
-          </div>
-        </nav>
-      </header>
+      <Header/>
 
       {/* CONTENIDO DE LA TIENDA */}
       <main className="contenido-tienda">
-        
         <button className="volver-tienda" onClick={() => navigate('/perfil_propio')}>
           ← Volver al Perfil
         </button>
@@ -114,7 +87,6 @@ function MiTienda() {
             </div>
           ))}
         </section>
-
       </main>
     </div>
   );

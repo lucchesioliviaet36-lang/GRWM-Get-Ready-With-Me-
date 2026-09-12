@@ -1,6 +1,7 @@
 import './pagina_principal.css';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
+import Header from "../../componentes/header/header";
 
 
 export default function Feed() {
@@ -65,6 +66,9 @@ export default function Feed() {
 
   return (
     <div className="layout-container">
+
+      <Header/>
+
       {/* Sidebar Izquierdo */}
       <aside className="sidebar">
         <div className="card-box">

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./chat.css";
+import Header from "../../componentes/header/header";
 import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg'
 
 function Chat() {
@@ -100,40 +101,8 @@ function Chat() {
 
   return (
     <div className="chat-page">
-      {/* BARRA SUPERIOR (Fuente ajustada a la foto) */}
-      <header className="barra-superior">
-        <div className="logo" onClick={() => navigate('/perfil_propio')}>
-          ✧ <span>GRWM</span> 
-        </div>
-        <button className="boton-busqueda">🔍︎</button>
 
-        <nav className="menu">
-          <button onClick={() => navigate('/miArmario')}>Mi Armario</button>
-          <button onClick={() => navigate('/perfil_propio')}>Mi Perfil</button>
-          <button onClick={() => navigate('/tienda_principal')}>Tienda</button>
-          <button onClick={() => navigate('/paginaPrincipal')}>Página Principal</button>
-          
-          <div className="mini-avatar-contenedor">
-            <div className={`mini-avatar ${menuAbierto ? 'activo' : ''}`} onClick={() => setMenuAbierto(!menuAbierto)}>
-              <img src={fotoPerfilPropio} alt="Foto de perfil" />
-            </div>
-
-            {menuAbierto && (
-              <div className="menu-desplegable-perfil">
-                <div className="menu-usuario-detalles">
-                  <strong>Taylor Swift</strong>
-                  <span>@taylor_swift13</span>
-                </div>
-                <div className="menu-divisor"></div>
-                <button onClick={() => setMenuAbierto(false)}>✉ Ayuda y Soporte</button>
-                <div className="menu-divisor"></div>
-                <button className="menu-btn-logout" onClick={() => navigate('/')}>Cerrar Sesión</button>
-                <button className="menu-btn-logout" onClick={() => navigate('/registro')}>Eliminar Cuenta</button>
-              </div>
-            )}
-          </div>
-        </nav>
-      </header>
+      <Header/>
 
       {/* DISEÑO SEGÚN FOTO */}
       <div className="chat-container">

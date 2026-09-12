@@ -32,16 +32,6 @@ function InicioSesion() {
   return (
     <div className="InicioSesion-Page">
       
-      <header className="barra-superior-sesion">
-        <div className="logo-sesion">
-          ✧ <span>GRWM</span>
-        </div>
-        <nav className="menu-sesion">
-          <button onClick={() => navigate('/tienda')}>Tienda</button>
-          <button onClick={() => navigate('/soporte')}>Soporte</button>
-        </nav>
-      </header>
-
       <main className="sesion-contenido-principal">
         <div className="InicioSesion-Container">
 

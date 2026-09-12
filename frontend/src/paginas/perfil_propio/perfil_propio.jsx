@@ -12,6 +12,7 @@ import closetPropio1 from '../../assets/imagenes/closetPropio1.jpg'
 import closetPropio2 from '../../assets/imagenes/closetPropio2.jpg'
 
 import './perfil_propio.css'
+import Header from "../../componentes/header/header";
 
 function PerfilPropio() {
   const navigate = useNavigate();
@@ -122,70 +123,7 @@ function PerfilPropio() {
   return (
     <div className="pagina-perfil">
       
-      {/* BARRA SUPERIOR ACTUALIZADA */}
-      <header className="barra-superior">
-        <div className="logo">
-          ✧ <span>GRWM</span>
-        </div>
-        
-        <button className="boton-busqueda"
-          type="button"
-          onClick={() => navigate('/busqueda')}>🔍︎
-        </button>
-
-        {/* El menú queda limpio: eliminamos el botón Configuración clásico */}
-        <nav className="menu">
-          <button onClick={() => navigate('/miArmario')}>Mi Armario</button>
-          <button onClick={() => navigate('/perfil_propio')}>Mi Perfil</button>
-          <button onClick={() => navigate('/tienda_principal')}>Tienda</button>
-          <button onClick={() => navigate('/paginaPrincipal')}>Página Principal</button>
-          
-          {/* CONTENEDOR DE LA FOTO DE PERFIL CON MENU DESPLEGABLE */}
-          <div className="mini-avatar-contenedor">
-            <div 
-              className={`mini-avatar ${menuAbierto ? 'activo' : ''}`} 
-              onClick={() => setMenuAbierto(!menuAbierto)}
-            >
-              <img src={fotoPerfilPropio} alt="Foto de perfil" />
-            </div>
-
-            {/* MENÚ FLOTANTE INTERACTIVO */}
-            {menuAbierto && (
-              <div className="menu-desplegable-perfil">
-                <div className="menu-usuario-detalles">
-                  <strong>Taylor Swift</strong>
-                  <span>@taylor_swift13</span>
-                </div>
-                <div className="menu-divisor"></div>
-                
-                <button onClick={() => { alert("Contacta al equipo de GRWM: soporteGRWM@gmail.com"); setMenuAbierto(false); }}>
-                  ✉ Ayuda y Soporte
-                </button>
-                
-                <div className="menu-divisor"></div>
-                
-                <button className="menu-btn-logout" onClick={() => {
-                  if (window.confirm("¿Seguro que querés cerrar sesión en GRWM?")) {
-                    setMenuAbierto(false);
-                    navigate('/'); // Redirige al login original de tu amiga
-                  }
-                }}>
-                   Cerrar Sesión
-                </button>
-
-                <button className="menu-btn-logout" onClick={() => {
-                  if (window.confirm("¿Seguro que querés eliminar tu cuenta de GRWM")) {
-                    setMenuAbierto(false);
-                    navigate('/registro'); // Redirige al login original de tu amiga
-                  }
-                }}>
-                   Eliminar Cuenta
-                </button>
-              </div>
-            )}
-          </div>
-        </nav>
-      </header>
+      <Header/>
 
       {/* CONTENIDO PRINCIPAL */}
       <main className="contenido">

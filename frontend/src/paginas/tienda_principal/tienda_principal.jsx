@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import "./tienda_principal.css"
+import Header from "../../componentes/header/header";
 import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg'
 import fotoPropia1 from '../../assets/imagenes/fotoPropia1.jpg'
 import fotoPropia2 from '../../assets/imagenes/fotoPropia2.jpg'
@@ -132,46 +133,7 @@ function TiendaPrincipal() {
   return (
     <div className="pagina-tienda-principal">
 
-      {/* HEADER */}
-
-      <header className="header-tienda-principal">
-
-        <button
-          className="logo-tienda-principal"
-          onClick={() => navigate('/perfil_propio')}
-        >
-          ✧ <span>GRWM</span>
-        </button>
-
-        <button className="boton-busqueda"
-          type="button"
-          onClick={() => navigate('/busqueda')}>🔍︎
-        </button>
-
-        <nav className="nav-tienda-principal">
-
-          <button className="nav-activo"
-           type="button"
-           onClick={() => navigate('/tienda_principal')}>
-            Tienda
-          </button>
-
-          <button>
-            Soporte
-          </button>
-
-          <img
-            src={fotoPerfilPropio}
-            alt="Perfil"
-            onClick={() => navigate('/perfil_propio')}
-          />
-
-        </nav>
-
-      </header>
-
-
-      {/* HERO */}
+      <Header/>
 
       <section className="hero-tienda">
 
