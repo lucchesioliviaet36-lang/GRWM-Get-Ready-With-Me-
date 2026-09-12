@@ -5,7 +5,7 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  overflow-y: visible;
+  overflow: visible !important;
   overflow-x: hidden; /* Seguridad extra para evitar desplazamiento horizontal */
   height: auto; 
   min-height: 100%;

@@ -36,7 +36,6 @@ class AuthService{
             apellido,
             username,
             contraseña: contraseñaHash,
-            rol: "usuario",
             mail,
             descripcion: null,
             fecha_registro: new Date(),
@@ -88,7 +87,6 @@ class AuthService{
                 apellido: usuario.apellido,
                 username: usuario.username,
                 mail: usuario.mail,
-                rol: usuario.rol
             }
         };
     }

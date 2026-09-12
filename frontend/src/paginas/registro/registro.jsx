@@ -5,6 +5,8 @@ import Footer from "../../componentes/footer/footer";
 
 function Registro() {
   const navigate = useNavigate();
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
   const [usuario, setUsuario] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,16 +15,19 @@ function Registro() {
   const [showPassword, setShowPassword] = useState(false);
   const [showRepetirPassword, setShowRepetirPassword] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     if (
+      nombre.trim() === "" ||
+      apellido.trim() === "" ||
       usuario.trim() === "" ||
       email.trim() === "" ||
       password.trim() === "" ||
       repetirPassword.trim() === ""
-    ) {
+    ) 
+    {
       setError("Complete todos los campos");
       return;
     }
@@ -32,16 +37,51 @@ function Registro() {
       return;
     }
 
-    console.log("Usuario:", usuario);
-    console.log("Email:", email);
-    console.log("Password:", password);
+    try {
+      const respuesta = await fetch(
+        "http://localhost:3000/api/auth/registrar",
+        {
+          method: "POST",
 
-    alert("¡Registro realizado correctamente!");
-    navigate("/perfil_propio"); 
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            nombre: nombre.trim(),
+            apellido: apellido.trim(),
+            username: usuario.trim(),
+            contraseña: password,
+            mail: email.trim()
+          })
+        }
+      );
+
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok) {
+        setError(datos.mensaje || "Error al registrar el usuario");
+        return;
+      }
+
+      console.log("Usuario creado:", datos.usuario);
+
+      alert("¡Registro realizado correctamente!");
+
+      navigate("/IniciarSesion");
+
+    } 
+    catch (error) {
+      console.error("Error al conectar con el backend:", error);
+
+      setError(
+        "No se pudo conectar con el servidor. Intente nuevamente."
+      );
+    }
   };
 
   const volverInicioSesion = () => {
-    navigate("/");
+    navigate("/IniciarSesion");
   };
 
   return (
@@ -81,6 +121,34 @@ function Registro() {
                   placeholder="@usuario"
                   value={usuario}
                   onChange={(e) => setUsuario(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="form-group-registro">
+              <label htmlFor="nombre">Nombre</label>
+
+              <div className="input-with-icon">
+                <input
+                  id="nombre"
+                  type="text"
+                  placeholder="Nombre"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="form-group-registro">
+              <label htmlFor="apellido">Apellido</label>
+
+              <div className="input-with-icon">
+                <input
+                  id="apellido"
+                  type="text"
+                  placeholder="Apellido"
+                  value={apellido}
+                  onChange={(e) => setApellido(e.target.value)}
                 />
               </div>
             </div>
