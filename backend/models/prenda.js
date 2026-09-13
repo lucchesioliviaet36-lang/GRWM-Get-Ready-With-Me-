@@ -52,7 +52,7 @@ const Prenda = sequelize.define(
 
     },
     {
-        tableName: "prenda",
+        tableName: "Prenda",
         timestamps: false
     }
 );

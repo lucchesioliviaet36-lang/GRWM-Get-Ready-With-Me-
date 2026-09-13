@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 require("dotenv").config();
 const { sequelize } = require("./config/database.js");
 const Usuario = require("./models/usuarioModels.js");
@@ -9,6 +10,7 @@ const prendaRoutes = require("./routes/prendaRoutes");
 const Prenda = require("./models/prenda.js");
 const usuarioRoutes = require("./routes/usuarioRoutes");
 const publicacionRoutes = require("./routes/publicacionRoutes");
+const productoRoutes = require("./routes/productoRoutes");
 const app = express();
 const PORT = 3000;
 
@@ -19,6 +21,8 @@ app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/catalogo", catalogoRoutes);
 app.use("/api/prendas", prendaRoutes);
 app.use("/api/publicaciones", publicacionRoutes);
+app.use("/api/productos", productoRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", (req, res) => {
     res.json({
