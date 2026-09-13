@@ -10,24 +10,61 @@ function InicioSesion() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    if (usuario.trim() === "" || password.trim() === ""){
-        setError("Complete todos los campos");
-        return;
+    if (usuario.trim() === "" || password.trim() === "") {
+      setError("Complete todos los campos");
+      return;
     }
 
-    console.log("Usuario: ", usuario);
-    console.log("Password: ", password);
+    try {
+      const respuesta = await fetch(
+        "http://localhost:3000/api/auth/IniciarSesion",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            username: usuario.trim(),
+            contraseña: password
+          })
+        }
+      );
 
-    alert("¡Inicio de sesión correcto!");
-    navigate("/perfil_propio"); 
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok) {
+        setError(datos.mensaje || "Username o contraseña incorrectos");
+        return;
+      }
+
+      // Guardamos el token que genera el backend
+      localStorage.setItem("token", datos.token);
+
+      // Opcional: guardar datos básicos del usuario
+      localStorage.setItem(
+        "usuario",
+        JSON.stringify(datos.usuario)
+      );
+
+      console.log("Inicio de sesión correcto:", datos.usuario);
+
+      navigate("/perfil_propio");
+
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+
+      setError(
+        "No se pudo conectar con el servidor"
+      );
+    }
   };
 
   const irARegistro = () => {
-    navigate("/registro");
+    navigate("/");
   };
 
   return (

@@ -9,7 +9,7 @@ function Header() {
     
     return (
       <header className="barra-superior">
-        <div className="logo" onClick={() => navigate('/perfil_propio')}>
+        <div className="logo" onClick={() => navigate('/paginaPrincipal')}>
           ✧ <span>GRWM</span>
         </div>
 
