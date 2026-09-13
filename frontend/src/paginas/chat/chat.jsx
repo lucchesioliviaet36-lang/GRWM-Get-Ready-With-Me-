@@ -4,6 +4,9 @@ import "./chat.css";
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
 import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg'
+import Usuario1 from "../../assets/imagenes/olivia.jpg";
+import Usuario2 from "../../assets/imagenes/baddbunny.jpg";
+import Usuario3 from "../../assets/imagenes/sabrina.jpg";
 
 
 function Chat() {
@@ -14,14 +17,9 @@ function Chat() {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [chatActivo, setChatActivo] = useState({
     id: 2,
-    nombre: "Celeste ✨",
-    username: "@celeste_style",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
-    prendaInteres: {
-      titulo: "Chaleco Vintage Aesthetic",
-      precio: "$12.000",
-      imagen: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200"
-    }
+    nombre: "Olivia Privv",
+    username: "@notOlivia",
+    avatar: Usuario1,
   });
 
   const [mensajesPorChat, setMensajesPorChat] = useState({
@@ -30,7 +28,13 @@ function Chat() {
       { id: 2, remitenteId: 1, destinatarioId: 2, contenido: "Sii, lo tenemos disponible, queres que coordinemos envio? 💖✨", createdAt: "9:44 PM", tipo: "texto" },
       { id: 3, remitenteId: 2, destinatarioId: 1, contenido: "Tenes en otros colores?", createdAt: "9:45 PM", tipo: "texto" }
     ],
-    3: [{ id: 4, remitenteId: 3, destinatarioId: 1, contenido: "¿Hacemos envío combinado?", createdAt: "09:15 AM", tipo: "texto" }]
+    3: [
+      { id: 1, remitenteId: 2, destinatarioId: 1, contenido: "Te queres juntar a cenar?", createdAt: "09:15 PM", tipo: "texto" },
+      { id: 1, remitenteId: 2, destinatarioId: 1, contenido: "Porfaa", createdAt: "09:16 PM", tipo: "texto" },
+      { id: 2, remitenteId: 1, destinatarioId: 2, contenido: "Bueno, dale, pasame a buscar!..", createdAt: "09:30 PM", tipo: "texto" }
+    ],
+
+    4: [{ id: 5, remitenteId: 4, destinatarioId: 1, contenido: "Me pasas medidas porfa", createdAt: "12:15 AM", tipo: "texto" }]
   });
 
   const [nuevoTexto, setNuevoTexto] = useState("");
@@ -42,9 +46,9 @@ function Chat() {
 
   // --- CONTACTOS (Fuentes) ---
   const contactos = [
-    { id: 2, nombre: "Sofía Style", ultimoMensaje: "Tenes en otros colores?", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" },
-    { id: 3, nombre: "Valeria Closet", ultimoMensaje: "¿Hacemos envío combinado?", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100" },
-    { id: 4, nombre: "Camila Aesthetic", ultimoMensaje: "Me pasas medidas porfa", avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100" }
+    { id: 2, nombre: "Olivia Privv", ultimoMensaje: "Tenes en otros colores?", avatar: Usuario1 },
+    { id: 3, nombre: "Bad Bunny", ultimoMensaje: "Bueno, dale, pasame a buscar!..", avatar: Usuario2 },
+    { id: 4, nombre: "Sabrina Carpintero", ultimoMensaje: "Me pasas medidas porfa", avatar: Usuario3 }
   ];
 
   // --- EMOJIS (Fuente) ---

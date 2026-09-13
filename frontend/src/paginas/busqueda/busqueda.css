@@ -1,1 +1,212 @@
-/*hola
+
+* { 
+    box-sizing: border-box; 
+}
+
+body { 
+    margin: 0; 
+    font-family: 'Inter', Arial, sans-serif; 
+    background-color: #fff7fa; 
+}
+
+.busqueda-page { 
+    min-height: 100vh; 
+    width: 100%;
+    /* Fondo con gradiente rosa suave coherente con Mi Armario */
+    background: radial-gradient( circle at 15% 10%, rgba(255, 214, 229, 0.75), transparent 28% ), 
+                linear-gradient( 135deg, #fff7fa 0%, #ffe9f1 100% );
+    display: flex; 
+    flex-direction: column; 
+}
+
+/* =========================================================
+   CONTENEDOR DE BÚSQUEDA (ESTRUCTURA DE LA FOTO)
+   ========================================================= */
+.busqueda-container { 
+    flex: 1; 
+    width: 100%; 
+    max-width: 1200px; 
+    margin: 40px auto; 
+    display: grid; 
+    grid-template-columns: 320px 1fr; /* Sidebar y Área Principal */
+    gap: 40px; 
+    padding: 0 20px;
+}
+
+/* SIDEBAR: TENDENCIAS Y SUGERENCIAS */
+.busqueda-sidebar { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 25px; 
+}
+
+.seccion-tendencias, .seccion-sugerencias { 
+    background: white; 
+    border: 1px solid #f6dfe9; 
+    border-radius: 24px; 
+    padding: 25px; 
+    box-shadow: 0 10px 30px rgba(112, 60, 94, 0.05); /* Sombra suave */
+}
+
+.seccion-tendencias h3, .seccion-sugerencias h3 { 
+    font-family: Georgia, serif; 
+    color: #70345c; 
+    font-size: 18px; 
+    margin: 0 0 18px 0; 
+    font-weight: normal;
+}
+
+/* ITEMS DE TENDENCIA */
+.tendencia-item { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 8px 0; 
+}
+
+.tendencia-tag { 
+    color: #70345c; 
+    font-size: 13px; 
+    font-weight: 500; 
+    cursor: pointer; 
+}
+
+.tendencia-tag:hover { 
+    color: #bd4f80; 
+}
+
+.tendencia-posts { 
+    color: #9a6685; 
+    font-size: 11px; 
+}
+
+/* ITEMS DE SUGERENCIA */
+.sugerencia-item { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    margin-bottom: 15px; 
+}
+
+.sugerencia-item img { 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+}
+
+.user-meta { 
+    flex: 1; 
+}
+.user-meta h4 { 
+    margin: 0; 
+    font-size: 13px; 
+    color: #70345c; 
+}
+
+.user-meta span { 
+    font-size: 11px; 
+    color: #9a6685; 
+}
+
+.btn-seguir { 
+    background: transparent; 
+    border: none; 
+    color: #bd4f80; 
+    font-size: 12px; 
+    font-weight: bold; 
+    cursor: pointer; 
+}
+
+/* =========================================================
+   ÁREA PRINCIPAL (BARRA DE BÚSQUEDA)
+   ========================================================= */
+.busqueda-main {
+     width: 100%; 
+}
+
+.search-bar-wrapper { 
+    background: white; 
+    border: 1px solid #f0dbe5; 
+    border-radius: 30px; 
+    padding: 12px 25px; 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+    box-shadow: 0 4px 15px rgba(112, 60, 94, 0.03);
+}
+
+.search-icon { 
+    color: #9a6685; 
+    font-size: 16px; 
+    margin-bottom: 5px;
+}
+
+.input-busqueda-principal { 
+    border: none; 
+    background: transparent; 
+    width: 100%; 
+    outline: none; 
+    font-size: 15px; 
+    color: #70345c; 
+}
+
+.input-busqueda-principal::placeholder { 
+    color: #c78ba9; 
+}
+
+.busqueda-resultados-vacio { 
+    margin-top: 100px; 
+    text-align: center; 
+    color: #9a6685; 
+    font-size: 14px; 
+    font-style: italic; 
+}
+
+/* DROPDOWN MENU */
+.menu-desplegable-perfil { 
+    position: absolute; 
+    top: 45px; 
+    right: 0; 
+    background: white; 
+    border: 1px solid #f0dbe5; 
+    border-radius: 12px; 
+    width: 180px; 
+    box-shadow: 0 8px 20px rgba(112, 60, 94, 0.1); 
+    padding: 10px 0; 
+    z-index: 100;
+}
+
+.menu-usuario-detalles { 
+    padding: 5px 15px; 
+    display: flex; 
+    flex-direction: column; 
+}
+
+.menu-usuario-detalles strong { 
+    font-size: 13px; 
+    color: #70345c; 
+}
+
+.menu-usuario-detalles span { 
+    font-size: 10px; 
+    color: #9a6685; 
+}
+
+.menu-divisor { 
+    height: 1px; 
+    background: #fff0f6; 
+    margin: 8px 0; 
+}
+
+.menu-desplegable-perfil button { 
+    width: 100%; 
+    text-align: left; 
+    padding: 8px 15px; 
+    font-size: 12px; 
+}
+
+.menu-btn-logout { 
+    color: #bd4f80 !important; 
+    font-weight: bold; 
+}
