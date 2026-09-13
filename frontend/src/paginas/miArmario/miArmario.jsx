@@ -81,13 +81,13 @@ function MiArmario() {
           <section className="armario-vacio">
             <div className="armario-vacio-icono">♡</div>
             <h2>Tu armario está esperando</h2>
-            <p>Todavía no agregaste ninguna prenda. Podés comenzar cargando una prenda tuya o explorar inspiración.</p>
+            <p>Todavía no agregaste ninguna prenda. Podés comenzar cargando una prenda tuya o solicitar inspiración.</p>
             <div className="armario-vacio-botones">
               <button className="boton-principal-armario" onClick={() => navigate("/agregar_prenda")}>
                 + Agregar mi primera prenda
               </button>
-              <button className="boton-secundario-armario" onClick={() => navigate("/explorar-prendas")}>
-                ✧ Explorar inspiración
+              <button className="boton-secundario-armario" onClick={() => navigate("/inspiracion_chat")}>
+                ✧ Solicitar inspiración
               </button>
             </div>
           </section>

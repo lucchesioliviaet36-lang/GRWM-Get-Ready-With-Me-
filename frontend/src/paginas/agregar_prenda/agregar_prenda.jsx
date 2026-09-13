@@ -129,7 +129,7 @@ function AgregarPrenda() {
           </button>
 
           <h1> Nueva Prenda </h1>
-          <p> Completá los detalles para sumar una nueva pieza a tu colección personal. </p>
+          <p> Completá los detalles para sumar una nueva prenda a tu colección. </p>
 
         </section>
 

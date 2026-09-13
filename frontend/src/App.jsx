@@ -14,6 +14,7 @@ import EditarPerfil from './paginas/editar_perfil/editar_perfil'
 import Chat from './paginas/chat/chat'
 import MiArmario from './paginas/miArmario/miArmario'
 import AgregarPrenda from './paginas/agregar_prenda/agregar_prenda'
+import Pago from './paginas/pago/pago'
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route path="/chat" element={<Chat />} />
         <Route path="/miArmario" element={<MiArmario />} />
         <Route path="/agregar_prenda" element={<AgregarPrenda />} />
+        <Route path="/pago" element={<Pago />} />
       </Routes>
     </BrowserRouter>
   );

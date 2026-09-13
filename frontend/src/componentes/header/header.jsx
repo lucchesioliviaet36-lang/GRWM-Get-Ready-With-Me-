@@ -24,7 +24,7 @@ function Header() {
         <nav className="menu">
           <button onClick={() => navigate('/miArmario')}>Mi Armario</button>
           <button onClick={() => navigate('/perfil_propio')}>Mi Perfil</button>
-          <button className="menu-item-activo" onClick={() => navigate('/miTienda')}>Tienda </button>
+          <button className="menu-item-activo" onClick={() => navigate('/tienda_principal')}>Tienda </button>
           <button onClick={() => navigate('/paginaPrincipal')}>Página Principal</button>
           
           <div className="mini-avatar-contenedor">

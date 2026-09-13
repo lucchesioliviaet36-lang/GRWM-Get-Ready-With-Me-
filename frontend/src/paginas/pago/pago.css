@@ -1,0 +1,367 @@
+
+* { 
+  box-sizing: border-box; 
+}
+
+
+body { 
+  margin: 0; 
+  font-family: 'Inter', Arial, sans-serif; 
+}
+
+
+.pago-page { 
+  min-height: 100vh; 
+  width: 100%; 
+  background: radial-gradient( circle at 15% 10%, rgba(255, 214, 229, 0.75), transparent 28% ), 
+              linear-gradient( 135deg, #fff7fa 0%, #ffe9f1 100% ); 
+  display: flex; 
+  flex-direction: column; 
+}
+
+
+.pago-contenido { 
+  flex: 1; 
+  width: 100%; 
+  max-width: 1000px; 
+  margin: 40px auto; 
+  padding: 0 20px 60px; 
+}
+
+
+.pago-contenido h1 { 
+  font-family: Georgia, serif; 
+  color: #bd4f80; 
+  font-size: 32px; 
+  margin-bottom: 30px; 
+  text-align: center; 
+}
+
+
+h2, h3 { 
+  color: #bd4f80; 
+  font-family: Georgia, serif; 
+}
+
+
+/* ========================================================= SECCIÓN DE MÉTODOS DE PAGO ========================================================= */
+
+
+.opciones-pago-grid { 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  gap: 50px; 
+  margin: 40px 0; 
+}
+
+
+.opcion-card-wrapper, .opcion-cash-wrapper { 
+  cursor: pointer; 
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  padding: 20px; 
+  border-radius: 20px; 
+  border: 2px solid transparent; 
+}
+
+
+/* Efecto de agrandar al seleccionar (Fuente: pago) */
+
+
+.opcion-card-wrapper.seleccionado, 
+.opcion-cash-wrapper.seleccionado { 
+  transform: scale(1.1); 
+  background: rgba(255, 255, 255, 0.42); 
+  border-color: #f0cdddb5; 
+  box-shadow: 0 10px 30px rgba(112, 60, 94, 0.1); 
+}
+
+
+.label-pago { 
+  margin-top: 15px; 
+  font-size: 14px; 
+  font-weight: 600; 
+  color: #8b3f68; 
+}
+
+
+/* ========================================================= TARJETA ANIMADA ROSA ========================================================= */
+
+
+.flip-card { 
+  background-color: transparent; 
+  width: 200px; 
+  height: 120px; 
+  perspective: 1000px; 
+  color: white; 
+}
+
+
+.flip-card-inner { 
+  position: relative; 
+  width: 100%; 
+  height: 100%; 
+  text-align: center; 
+  transition: transform 0.8s; 
+  transform-style: preserve-3d; 
+}
+
+
+.flip-card:hover .flip-card-inner { 
+  transform: rotateY(180deg); 
+}
+
+
+.flip-card-front, .flip-card-back { 
+  position: absolute; 
+  width: 100%; 
+  height: 100%; 
+  backface-visibility: hidden; 
+  border-radius: 1rem; 
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; 
+  background: linear-gradient(135deg, #ff85a2 0%, #bd4f80 100%) !important; 
+}
+
+
+.flip-card-back { 
+  transform: rotateY(180deg); 
+}
+
+
+.chip { 
+  position: absolute; 
+  top: 45px; 
+  left: 15px; 
+  width: 30px; 
+  height: 20px; 
+  background: #ffdce8; 
+  border-radius: 4px; 
+}
+
+
+.number { 
+  position: absolute; 
+  font-weight: bold; 
+  font-size: .8em; 
+  top: 70px; 
+  left: 20px; 
+}
+
+
+.name { 
+  position: absolute; 
+  font-weight: bold; 
+  font-size: 0.6em; 
+  top: 16.1em; 
+  left: 2em; 
+}
+
+
+.strip { 
+  position: absolute; 
+  background-color: rgba(0,0,0,0.2); 
+  width: 100%; 
+  height: 1.5em; 
+  top: 2.4em; 
+}
+
+
+/* ========================================================= MONEDA ANIMADA ROSA (Cash) ========================================================= */
+
+
+.coin-flip-container { 
+  background-color: transparent; 
+  width: 200px; 
+  height: 110px; 
+  perspective: 1000px; 
+}
+
+
+.coin-inner { 
+  position: relative; 
+  width: 100%; 
+  height: 100%; 
+  text-align: center; 
+  transition: transform 0.8s; 
+  transform-style: preserve-3d; 
+}
+
+
+.coin-flip-container:hover .coin-inner { 
+  transform: rotateY(180deg); /* Animación flip al pasar mouse (Fuente: cash) */
+}
+
+
+.coin-front, .coin-back { 
+  position: absolute; 
+  width: 100%; 
+  height: 100%; 
+  backface-visibility: hidden; 
+  border-radius: 12px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  background-color: #bd4f80; /* Color Rosita */
+  border: 3px solid #bd4f80; 
+}
+
+
+.coin-back { 
+  transform: rotateY(180deg); 
+  background-color: #bd4f80; 
+}
+
+
+.engraving { 
+  font-size: 50px; 
+  font-weight: bold; 
+  color: white; 
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); 
+}
+
+
+/* ========================================================= FORMULARIO Y BOTONES ========================================================= */
+
+
+.pago-form-grid { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 15px; 
+  margin-top: 20px; 
+}
+
+
+.form-row { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 15px; 
+}
+
+
+input[type="text"] { 
+  padding: 12px; 
+  border-radius: 10px; 
+  border: 1px solid #f0dbe5; 
+  outline: none; 
+  background: #fff; 
+}
+
+
+.btn-confirmar-pago { 
+  width: 100%; 
+  margin-top: 40px; 
+  padding: 15px; 
+  border-radius: 15px; 
+  border: none; 
+  background: #bd4f80; 
+  color: white; 
+  font-weight: bold; 
+  font-size: 16px; 
+  cursor: pointer; 
+  transition: 0.3s; 
+}
+
+
+.btn-confirmar-pago:hover { 
+  background: #8b3f68; 
+  transform: translateY(-3px); 
+  box-shadow: 0 10px 20px rgba(139, 63, 104, 0.2); 
+}
+
+.envio-toggle label{
+    color: #8b3f68; 
+}
+
+
+/* ========================================================= PROCESO DE ENVÍO ========================================================= */
+
+
+.stepper-container-pago { 
+  margin-top: 40px; 
+}
+
+
+.stepper-box { 
+  background-color: white; 
+  border-radius: 20px; 
+  padding: 32px; 
+  border: 1px solid #f6dfe9; 
+  box-shadow: 0 4px 12px rgba(112, 60, 94, 0.05); 
+}
+
+
+.stepper-step { 
+  display: flex; 
+  margin-bottom: 25px; 
+  position: relative; 
+}
+
+
+.stepper-line { 
+  position: absolute; 
+  left: 19px; 
+  top: 40px; 
+  bottom: -25px; 
+  width: 2px; 
+  background-color: #f0dbe5; 
+  z-index: 1; 
+}
+
+
+.stepper-circle { 
+  width: 40px; 
+  height: 40px; 
+  border-radius: 50%; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  margin-right: 16px; 
+  z-index: 2; 
+  font-weight: bold; 
+}
+
+
+.stepper-completed .stepper-circle { 
+  background-color: #8b3f68; 
+  color: white; 
+}
+
+
+.stepper-in-progress .stepper-circle { 
+  border: 2px solid #bd4f80; 
+  color: #bd4f80; 
+  background: #fff0f6; 
+}
+
+
+.stepper-pending .stepper-circle { 
+  border: 2px solid #f0dbe5; 
+  color: #c78ba9; 
+}
+
+
+/* ========================================================= ANIMACIONES ========================================================= */
+
+
+.animate-fade-in { 
+  animation: fadeIn 0.5s ease-in; 
+}
+
+
+@keyframes fadeIn { 
+  from { opacity: 0; transform: translateY(10px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+
+.mensaje-exito-pago { 
+  background: #fff0f6; 
+  padding: 20px; 
+  border-radius: 15px; 
+  border: 1px solid #ffdce8; 
+  text-align: center; 
+  margin-bottom: 25px; 
+}
