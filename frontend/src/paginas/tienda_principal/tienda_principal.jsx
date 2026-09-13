@@ -284,7 +284,7 @@ function TiendaPrincipal() {
                     </span>
 
                     <button
-                      onClick={() => comprar(producto)}
+                      onClick={() => navigate('/pago')}
                     >
                       Comprar
                     </button>

@@ -77,12 +77,6 @@ function MiTienda() {
                 
                 <div className="precio-y-accion">
                   <span className="precio-tag">${prod.precio.toLocaleString('es-AR')}</span>
-                  <button 
-                    className="btn-comprar" 
-                    onClick={() => handleComprar(prod.nombre)}
-                  >
-                    Comprar Prenda
-                  </button>
                 </div>
               </div>
             </div>

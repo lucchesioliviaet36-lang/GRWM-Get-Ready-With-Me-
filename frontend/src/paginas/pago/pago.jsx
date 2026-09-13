@@ -15,11 +15,11 @@ function Pago() {
 
 
   const etapasEnvio = [
-    { id: 1, titulo: "En preparación", status: "Completed", time: "Hoy, 10:00 AM" },
-    { id: 2, titulo: "Listo", status: "In Progress", time: "Pendiente" },
-    { id: 3, titulo: "En manos del repartidor", status: "Pending", time: "-" },
-    { id: 4, titulo: "En camino", status: "Pending", time: "-" },
-    { id: 5, titulo: "Entregado", status: "Pending", time: "-" }
+    { id: 1, titulo: "En preparación", status: "Completo", time: "Hoy, 10:00 AM" },
+    { id: 2, titulo: "Listo", status: "En Proceso", time: "Pendiente" },
+    { id: 3, titulo: "En manos del repartidor", status: "Pendiente", time: "-" },
+    { id: 4, titulo: "En camino", status: "Pendiente", time: "-" },
+    { id: 5, titulo: "Entregado", status: "Pendiente", time: "-" }
   ];
 
 
@@ -203,7 +203,7 @@ function Pago() {
                       <div className="stepper-line"></div>
 
                       <div className="stepper-circle">
-                        {etapa.status === "Completed" ? "✓" : etapa.id}
+                        {etapa.status === "Completo" ? "✓" : etapa.id}
                       </div>
 
                       <div className="stepper-content">

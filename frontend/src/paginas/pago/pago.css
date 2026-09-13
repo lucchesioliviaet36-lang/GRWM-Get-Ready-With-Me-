@@ -22,6 +22,8 @@ body {
 
 .pago-contenido { 
   flex: 1; 
+  align-items: center;
+  text-align: center;
   width: 100%; 
   max-width: 1000px; 
   margin: 40px auto; 
@@ -29,18 +31,16 @@ body {
 }
 
 
-.pago-contenido h1 { 
-  font-family: Georgia, serif; 
+.pago-contenido h1 {  
   color: #bd4f80; 
   font-size: 32px; 
-  margin-bottom: 30px; 
+  margin-bottom: 20px; 
   text-align: center; 
 }
 
 
 h2, h3 { 
-  color: #bd4f80; 
-  font-family: Georgia, serif; 
+  color: #8b3f68; 
 }
 
 
@@ -324,7 +324,7 @@ input[type="text"] {
 }
 
 
-.stepper-completed .stepper-circle { 
+.stepper-completo .stepper-circle { 
   background-color: #8b3f68; 
   color: white; 
 }
