@@ -25,7 +25,7 @@ class UsuarioServicio {
             throw new Error("El usuario no existe");
         }
 
-        return await usuarioDao.eliminar(id_usuario);
+        return await usuarioDao.eliminarUsuario(id_usuario);
     }
 
 }

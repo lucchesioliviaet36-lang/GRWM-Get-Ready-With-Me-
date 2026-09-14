@@ -54,8 +54,7 @@ class UsuarioDao {
                 ]
             },
 
-            // IMPORTANTE:
-            // no devolver contraseña ni mail
+            // IMPORTANTE: no devolver contraseña ni mail
             attributes: [
                 "id_usuario",
                 "nombre",
@@ -76,12 +75,22 @@ class UsuarioDao {
         return await Usuario.create(usuario);
     }
 
-    async eliminar(id_usuario) {
-        return await Usuario.destroy({
-            where: {
-                id_usuario: id_usuario
-            }
-        });
+    async eliminarUsuario(id_usuario) {
+        // Obtenemos los modelos registrados en Sequelize
+        const models = Usuario.sequelize ? Usuario.sequelize.models : {};
+
+        // Borramos en orden los registros asociados para no romper las claves foráneas
+        if (models.Seguridad) await models.Seguridad.destroy({ where: { id_usuario } });
+        if (models.Usuario_Rol) await models.Usuario_Rol.destroy({ where: { id_usuario } });
+        if (models.Usuario_Patente) await models.Usuario_Patente.destroy({ where: { id_usuario } });
+        if (models.Soporte) await models.Soporte.destroy({ where: { id_usuario } });
+        if (models.Seguidores) await models.Seguidores.destroy({ where: { id_usuario } });
+        if (models.Bitacora) await models.Bitacora.destroy({ where: { id_usuario } });
+        if (models.Publicacion) await models.Publicacion.destroy({ where: { id_usuario } });
+        if (models.Producto) await models.Producto.destroy({ where: { id_usuario } });
+
+        // Finalmente eliminamos el usuario de la tabla Usuario
+        return await Usuario.destroy({ where: { id_usuario } });
     }
 
 }

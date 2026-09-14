@@ -16,8 +16,7 @@ import Footer from "../../componentes/footer/footer"
 function PerfilPropio() {
   const navigate = useNavigate();
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
-  const [menuAbierto, setMenuAbierto] = useState(false);
-
+  const [menuAbierto, setMenuAbierto] = useState(false); 
   
   const publicacionesPorDefecto = [];
 
