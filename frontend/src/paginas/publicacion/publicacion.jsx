@@ -102,6 +102,16 @@ function Publicacion() {
         const data = await response.json();
         setLiked(data.dioLike);
         setTotalLikes(data.totalLikes);
+
+        // 🔄 Actualizamos el total de likes en localStorage para reflejarlo en perfil_propio
+        const publicacionesGuardadas = JSON.parse(localStorage.getItem('grwm_publicaciones')) || [];
+        const actualizadas = publicacionesGuardadas.map(p => {
+          if (String(p.id) === String(id)) {
+            return { ...p, likes: data.totalLikes };
+          }
+          return p;
+        });
+        localStorage.setItem('grwm_publicaciones', JSON.stringify(actualizadas));
       }
     } catch (error) {
       console.error("Error al dar me gusta:", error);

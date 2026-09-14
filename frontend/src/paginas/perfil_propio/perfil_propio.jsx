@@ -51,6 +51,15 @@ function PerfilPropio() {
   const [tallePrenda, setTallePrenda] = useState('M');
   const [descripcion, setDescripcion] = useState('');
 
+  // 🔄 Refrescar los likes y publicaciones de localStorage al entrar o cambiar pestaña
+  useEffect(() => {
+    const guardadas = localStorage.getItem('grwm_publicaciones');
+    if (guardadas) {
+      setListaPublicaciones(JSON.parse(guardadas));
+    }
+  }, [pestanaActiva]);
+
+
   // 🔄 Cargar las publicaciones favoritas desde la base de datos al seleccionar la pestaña
   useEffect(() => {
     const cargarFavoritosBD = async () => {
