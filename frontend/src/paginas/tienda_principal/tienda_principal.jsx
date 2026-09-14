@@ -3,12 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import "./tienda_principal.css"
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
-import fotoPropia1 from '../../assets/imagenes/fotoPropia1.jpg'
-import fotoPropia2 from '../../assets/imagenes/fotoPropia2.jpg'
-import fotoPropia3 from '../../assets/imagenes/fotoPropia3.jpg'
-import fotoPropia4 from '../../assets/imagenes/fotoPropia4.jpg'
-import closetPropio1 from '../../assets/imagenes/closetPropio1.jpg'
-import closetPropio2 from '../../assets/imagenes/closetPropio2.jpg'
 
 function TiendaPrincipal() {
 
@@ -17,6 +11,7 @@ function TiendaPrincipal() {
   const [categoriaActiva, setCategoriaActiva] = useState('Todos')
   const [busqueda, setBusqueda] = useState('')
   const [orden, setOrden] = useState('Destacados')
+  const [estadosSeleccionados, setEstadosSeleccionados] = useState([])
 
   const productos = [
     {
@@ -26,7 +21,7 @@ function TiendaPrincipal() {
       estado: 'Excelente',
       precio: 85,
       usuario: '@taylor_swift13',
-      imagen: fotoPropia1
+      imagen: '[https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&auto=format&fit=crop)'
     },
     {
       id: 2,
@@ -35,16 +30,16 @@ function TiendaPrincipal() {
       estado: 'Como nuevo',
       precio: 120,
       usuario: '@mora_closet',
-      imagen: fotoPropia2
+      imagen: '[https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&auto=format&fit=crop)'
     },
     {
       id: 3,
       nombre: 'Cadena Plateada',
       categoria: 'Joyería',
-      estado: 'Nuevo',
+      estado: 'Nuevo con etiqueta',
       precio: 45,
       usuario: '@fashion_style',
-      imagen: fotoPropia3
+      imagen: '[https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500&auto=format&fit=crop)'
     },
     {
       id: 4,
@@ -53,7 +48,7 @@ function TiendaPrincipal() {
       estado: 'Buen estado',
       precio: 95,
       usuario: '@hugo_out',
-      imagen: fotoPropia4
+      imagen: '[https://images.unsplash.com/photo-1552346154-21d32810aba3?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1552346154-21d32810aba3?w=500&auto=format&fit=crop)'
     },
     {
       id: 5,
@@ -62,7 +57,7 @@ function TiendaPrincipal() {
       estado: 'Excelente',
       precio: 55,
       usuario: '@clogan_style',
-      imagen: closetPropio1
+      imagen: '[https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500&auto=format&fit=crop)'
     },
     {
       id: 6,
@@ -71,7 +66,7 @@ function TiendaPrincipal() {
       estado: 'Como nuevo',
       precio: 35,
       usuario: '@luciatrends',
-      imagen: closetPropio2
+      imagen: '[https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&auto=format&fit=crop)'
     },
     {
       id: 7,
@@ -80,16 +75,16 @@ function TiendaPrincipal() {
       estado: 'Excelente',
       precio: 90,
       usuario: '@vintage_closet',
-      imagen: fotoPropia2
+      imagen: '[https://images.unsplash.com/photo-1544441893-675973e31985?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1544441893-675973e31985?w=500&auto=format&fit=crop)'
     },
     {
       id: 8,
       nombre: 'Vestido Negro Clásico',
       categoria: 'Ropa',
-      estado: 'Nuevo',
+      estado: 'Nuevo con etiqueta',
       precio: 75,
       usuario: '@sofia.aria',
-      imagen: fotoPropia4
+      imagen: '[https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=500&auto=format&fit=crop)'
     }
   ]
 
@@ -102,6 +97,14 @@ function TiendaPrincipal() {
     { nombre: 'Joyería', cantidad: '1.8k' }
   ]
 
+  const manejarCambioEstado = (estado) => {
+    if (estadosSeleccionados.includes(estado)) {
+      setEstadosSeleccionados(estadosSeleccionados.filter((e) => e !== estado))
+    } else {
+      setEstadosSeleccionados([...estadosSeleccionados, estado])
+    }
+  }
+
   const productosFiltrados = productos
     .filter((producto) => {
       const coincideCategoria =
@@ -112,7 +115,11 @@ function TiendaPrincipal() {
         producto.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
         producto.usuario.toLowerCase().includes(busqueda.toLowerCase())
 
-      return coincideCategoria && coincideBusqueda
+      const coincideEstado =
+        estadosSeleccionados.length === 0 ||
+        estadosSeleccionados.includes(producto.estado)
+
+      return coincideCategoria && coincideBusqueda && coincideEstado
     })
     .sort((a, b) => {
       if (orden === 'Precio menor') {
@@ -126,14 +133,10 @@ function TiendaPrincipal() {
       return a.id - b.id
     })
 
-  const comprar = (producto) => {
-    alert(`¡Compraste "${producto.nombre}" por $${producto.precio}!`)
-  }
-
   return (
     <div className="pagina-tienda-principal">
 
-      <Header/>
+      <Header />
 
       <section className="hero-tienda">
 
@@ -166,22 +169,38 @@ function TiendaPrincipal() {
           <h3>Estado de la prenda</h3>
 
           <label>
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              checked={estadosSeleccionados.includes('Nuevo con etiqueta')}
+              onChange={() => manejarCambioEstado('Nuevo con etiqueta')}
+            />
             Nuevo con etiqueta
           </label>
 
           <label>
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              checked={estadosSeleccionados.includes('Como nuevo')}
+              onChange={() => manejarCambioEstado('Como nuevo')}
+            />
             Como nuevo
           </label>
 
           <label>
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              checked={estadosSeleccionados.includes('Excelente')}
+              onChange={() => manejarCambioEstado('Excelente')}
+            />
             Excelente
           </label>
 
           <label>
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              checked={estadosSeleccionados.includes('Buen estado')}
+              onChange={() => manejarCambioEstado('Buen estado')}
+            />
             Buen estado
           </label>
 
@@ -303,7 +322,7 @@ function TiendaPrincipal() {
 
       </main>
 
-      <Footer/>
+      <Footer />
 
     </div>
   )
