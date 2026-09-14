@@ -6,28 +6,24 @@ import fotoPropia1 from '../../assets/imagenes/fotoPropia1.jpg'
 import fotoPropia2 from '../../assets/imagenes/fotoPropia2.jpg'
 import fotoPropia3 from '../../assets/imagenes/fotoPropia3.jpg'
 import fotoPropia4 from '../../assets/imagenes/fotoPropia4.jpg'
-
-// Importamos tus hermosos cardigans reales
 import closetPropio1 from '../../assets/imagenes/closetPropio1.jpg'
 import closetPropio2 from '../../assets/imagenes/closetPropio2.jpg'
 
 import './perfil_propio.css'
-import Header from "../../componentes/header/header";
-import Footer from "../../componentes/footer/footer";
+import Header from "../../componentes/header/header"
+import Footer from "../../componentes/footer/footer"
 
 function PerfilPropio() {
   const navigate = useNavigate();
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
-
-  // Estado para controlar si el menú de la foto de perfil está abierto o cerrado
   const [menuAbierto, setMenuAbierto] = useState(false);
 
-  // LISTA 1: Publicaciones del feed (con persistencia local en el navegador)
+  // LISTA 1: Publicaciones del feed
   const publicacionesPorDefecto = [
-    { id: 1, ruta: '/publicacion1', img: fotoPropia1, likes: 189, esFavorito: false },
-    { id: 2, ruta: '/publicacion2', img: fotoPropia2, likes: 245, esFavorito: false },
-    { id: 3, ruta: '/publicacion3', img: fotoPropia3, likes: 98, esFavorito: false },
-    { id: 4, ruta: '/publicacion4', img: fotoPropia4, likes: 150, esFavorito: false }
+    { id: 1, ruta: '/publicacion/1', img: fotoPropia1, likes: 189, esFavorito: false },
+    { id: 2, ruta: '/publicacion/2', img: fotoPropia2, likes: 245, esFavorito: false },
+    { id: 3, ruta: '/publicacion/3', img: fotoPropia3, likes: 98, esFavorito: false },
+    { id: 4, ruta: '/publicacion/4', img: fotoPropia4, likes: 150, esFavorito: false }
   ];
 
   const [listaPublicaciones, setListaPublicaciones] = useState(() => {
@@ -40,13 +36,13 @@ function PerfilPropio() {
     return publicacionesPorDefecto;
   });
 
-  // LISTA 2: Tu closet personal (Tus cardigans reales de exhibición, NO SE VENDEN) [1, 2]
+  // LISTA 2: Closet personal
   const prendasCloset = [
     { id: 1, img: closetPropio1, nombre: 'Folklore Cardigan', categoria: 'Cardigans' },
     { id: 2, img: closetPropio2, nombre: 'Midnight Cardigan', categoria: 'Cardigans' }
   ];
 
-  // ESTADOS DEL MODAL Y FORMULARIO DE CARGA [3]
+  // ESTADOS DEL MODAL Y FORMULARIO DE CARGA
   const [mostrarModal, setMostrarModal] = useState(false);
   const [imagenArchivo, setImagenArchivo] = useState(null);
   const [imagenPreview, setImagenPreview] = useState('');
@@ -58,7 +54,7 @@ function PerfilPropio() {
 
   const publicacionesFavoritas = listaPublicaciones.filter(post => post.esFavorito);
 
-  // MANEJAR LA SELECCIÓN DEL ARCHIVO LOCAL [3]
+  // MANEJAR LA SELECCIÓN DEL ARCHIVO LOCAL
   const handleFileChange = (e) => {
     const file = e.target.files.item(0);
     if (file) {
@@ -71,28 +67,56 @@ function PerfilPropio() {
     }
   };
 
-  // Enviar el formulario y decidir el destino (Feed de fotos o "Mi Tienda") [3]
-  const handleCrearPublicacion = (e) => {
+  // Enviar el formulario y guardar en MySQL o 'Mi Tienda'
+  const handleCrearPublicacion = async (e) => {
     e.preventDefault();
     if (!imagenPreview) {
       alert("Por favor selecciona una foto.");
       return;
     }
 
-    if (tipoPublicacion === 'feed') {
-      const nuevoPost = {
-        id: Date.now(),
-        ruta: `/publicacion_nueva_${Date.now()}`,
-        img: imagenPreview,
-        likes: 0,
-        esFavorito: false,
-        descripcion: descripcion
-      };
+    const usuarioSesion = JSON.parse(localStorage.getItem('usuarioLogueado'));
+    const idUsuarioActual = usuarioSesion?.id_usuario || 1;
 
-      const nuevasPublicaciones = [nuevoPost, ...listaPublicaciones];
-      setListaPublicaciones(nuevasPublicaciones);
-      localStorage.setItem('grwm_publicaciones', JSON.stringify(nuevasPublicaciones));
-      alert("¡Tu outfit ha sido publicado en tu Feed!");
+    if (tipoPublicacion === 'feed') {
+      try {
+        // 1. Enviamos la publicación a MySQL a través de la API
+        const response = await fetch('http://localhost:3000/api/publicaciones', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            descripcion: descripcion,
+            id_usuario: idUsuarioActual
+          })
+        });
+
+        if (response.ok) {
+          const publicacionGuardada = await response.json();
+
+          // 2. Usamos el id_publicacion REAL devuelto por MySQL
+          const nuevoPost = {
+            id: publicacionGuardada.id_publicacion,
+            ruta: `/publicacion/${publicacionGuardada.id_publicacion}`,
+            img: imagenPreview,
+            likes: 0,
+            esFavorito: false,
+            descripcion: descripcion
+          };
+
+          const nuevasPublicaciones = [nuevoPost, ...listaPublicaciones];
+          setListaPublicaciones(nuevasPublicaciones);
+          localStorage.setItem('grwm_publicaciones', JSON.stringify(nuevasPublicaciones));
+
+          alert("¡Tu outfit ha sido publicado y guardado en la base de datos!");
+        } else {
+          alert("Ocurrió un error al guardar la publicación en el servidor.");
+        }
+      } catch (error) {
+        console.error("Error al conectar con el servidor:", error);
+        alert("No se pudo conectar con el servidor.");
+      }
     } else {
       const nuevoProducto = {
         id: Date.now(),
@@ -107,7 +131,7 @@ function PerfilPropio() {
       const tiendaActual = JSON.parse(localStorage.getItem('grwm_tienda_productos')) || [];
       const nuevaTienda = [nuevoProducto, ...tiendaActual];
       localStorage.setItem('grwm_tienda_productos', JSON.stringify(nuevaTienda));
-      
+
       alert("¡Prenda cargada con éxito! Ya se encuentra disponible en 'Mi Tienda'.");
     }
 
@@ -123,7 +147,6 @@ function PerfilPropio() {
 
   return (
     <div className="pagina-perfil">
-      
       <Header/>
 
       {/* CONTENIDO PRINCIPAL */}
@@ -183,12 +206,17 @@ function PerfilPropio() {
           </button>
         </div>
 
-        {/* GRID DE CONTENIDO ORIGINAL DE TU AMIGA (Inmune a roturas de diseño) [4] */}
+        {/* GRID DE CONTENIDO */}
         <section className="grid-publicaciones">
           
-          {/* VISTA 1: PUBLICACIONES SOCIALES (SÍ CLIQUEABLES) */}
+          {/* VISTA 1: PUBLICACIONES SOCIALES (CLIQUEABLES CON ID DINÁMICO) */}
           {pestanaActiva === 'publicaciones' && listaPublicaciones.map((post) => (
-            <button key={post.id} className="post" type="button" onClick={() => navigate(post.ruta)}>
+            <button 
+              key={post.id} 
+              className="post" 
+              type="button" 
+              onClick={() => navigate(`/publicacion/${post.id}`)}
+            >
               <div className="foto-post">
                 <img src={post.img} alt={`Publicación ${post.id}`} />
               </div>
@@ -258,8 +286,8 @@ function PerfilPropio() {
                   onChange={(e) => setTipoPublicacion(e.target.value)}
                   className="modal-select"
                 >
-                  <option value="feed">Publicación para el feed </option>
-                  <option value="tienda">Prenda para vender </option>
+                  <option value="feed">Publicación para el feed</option>
+                  <option value="tienda">Prenda para vender</option>
                 </select>
               </div>
 

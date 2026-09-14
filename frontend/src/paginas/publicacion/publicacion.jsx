@@ -1,20 +1,74 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg'
-import fotoPropia1 from '../../assets/imagenes/fotoPropia1.jpg' // Volvemos a la foto modelada
-import './publicacion1.css'
-import Header from "../../componentes/header/header";
+import fotoPropia1 from '../../assets/imagenes/fotoPropia1.jpg'
+import fotoPropia2 from '../../assets/imagenes/fotoPropia2.jpg'
+import fotoPropia3 from '../../assets/imagenes/fotoPropia3.jpg'
+import fotoPropia4 from '../../assets/imagenes/fotoPropia4.jpg'
+import Header from "../../componentes/header/header"
+import '../publicacion/publicacion.css' 
 
-function Publicacion1() {
+// Mapa para asignar la imagen local según el ID de la publicación
+const mapaFotos = {
+  1: fotoPropia1,
+  2: fotoPropia2,
+  3: fotoPropia3,
+  4: fotoPropia4
+};
+
+function Publicacion() {
   const navigate = useNavigate();
+  const { id } = useParams(); // Obtiene el parámetro de la URL (/publicacion/:id)
+  const idPublicacion = Number(id) || 1;
+
+  // Obtenemos el usuario de la sesión guardada en localStorage
+  const usuarioSesion = JSON.parse(localStorage.getItem('usuarioLogueado'));
+  const idUsuarioActual = usuarioSesion?.id_usuario || 1;
+
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
-  
+  const [totalLikes, setTotalLikes] = useState(189);
   const [comentarios, setComentarios] = useState([
     { usuario: '@fashionlover', texto: 'Me encanta este look ♡' },
     { usuario: '@swiftie13', texto: 'Los colores quedan preciosos!!!' }
   ]);
   const [nuevoComentario, setNuevoComentario] = useState('');
+
+  // 1. Cargar el estado inicial del Me Gusta desde el backend
+  useEffect(() => {
+    const consultarLikes = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/publicaciones/${idPublicacion}/likes?id_usuario=${idUsuarioActual}`);
+        if (response.ok) {
+          const data = await response.json();
+          setLiked(data.dioLike);
+          setTotalLikes(data.totalLikes);
+        }
+      } catch (error) {
+        console.error("Error al consultar likes:", error);
+      }
+    };
+
+    consultarLikes();
+  }, [idPublicacion, idUsuarioActual]);
+
+  // 2. Función para alternar Me Gusta en la API
+  const handleLike = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/publicaciones/${idPublicacion}/like?id_usuario=${idUsuarioActual}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setLiked(data.dioLike);
+        setTotalLikes(data.totalLikes);
+      }
+    } catch (error) {
+      console.error("Error al procesar me gusta:", error);
+    }
+  };
 
   const handleAgregarComentario = (e) => {
     e.preventDefault();
@@ -25,9 +79,7 @@ function Publicacion1() {
 
   return (
     <div className="pagina-publicacion">
-
-      <Header/>
-
+      <Header />
       <main className="contenido-publicacion">
         <button className="volver" type="button" onClick={() => navigate('/perfil_propio')}>
           ← Volver a mi perfil
@@ -35,7 +87,7 @@ function Publicacion1() {
 
         <section className="publicacion-card">
           <div className="publicacion-foto">
-            <img src={fotoPropia1} alt="Look de Taylor Swift" />
+            <img src={mapaFotos[idPublicacion] || fotoPropia1} alt={`Publicación ${idPublicacion}`} />
           </div>
 
           <div className="publicacion-info">
@@ -58,7 +110,11 @@ function Publicacion1() {
 
             <div className="interacciones">
               <div className="iconos-interaccion">
-                <button type="button" className={liked ? 'activo-like' : ''} onClick={() => setLiked(!liked)}>
+                <button 
+                  type="button" 
+                  className={liked ? 'activo-like' : ''} 
+                  onClick={handleLike}
+                >
                   {liked ? '♥' : '♡'}
                 </button>
                 <button type="button" className={saved ? 'activo-save' : ''} onClick={() => setSaved(!saved)}>
@@ -66,9 +122,7 @@ function Publicacion1() {
                 </button>
                 <button type="button" onClick={() => alert('¡Enlace copiado!')}>↗</button>
               </div>
-              <strong className="cantidad-likes">
-                {liked ? 190 : 189} Me gusta
-              </strong>
+              <strong className="cantidad-likes">{totalLikes} Me gusta</strong>
             </div>
 
             <div className="precio-publicacion">
@@ -103,4 +157,4 @@ function Publicacion1() {
   );
 }
 
-export default Publicacion1;
+export default Publicacion;
