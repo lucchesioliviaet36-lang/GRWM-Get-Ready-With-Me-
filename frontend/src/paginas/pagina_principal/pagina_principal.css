@@ -1,234 +1,975 @@
-/* Layout General */
-.layout-container {
-  display: flex;
-  gap: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #fdf6f6; /* Fondo rosado muy claro */
-  font-family: system-ui, -apple-system, sans-serif;
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 
-/* Sidebar */
-.sidebar {
-  width: 280px;
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+
+  background: #fff7fa;
+
+  color: #633d51;
+}
+
+
+/* =====================================================
+   PÁGINA COMPLETA
+===================================================== */
+
+.feed-page {
+  width: 100%;
+  min-height: 100vh;
+
   display: flex;
   flex-direction: column;
-  gap: 20px;
+
+  background: #fff7fa;
 }
 
 
+/* =====================================================
+   HEADER
+===================================================== */
+
+.feed-header {
+  width: 100%;
+
+  flex-shrink: 0;
+}
+
+
+/* =====================================================
+   CUERPO
+===================================================== */
+
+.feed-body {
+  width: 100%;
+
+  flex: 1;
+
+  display: grid;
+
+  grid-template-columns: 185px minmax(0, 1fr);
+
+  gap: 0;
+
+  align-items: start;
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.sidebar {
+  width: 100%;
+
+  padding: 14px 10px 30px 18px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+
+/* =====================================================
+   TARJETAS SIDEBAR
+===================================================== */
+
 .card-box {
+  width: 100%;
+
+  padding: 13px;
+
   background: #ffffff;
-  padding: 18px;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+
+  border: 1px solid #efdce5;
+
+  border-radius: 13px;
+
+  box-shadow:
+    0 2px 7px rgba(104, 53, 79, 0.035);
 }
 
 
 .card-box h3 {
-  font-size: 1.1rem;
-  color: #5c3a42;
-  margin-top: 0;
-  margin-bottom: 16px;
+  margin-bottom: 11px;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 13px;
+
+  font-weight: 500;
+
+  color: #633d51;
 }
 
 
+/* =====================================================
+   TENDENCIAS
+===================================================== */
+
 .trends-list {
+  width: 100%;
+
   list-style: none;
-  padding: 0;
-  margin: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
 }
 
 
 .trends-list li {
+  width: 100%;
+
   display: flex;
   justify-content: space-between;
-  margin-bottom: 12px;
-  font-size: 0.9rem;
-  color: #4a4a4a;
+  align-items: center;
+
+  gap: 5px;
+}
+
+
+.trends-list span {
+  color: #82546a;
+
+  font-size: 9px;
 }
 
 
 .trends-list small {
-  color: #888;
+  color: #a88b99;
+
+  font-size: 7px;
+
+  white-space: nowrap;
 }
 
 
+/* =====================================================
+   SUGERENCIAS
+===================================================== */
+
 .suggestions-list {
+  width: 100%;
+
   list-style: none;
-  padding: 0;
-  margin: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 11px;
 }
 
 
 .suggestions-list li {
+  width: 100%;
+
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
+
+  gap: 6px;
 }
 
 
 .suggestions-list img {
-  width: 38px;
-  height: 38px;
+  width: 25px;
+  height: 25px;
+
   border-radius: 50%;
+
   object-fit: cover;
+
+  flex-shrink: 0;
 }
 
 
-.suggestions-list div {
+.suggestion-info {
+  min-width: 0;
+
+  flex: 1;
+
   display: flex;
   flex-direction: column;
-  flex: 1;
+
+  gap: 1px;
 }
 
 
-.suggestions-list small {
-  color: #888;
-  font-size: 0.8rem;
+.suggestion-info strong {
+  font-size: 8px;
+
+  color: #633d51;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+
+.suggestion-info small {
+  font-size: 7px;
+
+  color: #a88b99;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* =====================================================
+   BOTÓN SEGUIR
+===================================================== */
 
 .btn-follow {
   border: none;
+
   background: transparent;
-  color: #d14d72;
-  font-weight: bold;
+
+  color: #b64e79;
+
+  font-size: 7px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  padding: 2px;
+}
+
+
+.btn-follow:hover {
+  color: #8d315a;
+}
+
+
+.btn-follow.siguiendo {
+  color: #9b8290;
+}
+
+
+/* =====================================================
+   FEED PRINCIPAL
+===================================================== */
+
+.feed-content {
+  width: 100%;
+
+  min-width: 0;
+
+  padding: 14px 28px 35px 20px;
+
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   HISTORIAS
+===================================================== */
+
+.stories-bar {
+  width: 100%;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 20px;
+
+  padding: 2px 5px;
+
+  margin-bottom: 17px;
+
+  overflow-x: auto;
+
+  scrollbar-width: none;
+}
+
+
+.stories-bar::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* Historia */
+
+.story-item {
+  min-width: 63px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 5px;
+
   cursor: pointer;
 }
 
 
-/* Feed Principal */
-.feed-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-
-/* Historias */
-.stories-bar {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  padding-bottom: 8px;
-}
-
-
-.story-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 0.8rem;
-  color: #333;
-}
-
+/* Círculo */
 
 .avatar-ring {
+  width: 55px;
+  height: 55px;
+
   padding: 2px;
-  border: 2px solid #d14d72;
+
   border-radius: 50%;
-  margin-bottom: 4px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: linear-gradient(
+    135deg,
+    #bd4e7b,
+    #e59bb7,
+    #c65d89
+  );
 }
 
+
+/* Imagen */
 
 .avatar-ring img {
-  width: 56px;
-  height: 56px;
+  width: 100%;
+  height: 100%;
+
   border-radius: 50%;
-  display: block;
+
   object-fit: cover;
+
+  border: 2px solid #ffffff;
 }
 
 
-/* Cards de Post */
+/* Tu historia */
+
+.avatar-ring.user-story {
+  background: #dfc5d1;
+}
+
+
+/* Nombre */
+
+.story-item span {
+  max-width: 65px;
+
+  color: #70485b;
+
+  font-size: 8px;
+
+  text-align: center;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+/* =====================================================
+   PUBLICACIONES
+===================================================== */
+
 .posts-grid {
+  width: 100%;
+
+  max-width: 1060px;
+
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 11px;
 }
 
+
+/* =====================================================
+   TARJETA DE PUBLICACIÓN
+===================================================== */
 
 .post-card {
+  width: 100%;
+
+  min-width: 0;
+
   background: #ffffff;
-  border-radius: 16px;
+
+  border: 1px solid #eedbe4;
+
+  border-radius: 12px;
+
   overflow: hidden;
-  padding: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+
+  box-shadow:
+    0 2px 7px rgba(100, 50, 80, 0.035);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
+
+.post-card:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 5px 15px rgba(100, 50, 80, 0.07);
+}
+
+
+/* =====================================================
+   IMAGEN
+===================================================== */
 
 .image-container {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-
-.image-container img {
   width: 100%;
-  height: 280px;
-  object-fit: cover;
-  display: block;
+
+  position: relative;
+
+  aspect-ratio: 16 / 8.5;
+
+  overflow: hidden;
+
+  background: #f1e7eb;
+
+  cursor: pointer;
 }
 
+
+.image-container > img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  transition: transform 0.3s ease;
+}
+
+
+.post-card:hover .image-container > img {
+  transform: scale(1.015);
+}
+
+
+/* =====================================================
+   PRECIO
+===================================================== */
 
 .price-tag {
   position: absolute;
-  bottom: 12px;
-  left: 12px;
-  background: #c0486b;
-  color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-weight: bold;
-  font-size: 0.85rem;
+
+  left: 7px;
+  bottom: 7px;
+
+  padding: 4px 7px;
+
+  border-radius: 5px;
+
+  background: #b64e79;
+
+  color: #ffffff;
+
+  font-size: 8px;
+
+  font-weight: 600;
 }
 
 
-.post-header {
+/* =====================================================
+   CORAZÓN GRANDE
+===================================================== */
+
+.corazon-overlay {
+  position: absolute;
+
+  inset: 0;
+
   display: flex;
+
+  justify-content: center;
   align-items: center;
-  gap: 8px;
-  margin-top: 12px;
+
+  color: white;
+
+  font-size: 58px;
+
+  text-shadow:
+    0 2px 10px rgba(100, 30, 60, 0.25);
+
+  pointer-events: none;
+
+  animation: corazonAnimacion 0.9s ease forwards;
+}
+
+
+@keyframes corazonAnimacion {
+
+  0% {
+    transform: scale(0.3);
+
+    opacity: 0;
+  }
+
+  35% {
+    transform: scale(1.15);
+
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+
+    opacity: 0;
+  }
+
+}
+
+
+/* =====================================================
+   HEADER DE POST
+===================================================== */
+
+.post-header {
+  width: 100%;
+
+  padding: 7px 9px 3px;
+}
+
+
+.user-info {
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
 }
 
 
 .user-avatar {
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
+
   border-radius: 50%;
+
+  object-fit: cover;
 }
 
+
+.user-info strong {
+  color: #633d51;
+
+  font-size: 8px;
+
+  font-weight: 600;
+}
+
+
+/* =====================================================
+   DESCRIPCIÓN
+===================================================== */
 
 .post-description {
-  font-size: 0.88rem;
-  color: #555;
-  margin: 10px 0;
+  width: 100%;
+
+  padding: 2px 9px 7px;
+
+  color: #80566a;
+
+  font-size: 8px;
+
   line-height: 1.4;
+
+  min-height: 29px;
 }
 
 
+/* =====================================================
+   FOOTER POST
+===================================================== */
+
 .post-footer {
+  width: 100%;
+
   display: flex;
-  justify-content: space-between;
+
   align-items: center;
-  color: #777;
-  font-size: 0.85rem;
+
+  justify-content: space-between;
+
+  padding: 6px 9px 7px;
+
+  border-top: 1px solid #f4e8ed;
 }
 
 
 .stats {
   display: flex;
-  gap: 12px;
+
+  align-items: center;
+
+  gap: 4px;
+
+  color: #987584;
+
+  font-size: 7px;
 }
 
+
+/* =====================================================
+   BOTONES
+===================================================== */
+
+.btn-icon,
+.comment-button,
 .btn-save {
-  background: none;
   border: none;
+
+  background: transparent;
+
+  padding: 0;
+
   cursor: pointer;
+
+  color: #987584;
+
+  font-size: 13px;
+
+  line-height: 1;
+
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+
+.btn-icon:hover,
+.comment-button:hover,
+.btn-save:hover {
+  transform: scale(1.15);
+}
+
+
+/* Like */
+
+.btn-icon.liked {
+  color: #bd4d7b;
+}
+
+
+/* Guardado */
+
+.btn-save.guardado {
+  color: #b64e79;
+}
+
+
+/* =====================================================
+   FOOTER GENERAL
+===================================================== */
+
+.feed-footer {
+  width: 100%;
+
+  flex-shrink: 0;
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 1000px) {
+
+  .feed-body {
+    grid-template-columns: 170px minmax(0, 1fr);
+  }
+
+
+  .sidebar {
+    padding-left: 10px;
+    padding-right: 8px;
+  }
+
+
+  .feed-content {
+    padding-left: 15px;
+    padding-right: 18px;
+  }
+
+
+  .stories-bar {
+    gap: 16px;
+  }
+
+
+  .posts-grid {
+    gap: 10px;
+  }
+
+}
+
+
+/* =====================================================
+   TABLET PEQUEÑA
+===================================================== */
+
+@media (max-width: 800px) {
+
+  .feed-body {
+    grid-template-columns: 150px minmax(0, 1fr);
+  }
+
+
+  .sidebar {
+    padding-left: 8px;
+    padding-right: 6px;
+  }
+
+
+  .card-box {
+    padding: 10px;
+  }
+
+
+  .feed-content {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+
+  .avatar-ring {
+    width: 50px;
+    height: 50px;
+  }
+
+
+  .story-item {
+    min-width: 58px;
+  }
+
+
+  .posts-grid {
+    gap: 8px;
+  }
+
+}
+
+
+/* =====================================================
+   CELULAR
+===================================================== */
+
+@media (max-width: 650px) {
+
+  .feed-body {
+    display: flex;
+
+    flex-direction: column;
+
+    width: 100%;
+  }
+
+
+  /* Sidebar pasa arriba */
+
+  .sidebar {
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: row;
+
+    padding: 10px;
+
+    gap: 8px;
+
+    overflow-x: auto;
+  }
+
+
+  .sidebar .card-box {
+    min-width: 230px;
+  }
+
+
+  .feed-content {
+    width: 100%;
+
+    padding: 8px 10px 25px;
+  }
+
+
+  .stories-bar {
+    gap: 17px;
+
+    margin-bottom: 14px;
+  }
+
+
+  .avatar-ring {
+    width: 53px;
+    height: 53px;
+  }
+
+
+  .story-item {
+    min-width: 61px;
+  }
+
+
+  .posts-grid {
+    width: 100%;
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+  }
+
+
+  .post-description {
+    font-size: 7px;
+  }
+
+}
+
+
+/* =====================================================
+   CELULAR MUY PEQUEÑO
+===================================================== */
+
+@media (max-width: 450px) {
+
+  .sidebar {
+    padding: 8px;
+  }
+
+
+  .sidebar .card-box {
+    min-width: 210px;
+  }
+
+
+  .feed-content {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+
+
+  .stories-bar {
+    gap: 13px;
+
+    padding-left: 2px;
+  }
+
+
+  .avatar-ring {
+    width: 49px;
+    height: 49px;
+  }
+
+
+  .story-item {
+    min-width: 56px;
+  }
+
+
+  .story-item span {
+    font-size: 7px;
+  }
+
+
+  .posts-grid {
+    grid-template-columns: 1fr;
+
+    gap: 10px;
+  }
+
+
+  .image-container {
+    aspect-ratio: 16 / 9;
+  }
+
+
+  .post-description {
+    font-size: 8px;
+  }
+
+}
+
+
+/* =====================================================
+   PANTALLAS GRANDES
+===================================================== */
+
+@media (min-width: 1400px) {
+
+  .feed-body {
+    grid-template-columns:
+      210px minmax(0, 1fr);
+  }
+
+
+  .sidebar {
+    padding-left: 30px;
+
+    padding-right: 12px;
+  }
+
+
+  .feed-content {
+    padding-left: 25px;
+
+    padding-right: 40px;
+  }
+
+
+  .stories-bar {
+    gap: 23px;
+  }
+
+
+  .avatar-ring {
+    width: 58px;
+    height: 58px;
+  }
+
+
+  .story-item {
+    min-width: 66px;
+  }
+
+
+  .posts-grid {
+    max-width: 1080px;
+
+    gap: 13px;
+  }
+
 }

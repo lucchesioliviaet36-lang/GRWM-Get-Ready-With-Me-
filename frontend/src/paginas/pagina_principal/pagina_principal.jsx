@@ -1,211 +1,574 @@
 import './pagina_principal.css';
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from "react";
+import { useState } from 'react';
+
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
 
 
 export default function Feed() {
-  const navigate = useNavigate();
 
+  // ==========================================
+  // ESTADOS
+  // ==========================================
 
-  // Estados para las interacciones
   const [siguiendo, setSiguiendo] = useState({});
   const [likes, setLikes] = useState({});
+  const [guardados, setGuardados] = useState({});
   const [corazonGrande, setCorazonGrande] = useState(null);
 
 
+  // ==========================================
+  // HISTORIAS
+  // ==========================================
+
   const historias = [
-    { id: 1, usuario: 'Tu historia', img: 'https://i.pravatar.cc/150?img=11', esUsuario: true },
-    { id: 2, usuario: 'clara.v', img: 'https://i.pravatar.cc/150?img=5' },
-    { id: 3, usuario: 'hugo_st', img: 'https://i.pravatar.cc/150?img=12' },
-    { id: 4, usuario: 'sofia.art', img: 'https://i.pravatar.cc/150?img=9' },
-    { id: 5, usuario: 'brian_m', img: 'https://i.pravatar.cc/150?img=13' },
-    { id: 6, usuario: 'mora_closet', img: 'https://i.pravatar.cc/150?img=16' },
-  ];
-
-
-  const publicaciones = [
     {
       id: 1,
-      usuario: 'clara.v',
-      avatar: 'https://i.pravatar.cc/150?img=5',
-      imagen: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=800',
-      precio: '€85',
-      descripcion: 'Enamorada de este trench coat que conseguí en una tienda vintage de Berlín. Combina con todo ☕✨',
-      likesCount: 340,
-      comentarios: 42
+      usuario: 'Tu historia',
+      img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop',
+      esUsuario: true
     },
     {
       id: 2,
+      usuario: 'clara.v',
+      img: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop'
+    },
+    {
+      id: 3,
       usuario: 'hugo_st',
-      avatar: 'https://i.pravatar.cc/150?img=12',
-      imagen: 'https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=800',
-      precio: null,
-      descripcion: 'Paleta de grises y neutros para una tarde fresca en la ciudad. ¿Qué opinan de esta campera?',
-      likesCount: 512,
-      comentarios: 19
+      img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop'
+    },
+    {
+      id: 4,
+      usuario: 'sofia.art',
+      img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop'
+    },
+    {
+      id: 5,
+      usuario: 'brian_m',
+      img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop'
+    },
+    {
+      id: 6,
+      usuario: 'mora_closet',
+      img: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&auto=format&fit=crop'
     }
   ];
 
 
-  // Manejo del doble clic sobre la publicación
-  const handleDobleClic = (postId) => {
-    setLikes((prev) => ({ ...prev, [postId]: true }));
-    setCorazonGrande(postId);
+  // ==========================================
+  // PUBLICACIONES
+  // ==========================================
+
+  const publicaciones = [
+
+    {
+      id: 1,
+      usuario: 'clara.v',
+      avatar:
+        'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop',
+      imagen:
+        'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&auto=format&fit=crop',
+      precio: '€85',
+      descripcion:
+        'Enamorada de este trench coat que conseguí en una tienda vintage de Berlín. Combina con todo ☕✨',
+      likesCount: 340,
+      comentarios: 42
+    },
+
+    {
+      id: 2,
+      usuario: 'hugo_st',
+      avatar:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop',
+      imagen:
+        'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=800&auto=format&fit=crop',
+      precio: null,
+      descripcion:
+        'Paleta de grises y neutros para una tarde fresca en la ciudad. ¿Qué opinan de esta campera?',
+      likesCount: 512,
+      comentarios: 19
+    },
+
+    {
+      id: 3,
+      usuario: 'mora_closet',
+      avatar:
+        'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&auto=format&fit=crop',
+      imagen:
+        'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&auto=format&fit=crop',
+      precio: '€120',
+      descripcion:
+        'Bolso estructurado de piel vacuno. Un clásico que nunca pasa de moda.',
+      likesCount: 289,
+      comentarios: 15
+    },
+
+    {
+      id: 4,
+      usuario: 'sofia.art',
+      avatar:
+        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop',
+      imagen:
+        'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&auto=format&fit=crop',
+      precio: '€45',
+      descripcion:
+        'Remera polo tejida de rayas pastel. Ideal para días soleados.',
+      likesCount: 410,
+      comentarios: 28
+    }
+
+  ];
+
+
+  // ==========================================
+  // SUGERENCIAS
+  // ==========================================
+
+  const sugerencias = [
+    {
+      nombre: 'Lucía M.',
+      handle: 'luciatrends',
+      avatar:
+        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop'
+    },
+
+    {
+      nombre: 'Marcos V.',
+      handle: 'marcos_fit',
+      avatar:
+        'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&auto=format&fit=crop'
+    },
+
+    {
+      nombre: 'Sonia Vintage',
+      handle: 'sonia_retro',
+      avatar:
+        'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop'
+    }
+  ];
+
+
+  // ==========================================
+  // SEGUIR
+  // ==========================================
+
+  const toggleSeguir = (handle) => {
+
+    setSiguiendo((prev) => ({
+      ...prev,
+      [handle]: !prev[handle]
+    }));
+
+  };
+
+
+  // ==========================================
+  // LIKE
+  // ==========================================
+
+  const toggleLike = (id) => {
+
+    setLikes((prev) => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+
+  };
+
+
+  // ==========================================
+  // GUARDAR
+  // ==========================================
+
+  const toggleGuardar = (id) => {
+
+    setGuardados((prev) => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+
+  };
+
+
+  // ==========================================
+  // DOBLE CLICK
+  // ==========================================
+
+  const handleDobleClic = (id) => {
+
+    setLikes((prev) => ({
+      ...prev,
+      [id]: true
+    }));
+
+    setCorazonGrande(id);
+
     setTimeout(() => {
       setCorazonGrande(null);
-    }, 2000);
+    }, 900);
+
   };
 
 
-  // Alternar seguir / siguiendo
-  const toggleSeguir = (usuario) => {
-    setSiguiendo((prev) => ({ ...prev, [usuario]: !prev[usuario] }));
-  };
-
+  // ==========================================
+  // RETURN
+  // ==========================================
 
   return (
-    <div className="layout-container">
 
-      <Header/>
-
-      {/* Sidebar Izquierdo */}
-      <aside className="sidebar">
-        <div className="card-box">
-          <ul className="perfilPagPrincipal">
-            <button onClick={() => navigate('/perfil_propio')}>
-              <img src="https://i.pravatar.cc/150?img=32" alt="user" />
-            </button>
-            <button onClick={() => navigate('/perfil_propio')}>
-              Tu perfil
-            </button>
-          </ul>
-        </div>
+    <div className="feed-page">
 
 
-        <div className="card-box">
-          <h3>Tendencias para ti</h3>
-          <ul className="trends-list">
-            <li><span>#OOTDMinimal</span> <small>1.2k posts</small></li>
-            <li><span>#CottageCore</span> <small>1.2k posts</small></li>
-            <li><span>#StreetwearSp</span> <small>1.2k posts</small></li>
-            <li><span>#SecondHandFinds</span> <small>1.2k posts</small></li>
-            <li><span>#Y2KRevival</span> <small>1.2k posts</small></li>
-          </ul>
-        </div>
+      {/* HEADER */}
+
+      <header className="feed-header">
+        <Header />
+      </header>
 
 
-        <div className="card-box">
-          <h3>Sugerencias</h3>
-          <ul className="suggestions-list">
-            <li>
-              <img src="https://i.pravatar.cc/150?img=32" alt="user" />
-              <div>
-                <strong>Lucía M.</strong>
-                <small>@luciatrends</small>
-              </div>
-              <button
-                className={`btn-follow ${siguiendo['luciatrends'] ? 'siguiendo' : ''}`}
-                onClick={() => toggleSeguir('luciatrends')}
-              >
-                {siguiendo['luciatrends'] ? 'Siguiendo' : 'Seguir'}
-              </button>
-            </li>
-            <li>
-              <img src="https://i.pravatar.cc/150?img=33" alt="user" />
-              <div>
-                <strong>Marcos V.</strong>
-                <small>@marcos_fit</small>
-              </div>
-              <button
-                className={`btn-follow ${siguiendo['marcos_fit'] ? 'siguiendo' : ''}`}
-                onClick={() => toggleSeguir('marcos_fit')}
-              >
-                {siguiendo['marcos_fit'] ? 'Siguiendo' : 'Seguir'}
-              </button>
-            </li>
-          </ul>
-        </div>
-      </aside>
+
+      {/* CUERPO */}
+
+      <div className="feed-body">
 
 
-      {/* Feed Principal */}
-      <main className="feed-content">
-        {/* Historias */}
-        <div className="stories-bar">
-          {historias.map((item) => (
-            <div key={item.id} className="story-item">
-              <div className={`avatar-ring ${item.esUsuario ? 'user-story' : ''}`}>
-                <img src={item.img} alt={item.usuario} />
-              </div>
-              <span>{item.usuario}</span>
-            </div>
-          ))}
-        </div>
+        {/* ==================================
+            SIDEBAR
+        =================================== */}
+
+        <aside className="sidebar">
 
 
-        {/* Grilla de Publicaciones */}
-        <div className="posts-grid">
-          {publicaciones.map((post) => (
-            <article key={post.id} className="post-card">
-              {/* Imagen con evento de doble clic y animación de corazón */}
-              <div
-                className="image-container"
-                onDoubleClick={() => handleDobleClic(post.id)}
-              >
-                <img src={post.imagen} alt="Outfit" />
-                {post.precio && <span className="price-tag">{post.precio}</span>}
+          {/* Tendencias */}
+
+          <div className="card-box">
+
+            <h3>
+              Tendencias para ti
+            </h3>
+
+            <ul className="trends-list">
+
+              <li>
+                <span>#OOTDMinimal</span>
+                <small>1.2k posts</small>
+              </li>
+
+              <li>
+                <span>#CottageCore</span>
+                <small>1.2k posts</small>
+              </li>
+
+              <li>
+                <span>#StreetwearSp</span>
+                <small>1.2k posts</small>
+              </li>
+
+              <li>
+                <span>#SecondHandFinds</span>
+                <small>1.2k posts</small>
+              </li>
+
+              <li>
+                <span>#Y2KRevival</span>
+                <small>1.2k posts</small>
+              </li>
+
+            </ul>
+
+          </div>
 
 
-                {/* Overlay de corazón gigante al hacer doble clic */}
-                {corazonGrande === post.id && (
-                  <div className="corazon-overlay">❤️</div>
-                )}
-              </div>
 
+          {/* Sugerencias */}
 
-              <div className="post-header">
-                <div className="user-info">
-                  <img src={post.avatar} alt={post.usuario} className="user-avatar" />
-                  <strong>{post.usuario}</strong>
-                </div>
-                <button
-                  className={`btn-follow ${siguiendo[post.usuario] ? 'siguiendo' : ''}`}
-                  onClick={() => toggleSeguir(post.usuario)}
-                >
-                  {siguiendo[post.usuario] ? 'Siguiendo' : 'Seguir'}
-                </button>
-              </div>
+          <div className="card-box">
 
+            <h3>
+              Sugerencias
+            </h3>
 
-              <p className="post-description">{post.descripcion}</p>
+            <ul className="suggestions-list">
 
+              {sugerencias.map((persona) => (
 
-              <div className="post-footer">
-                <div className="stats">
+                <li key={persona.handle}>
+
+                  <img
+                    src={persona.avatar}
+                    alt={persona.nombre}
+                  />
+
+                  <div className="suggestion-info">
+
+                    <strong>
+                      {persona.nombre}
+                    </strong>
+
+                    <small>
+                      @{persona.handle}
+                    </small>
+
+                  </div>
+
                   <button
-                    className="btn-icon"
+                    className={
+                      `btn-follow ${
+                        siguiendo[persona.handle]
+                          ? 'siguiendo'
+                          : ''
+                      }`
+                    }
+
                     onClick={() =>
-                      setLikes((prev) => ({ ...prev, [post.id]: !prev[post.id] }))
+                      toggleSeguir(persona.handle)
                     }
                   >
-                    {likes[post.id] ? '❤️' : '🤍'}
-                  </button>
-                  <span>
-                    {post.likesCount + (likes[post.id] ? 1 : 0)} likes
-                  </span>
-                  <span>💬 {post.comentarios}</span>
-                </div>
-                <button className="btn-save">🔖</button>
-              </div>
-            </article>
-          ))}
-        </div>
-      </main>
 
-      <Footer/>
-      
+                    {siguiendo[persona.handle]
+                      ? 'Siguiendo'
+                      : 'Seguir'}
+
+                  </button>
+
+                </li>
+
+              ))}
+
+            </ul>
+
+          </div>
+
+        </aside>
+
+
+
+        {/* ==================================
+            FEED
+        =================================== */}
+
+        <main className="feed-content">
+
+
+          {/* CONTENEDOR CENTRAL */}
+
+          <div className="feed-inner">
+
+
+            {/* ==================================
+                HISTORIAS
+            =================================== */}
+
+            <section className="stories-bar">
+
+              {historias.map((historia) => (
+
+                <div
+                  className="story-item"
+                  key={historia.id}
+                >
+
+                  <div
+                    className={
+                      `avatar-ring ${
+                        historia.esUsuario
+                          ? 'user-story'
+                          : ''
+                      }`
+                    }
+                  >
+
+                    <img
+                      src={historia.img}
+                      alt={historia.usuario}
+                    />
+
+                  </div>
+
+                  <span>
+                    {historia.usuario}
+                  </span>
+
+                </div>
+
+              ))}
+
+            </section>
+
+
+
+            {/* ==================================
+                PUBLICACIONES
+            =================================== */}
+
+            <section className="posts-grid">
+
+              {publicaciones.map((post) => (
+
+                <article
+                  className="post-card"
+                  key={post.id}
+                >
+
+
+                  {/* Imagen */}
+
+                  <div
+                    className="image-container"
+
+                    onDoubleClick={() =>
+                      handleDobleClic(post.id)
+                    }
+                  >
+
+                    <img
+                      src={post.imagen}
+                      alt={`Outfit de ${post.usuario}`}
+                    />
+
+
+                    {post.precio && (
+
+                      <span className="price-tag">
+                        {post.precio}
+                      </span>
+
+                    )}
+
+
+                    {corazonGrande === post.id && (
+
+                      <div className="corazon-overlay">
+                        ♥
+                      </div>
+
+                    )}
+
+                  </div>
+
+
+
+                  {/* Usuario */}
+
+                  <div className="post-header">
+
+                    <div className="user-info">
+
+                      <img
+                        className="user-avatar"
+                        src={post.avatar}
+                        alt={post.usuario}
+                      />
+
+                      <strong>
+                        {post.usuario}
+                      </strong>
+
+                    </div>
+
+                  </div>
+
+
+
+                  {/* Descripción */}
+
+                  <p className="post-description">
+                    {post.descripcion}
+                  </p>
+
+
+
+                  {/* Footer */}
+
+                  <div className="post-footer">
+
+                    <div className="stats">
+
+                      <button
+                        className={
+                          `btn-icon ${
+                            likes[post.id]
+                              ? 'liked'
+                              : ''
+                          }`
+                        }
+
+                        onClick={() =>
+                          toggleLike(post.id)
+                        }
+                      >
+                        {likes[post.id]
+                          ? '♥'
+                          : '♡'}
+                      </button>
+
+
+                      <span>
+                        {post.likesCount +
+                          (likes[post.id]
+                            ? 1
+                            : 0)}
+                      </span>
+
+
+                      <button className="comment-button">
+                        ♡
+                      </button>
+
+
+                      <span>
+                        {post.comentarios}
+                      </span>
+
+                    </div>
+
+
+                    <button
+                      className={
+                        `btn-save ${
+                          guardados[post.id]
+                            ? 'guardado'
+                            : ''
+                        }`
+                      }
+
+                      onClick={() =>
+                        toggleGuardar(post.id)
+                      }
+                    >
+
+                      {guardados[post.id]
+                        ? '🔖'
+                        : '♧'}
+
+                    </button>
+
+                  </div>
+
+
+                </article>
+
+              ))}
+
+            </section>
+
+
+          </div>
+
+        </main>
+
+      </div>
+
+
+
+      {/* FOOTER */}
+
+      <footer className="feed-footer">
+        <Footer />
+      </footer>
+
+
     </div>
   );
 }
