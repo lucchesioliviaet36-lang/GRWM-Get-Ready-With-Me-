@@ -2,10 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import bannerFotoDePerfilPropio from '../../assets/imagenes/bannerFotoDePerfilPropio.jpg'
 import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg'
-import fotoPropia1 from '../../assets/imagenes/fotoPropia1.jpg'
-import fotoPropia2 from '../../assets/imagenes/fotoPropia2.jpg'
-import fotoPropia3 from '../../assets/imagenes/fotoPropia3.jpg'
-import fotoPropia4 from '../../assets/imagenes/fotoPropia4.jpg'
+
 import closetPropio1 from '../../assets/imagenes/closetPropio1.jpg'
 import closetPropio2 from '../../assets/imagenes/closetPropio2.jpg'
 
@@ -64,30 +61,36 @@ function PerfilPropio() {
       return;
     }
 
-    const usuarioSesion = JSON.parse(localStorage.getItem('usuarioLogueado'));
-    const idUsuarioActual = usuarioSesion?.id_usuario || 1;
+    // 1. Leemos los datos del usuario logueado desde localStorage ('usuario')
+    const usuarioSesion = JSON.parse(localStorage.getItem('usuario'));
+    const idUsuarioActual = usuarioSesion?.id_usuario; // Tomará el id_usuario: 5
+
+    if (!idUsuarioActual) {
+      alert("No se encontró la sesión del usuario. Por favor volvé a iniciar sesión.");
+      return;
+    }
 
     if (tipoPublicacion === 'feed') {
       try {
-        // 1. Enviamos la publicación a MySQL a través de la API
+        // 2. Enviamos la publicación a MySQL con id_usuario: 5
         const response = await fetch('http://localhost:3000/api/publicaciones', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             descripcion: descripcion,
-            id_usuario: idUsuarioActual
+            id_usuario: idUsuarioActual, // Envía 5
+            id_producto: null
           })
         });
 
         if (response.ok) {
-          const publicacionGuardada = await response.json();
+          const nuevaPub = await response.json();
 
-          // 2. Usamos el id_publicacion REAL devuelto por MySQL
           const nuevoPost = {
-            id: publicacionGuardada.id_publicacion,
-            ruta: `/publicacion/${publicacionGuardada.id_publicacion}`,
+            id: nuevaPub.id_publicacion || Date.now(),
+            ruta: `/publicacion/${nuevaPub.id_publicacion}`,
             img: imagenPreview,
             likes: 0,
             esFavorito: false,
@@ -98,15 +101,16 @@ function PerfilPropio() {
           setListaPublicaciones(nuevasPublicaciones);
           localStorage.setItem('grwm_publicaciones', JSON.stringify(nuevasPublicaciones));
 
-          alert("¡Tu outfit ha sido publicado y guardado en la base de datos!");
+          alert("¡Tu outfit ha sido publicado en MySQL correctamente!");
         } else {
-          alert("Ocurrió un error al guardar la publicación en el servidor.");
+          alert("Ocurrió un error al guardar la publicación en la base de datos.");
         }
       } catch (error) {
         console.error("Error al conectar con el servidor:", error);
-        alert("No se pudo conectar con el servidor.");
+        alert("Error de conexión al intentar publicar.");
       }
     } else {
+      // Carga para la tienda
       const nuevoProducto = {
         id: Date.now(),
         nombre: nombrePrenda || 'Prenda de Closet',
@@ -121,9 +125,10 @@ function PerfilPropio() {
       const nuevaTienda = [nuevoProducto, ...tiendaActual];
       localStorage.setItem('grwm_tienda_productos', JSON.stringify(nuevaTienda));
 
-      alert("¡Prenda cargada con éxito! Ya se encuentra disponible en 'Mi Tienda'.");
+      alert("¡Prenda cargada con éxito en Mi Tienda!");
     }
 
+    // Limpiar formulario y cerrar modal
     setImagenArchivo(null);
     setImagenPreview('');
     setTipoPublicacion('feed');

@@ -29,8 +29,8 @@ function Publicacion() {
   const fotoAMostrar = postEncontrado?.img || mapaFotos[idPublicacion] || fotoPropia1;
   const descripcionMostrar = postEncontrado?.descripcion || "Un look casual pero con un toque, perfecto para salir y sentirte increíble. ✨";
 
-  const usuarioSesion = JSON.parse(localStorage.getItem('usuarioLogueado'));
-  const idUsuarioActual = usuarioSesion?.id_usuario || 1;
+  const usuarioSesion = JSON.parse(localStorage.getItem('usuario'));
+  const idUsuarioActual = usuarioSesion?.id_usuario;
 
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -134,8 +134,8 @@ function Publicacion() {
           <div className="publicacion-info">
             
             {/* Encabezado con datos del usuario + Tres puntitos */}
-            <div className="usuario-publicacion-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
-              <div className="usuario-publicacion" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div className="usuario-publicacion-header">
+              <div className="usuario-publicacion">
                 <div className="avatar-publicacion" onClick={() => navigate('/perfil_propio')} style={{ cursor: 'pointer' }}>
                   <img src={fotoPerfilPropio} alt="Foto de perfil" />
                 </div>

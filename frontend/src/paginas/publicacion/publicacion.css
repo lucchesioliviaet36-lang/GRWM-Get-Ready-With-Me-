@@ -195,13 +195,22 @@ TARJETA PRINCIPAL
   padding: 22px;
 }
 
+
 /* CABECERA USUARIO */
+.usuario-publicacion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #f1dce5;
+}
+
 .usuario-publicacion {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid #f1dce5;
+  /* Se remueve el border-bottom y padding-bottom de esta clase */
 }
 
 .avatar-publicacion {
