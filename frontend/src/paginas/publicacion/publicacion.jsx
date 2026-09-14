@@ -29,6 +29,7 @@ function Publicacion() {
   const fotoAMostrar = postEncontrado?.img || mapaFotos[idPublicacion] || fotoPropia1;
   const descripcionMostrar = postEncontrado?.descripcion || "Un look casual pero con un toque, perfecto para salir y sentirte increíble. ✨";
 
+  // Obtenemos los datos del usuario dinámicamente desde localStorage
   const usuarioSesion = JSON.parse(localStorage.getItem('usuario'));
   const idUsuarioActual = usuarioSesion?.id_usuario;
 
@@ -36,13 +37,14 @@ function Publicacion() {
   const [saved, setSaved] = useState(false);
   const [totalLikes, setTotalLikes] = useState(postEncontrado?.likes || 0);
 
-  // Estado inicial de comentarios (vacío por defecto)
+  // Estado de comentarios
   const [comentarios, setComentarios] = useState([]);
   const [nuevoComentario, setNuevoComentario] = useState('');
 
-  // Consultar likes en la base de datos
+  // 1. Consultar estado inicial de Me Gusta en la base de datos
   useEffect(() => {
     const consultarEstadoInicialLike = async () => {
+      if (!id || !idUsuarioActual) return;
       try {
         const response = await fetch(
           `http://localhost:3000/api/publicaciones/${id}/likes?id_usuario=${idUsuarioActual}`
@@ -57,21 +59,42 @@ function Publicacion() {
       }
     };
 
-    if (id) {
-      consultarEstadoInicialLike();
-    }
+    consultarEstadoInicialLike();
   }, [id, idUsuarioActual]);
 
-  // Dar o quitar Me Gusta
+  // 2. Consultar estado inicial de Favorito en la base de datos
+  useEffect(() => {
+    const consultarEstadoInicialFavorito = async () => {
+      if (!id || !idUsuarioActual) return;
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/publicaciones/${id}/favorito?id_usuario=${idUsuarioActual}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setSaved(data.esFavorito);
+        }
+      } catch (error) {
+        console.error("Error al consultar estado inicial de favorito:", error);
+      }
+    };
+
+    consultarEstadoInicialFavorito();
+  }, [id, idUsuarioActual]);
+
+  // 3. Alternar Me Gusta (Dar / Quitar)
   const handleLike = async () => {
+    if (!idUsuarioActual) {
+      alert("Iniciá sesión para dar Me Gusta.");
+      return;
+    }
+
     try {
       const response = await fetch(
         `http://localhost:3000/api/publicaciones/${id}/like?id_usuario=${idUsuarioActual}`,
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' }
         }
       );
 
@@ -85,7 +108,32 @@ function Publicacion() {
     }
   };
 
-  // Agregar comentario localmente
+  // 4. Alternar Favorito (Guardar / Quitar)
+  const handleToggleFavorito = async () => {
+    if (!idUsuarioActual) {
+      alert("Iniciá sesión para guardar publicaciones.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/publicaciones/${id}/favorito?id_usuario=${idUsuarioActual}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setSaved(data.esFavorito);
+      }
+    } catch (error) {
+      console.error("Error al cambiar estado de favorito:", error);
+    }
+  };
+
+  // 5. Agregar comentario local
   const handleAgregarComentario = (e) => {
     e.preventDefault();
     if (nuevoComentario.trim() === '') return;
@@ -93,7 +141,7 @@ function Publicacion() {
     setNuevoComentario('');
   };
 
-  // Eliminar publicación en MySQL y localStorage
+  // 6. Eliminar publicación en MySQL y localStorage
   const handleEliminarPublicacion = async () => {
     const confirmar = window.confirm("¿Estás seguro de que querés eliminar esta publicación?");
     if (!confirmar) return;
@@ -200,7 +248,11 @@ function Publicacion() {
                 <button type="button" className={liked ? 'activo-like' : ''} onClick={handleLike}>
                   {liked ? '♥' : '♡'}
                 </button>
-                <button type="button" className={saved ? 'activo-save' : ''} onClick={() => setSaved(!saved)}>
+                <button 
+                  type="button" 
+                  className={saved ? 'activo-save' : ''} 
+                  onClick={handleToggleFavorito}
+                >
                   {saved ? '★' : '☆'}
                 </button>
                 <button type="button" onClick={() => alert('¡Enlace copiado!')}>↗</button>

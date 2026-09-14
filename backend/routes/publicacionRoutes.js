@@ -1,6 +1,9 @@
 const express = require("express");
 const publicacionController = require("../controllers/publicacionController.js");
+
+// LIKES Y FAVORITOS
 const likeController = require("../controllers/likeController.js");
+const favoritoController = require("../controllers/favoritoController.js");
 
 const router = express.Router();
 
@@ -23,6 +26,20 @@ router.get("/:id_publicacion/likes", (req, res) => {
     likeController.obtenerLikes(req, res);
 });
 
+// --- FAVORITOS ---
+router.post("/:id_publicacion/favorito", (req, res) => {
+    favoritoController.toggleFavorito(req, res); // 👈 Corregido de alternarFavorito a toggleFavorito
+});
+
+router.get("/:id_publicacion/favorito", (req, res) => {
+    favoritoController.obtenerEstadoFavorito(req, res);
+});
+
+router.get("/favoritos/usuario/:id_usuario", (req, res) => {
+    favoritoController.obtenerFavoritosPorUsuario(req, res); // 👈 Corregido a favoritoController
+});
+
+// --- ELIMINAR PUBLICACIÓN ---
 router.delete("/:id_publicacion", (req, res) => {
     publicacionController.eliminarPublicacion(req, res);
 });
