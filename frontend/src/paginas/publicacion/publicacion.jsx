@@ -20,6 +20,16 @@ function Publicacion() {
   const { id } = useParams();
   const idPublicacion = Number(id);
 
+  // Copiar la URL real de la publicación al portapapeles
+  const handleCompartir = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      alert('¡Enlace copiado al portapapeles! ');
+    } catch (error) {
+      console.error("Error al copiar el enlace:", error);
+    }
+  };
+
   const [menuOpciones, setMenuOpciones] = useState(false);
 
   // Cargar publicación de localStorage
@@ -265,7 +275,7 @@ function Publicacion() {
                 >
                   {saved ? '★' : '☆'}
                 </button>
-                <button type="button" onClick={() => alert('¡Enlace copiado!')}>↗</button>
+                <button type="button" onClick={handleCompartir}>↗</button>
               </div>
               <strong className="cantidad-likes">
                 {totalLikes} Me gusta
