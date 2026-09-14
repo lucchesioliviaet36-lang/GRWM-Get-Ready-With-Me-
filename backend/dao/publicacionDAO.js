@@ -15,6 +15,12 @@ class PublicacionDao {
     async obtenerTodas() {
         return await Publicacion.findAll();
     }
+
+    async eliminarPublicacion(id_publicacion) {
+    return await Publicacion.destroy({
+        where: { id_publicacion: id_publicacion }
+    });
+}
 }
 
 module.exports = new PublicacionDao();

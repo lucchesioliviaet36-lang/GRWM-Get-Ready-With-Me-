@@ -18,22 +18,12 @@ function PerfilPropio() {
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
   const [menuAbierto, setMenuAbierto] = useState(false);
 
-  // LISTA 1: Publicaciones del feed
-  const publicacionesPorDefecto = [
-    { id: 1, ruta: '/publicacion/1', img: fotoPropia1, likes: 189, esFavorito: false },
-    { id: 2, ruta: '/publicacion/2', img: fotoPropia2, likes: 245, esFavorito: false },
-    { id: 3, ruta: '/publicacion/3', img: fotoPropia3, likes: 98, esFavorito: false },
-    { id: 4, ruta: '/publicacion/4', img: fotoPropia4, likes: 150, esFavorito: false }
-  ];
+  
+  const publicacionesPorDefecto = [];
 
   const [listaPublicaciones, setListaPublicaciones] = useState(() => {
     const guardadas = localStorage.getItem('grwm_publicaciones');
-    if (guardadas) {
-      const parsed = JSON.parse(guardadas);
-      return parsed.length > 0 ? parsed : publicacionesPorDefecto;
-    }
-    localStorage.setItem('grwm_publicaciones', JSON.stringify(publicacionesPorDefecto));
-    return publicacionesPorDefecto;
+    return guardadas ? JSON.parse(guardadas) : [];
   });
 
   // LISTA 2: Closet personal

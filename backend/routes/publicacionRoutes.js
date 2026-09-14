@@ -23,4 +23,8 @@ router.get("/:id_publicacion/likes", (req, res) => {
     likeController.obtenerLikes(req, res);
 });
 
+router.delete("/:id_publicacion", (req, res) => {
+    publicacionController.eliminarPublicacion(req, res);
+});
+
 module.exports = router;

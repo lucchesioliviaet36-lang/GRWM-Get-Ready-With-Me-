@@ -11,6 +11,10 @@ class PublicacionService {
     async obtenerPublicaciones() {
         return await publicacionDao.obtenerTodas();
     }
+
+    async eliminarPublicacion(id_publicacion) {
+    return await publicacionDao.eliminarPublicacion(id_publicacion);
+    }
 }
 
 module.exports = new PublicacionService();

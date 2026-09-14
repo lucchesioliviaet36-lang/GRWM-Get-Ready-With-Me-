@@ -13,6 +13,8 @@ body {
 
 .pagina-perfil {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: #fff7fa;
   color: #703c5e;
 }
@@ -20,10 +22,11 @@ body {
 /* ========================= CONTENIDO ========================= */
 .contenido {
   width: 100%;
-  max-width: 814px;
+  max-width: 1050px; /* 👈 Agrandamos el contenedor horizontal */
   margin: 24px auto 0;
-  padding: 0 15px 50px;  
-  flex: 1; 
+  padding: 0 15px 50px;
+  flex: 1;
+  min-height: 450px;
 }
 
 /* ========================= TARJETA DEL PERFIL ========================= */
@@ -253,7 +256,7 @@ body {
 
 /* FOTOS */
 .foto-post {
-  height: 210px;
+  height: 250px; /* 👈 Cambialo de 210px a 250px si querés que la foto sea más alta */
   margin: 7px;
   border-radius: 9px;
   overflow: hidden;

@@ -32,6 +32,22 @@ class PublicacionController {
             res.status(500).json({ error: "Error al consultar las publicaciones" });
         }
     }
+
+    async eliminarPublicacion(req, res) {
+    try {
+        const { id_publicacion } = req.params;
+        const filasAfectadas = await publicacionService.eliminarPublicacion(id_publicacion);
+
+        if (filasAfectadas > 0) {
+            res.status(200).json({ mensaje: "Publicación eliminada con éxito" });
+        } else {
+            res.status(404).json({ error: "No se encontró la publicación" });
+        }
+    } catch (error) {
+        console.error("Error al eliminar publicación:", error);
+        res.status(500).json({ error: "Error al eliminar en la base de datos" });
+    }
+    }
 }
 
 module.exports = new PublicacionController();
