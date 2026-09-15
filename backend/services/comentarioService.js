@@ -1,0 +1,13 @@
+const comentarioDAO = require("../dao/comentarioDAO.js");
+
+class ComentarioService {
+  async obtenerComentarios(id_publicacion) {
+    return await comentarioDAO.obtenerComentariosPorPublicacion(id_publicacion);
+  }
+
+  async crearComentario(id_publicacion, id_usuario, comentario) {
+    return await comentarioDAO.crearComentario(id_publicacion, id_usuario, comentario);
+  }
+}
+
+module.exports = new ComentarioService();

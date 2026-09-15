@@ -1,18 +1,18 @@
 const express = require("express");
 const publicacionController = require("../controllers/publicacionController.js");
 
-// LIKES Y FAVORITOS
+// LIKES, FAVORITOS Y COMENTARIOS
 const likeController = require("../controllers/likeController.js");
 const favoritoController = require("../controllers/favoritoController.js");
+const comentarioController = require("../controllers/comentarioController.js");
 
 const router = express.Router();
 
-// 🚀 ENDPOINT PARA CREAR PUBLICACIÓN (POST http://localhost:3000/api/publicaciones)
+// 🚀 CREAR Y OBTENER PUBLICACIONES
 router.post("/", (req, res) => {
     publicacionController.crearPublicacion(req, res);
 });
 
-// Obtener todas las publicaciones (GET http://localhost:3000/api/publicaciones)
 router.get("/", (req, res) => {
     publicacionController.obtenerPublicaciones(req, res);
 });
@@ -28,7 +28,7 @@ router.get("/:id_publicacion/likes", (req, res) => {
 
 // --- FAVORITOS ---
 router.post("/:id_publicacion/favorito", (req, res) => {
-    favoritoController.toggleFavorito(req, res); // 👈 Corregido de alternarFavorito a toggleFavorito
+    favoritoController.toggleFavorito(req, res);
 });
 
 router.get("/:id_publicacion/favorito", (req, res) => {
@@ -36,7 +36,16 @@ router.get("/:id_publicacion/favorito", (req, res) => {
 });
 
 router.get("/favoritos/usuario/:id_usuario", (req, res) => {
-    favoritoController.obtenerFavoritosPorUsuario(req, res); // 👈 Corregido a favoritoController
+    favoritoController.obtenerFavoritosPorUsuario(req, res);
+});
+
+// --- COMENTARIOS ---
+router.get("/:id_publicacion/comentarios", (req, res) => {
+    comentarioController.obtenerComentarios(req, res);
+});
+
+router.post("/:id_publicacion/comentario", (req, res) => {
+    comentarioController.crearComentario(req, res);
 });
 
 // --- ELIMINAR PUBLICACIÓN ---

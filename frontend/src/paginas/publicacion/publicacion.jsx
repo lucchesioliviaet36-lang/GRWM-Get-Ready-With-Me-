@@ -8,91 +8,106 @@ import fotoPropia4 from '../../assets/imagenes/fotoPropia4.jpg'
 import Header from "../../componentes/header/header"
 import './publicacion.css'
 
-const mapaFotos = {
-  1: fotoPropia1,
-  2: fotoPropia2,
-  3: fotoPropia3,
-  4: fotoPropia4
+const mapaFotos = { 
+  1: fotoPropia1, 
+  2: fotoPropia2, 
+  3: fotoPropia3, 
+  4: fotoPropia4 
 };
 
-function Publicacion() {
-  const navigate = useNavigate();
-  const { id } = useParams();
+function Publicacion() { 
+  const navigate = useNavigate(); 
+  const { id } = useParams(); 
   const idPublicacion = Number(id);
 
   const [menuOpciones, setMenuOpciones] = useState(false);
 
-  // Cargar publicación de localStorage
-  const publicacionesGuardadas = JSON.parse(localStorage.getItem('grwm_publicaciones')) || [];
+  // Cargar publicación de localStorage 
+  const publicacionesGuardadas = JSON.parse(localStorage.getItem('grwm_publicaciones')) || []; 
   const postEncontrado = publicacionesGuardadas.find(p => String(p.id) === String(id));
 
-  const fotoAMostrar = postEncontrado?.img || mapaFotos[idPublicacion] || fotoPropia1;
+  const fotoAMostrar = postEncontrado?.img || mapaFotos[idPublicacion] || fotoPropia1; 
   const descripcionMostrar = postEncontrado?.descripcion || "Un look casual pero con un toque, perfecto para salir y sentirte increíble. ✨";
 
-  // Obtenemos los datos del usuario dinámicamente desde localStorage
-  const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
+  // Obtenemos los datos del usuario dinámicamente desde localStorage 
+  const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {}; 
   const idUsuarioActual = usuarioSesion?.id_usuario;
 
   const nombreUsuarioHeader = usuarioSesion.nombre 
     ? `${usuarioSesion.nombre} ${usuarioSesion.apellido || ''}`.trim() 
-    : (usuarioSesion.username || 'Mi Usuario');
-  const usuarioTagHeader = usuarioSesion.username ? `@${usuarioSesion.username}` : '@usuario';
+    : (usuarioSesion.username || 'Mi Usuario'); 
+    
+  const usuarioTagHeader = usuarioSesion.username ? `@${usuarioSesion.username}` : '@usuario'; 
   const fotoPerfilHeader = localStorage.getItem('grwm_foto_perfil') || usuarioSesion.foto_perfil || fotoPerfilPropio;
 
-  const [liked, setLiked] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [liked, setLiked] = useState(false); 
+  const [saved, setSaved] = useState(false); 
   const [totalLikes, setTotalLikes] = useState(postEncontrado?.likes || 0);
 
   // Estado de comentarios
-  const [comentarios, setComentarios] = useState([]);
+  const [comentarios, setComentarios] = useState([]); 
   const [nuevoComentario, setNuevoComentario] = useState('');
 
-  // 1. Consultar estado inicial de Me Gusta en la base de datos
+  // 💬 1. Consultar comentarios reales desde la Base de Datos al cargar la vista
   useEffect(() => {
-    const consultarEstadoInicialLike = async () => {
-      if (!id || !idUsuarioActual) return;
+    const cargarComentariosBD = async () => {
+      if (!id) return;
       try {
-        const response = await fetch(
-          `http://localhost:3000/api/publicaciones/${id}/likes?id_usuario=${idUsuarioActual}`
-        );
+        const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/comentarios`);
         if (response.ok) {
           const data = await response.json();
-          setLiked(data.dioLike);
-          setTotalLikes(data.totalLikes);
+          setComentarios(data);
         }
       } catch (error) {
-        console.error("Error al consultar likes iniciales:", error);
+        console.error("Error al cargar comentarios de la base de datos:", error);
       }
+    };
+
+    cargarComentariosBD();
+  }, [id]);
+
+  // 2. Consultar estado inicial de Me Gusta en la base de datos 
+  useEffect(() => { 
+    const consultarEstadoInicialLike = async () => { 
+      if (!id || !idUsuarioActual) return; 
+      try { 
+        const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/likes?id_usuario=${idUsuarioActual}`); 
+        if (response.ok) { 
+          const data = await response.json(); 
+          setLiked(data.dioLike); 
+          setTotalLikes(data.totalLikes); 
+        } 
+      } catch (error) { 
+        console.error("Error al consultar likes iniciales:", error); 
+      } 
     };
 
     consultarEstadoInicialLike();
   }, [id, idUsuarioActual]);
 
-  // 2. Consultar estado inicial de Favorito en la base de datos
-  useEffect(() => {
-    const consultarEstadoInicialFavorito = async () => {
-      if (!id || !idUsuarioActual) return;
-      try {
-        const response = await fetch(
-          `http://localhost:3000/api/publicaciones/${id}/favorito?id_usuario=${idUsuarioActual}`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setSaved(data.esFavorito);
-        }
-      } catch (error) {
-        console.error("Error al consultar estado inicial de favorito:", error);
-      }
+  // 3. Consultar estado inicial de Favorito en la base de datos 
+  useEffect(() => { 
+    const consultarEstadoInicialFavorito = async () => { 
+      if (!id || !idUsuarioActual) return; 
+      try { 
+        const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/favorito?id_usuario=${idUsuarioActual}`); 
+        if (response.ok) { 
+          const data = await response.json(); 
+          setSaved(data.esFavorito); 
+        } 
+      } catch (error) { 
+        console.error("Error al consultar estado inicial de favorito:", error); 
+      } 
     };
 
     consultarEstadoInicialFavorito();
   }, [id, idUsuarioActual]);
 
-  // 3. Alternar Me Gusta (Dar / Quitar)
-  const handleLike = async () => {
-    if (!idUsuarioActual) {
-      alert("Iniciá sesión para dar Me Gusta.");
-      return;
+  // 4. Alternar Me Gusta (Dar / Quitar) 
+  const handleLike = async () => { 
+    if (!idUsuarioActual) { 
+      alert("Iniciá sesión para dar Me Gusta."); 
+      return; 
     }
 
     try {
@@ -109,7 +124,7 @@ function Publicacion() {
         setLiked(data.dioLike);
         setTotalLikes(data.totalLikes);
 
-        // 🔄 Actualizamos el total de likes en localStorage para reflejarlo en perfil_propio
+        // Actualizamos el total de likes en localStorage
         const publicacionesGuardadas = JSON.parse(localStorage.getItem('grwm_publicaciones')) || [];
         const actualizadas = publicacionesGuardadas.map(p => {
           if (String(p.id) === String(id)) {
@@ -124,11 +139,11 @@ function Publicacion() {
     }
   };
 
-  // 4. Alternar Favorito (Guardar / Quitar)
-  const handleToggleFavorito = async () => {
-    if (!idUsuarioActual) {
-      alert("Iniciá sesión para guardar publicaciones.");
-      return;
+  // 5. Alternar Favorito (Guardar / Quitar) 
+  const handleToggleFavorito = async () => { 
+    if (!idUsuarioActual) { 
+      alert("Iniciá sesión para guardar publicaciones."); 
+      return; 
     }
 
     try {
@@ -149,27 +164,56 @@ function Publicacion() {
     }
   };
 
-  // 5. Copiar enlace real al portapapeles
-  const handleCompartir = async () => {
+  // 6. Copiar enlace real al portapapeles 
+  const handleCompartir = async () => { 
+    try { 
+      await navigator.clipboard.writeText(window.location.href); 
+      alert('¡Enlace copiado al portapapeles! 📋'); 
+    } catch (error) { 
+      console.error("Error al copiar el enlace:", error); 
+    } 
+  };
+
+  // 📩 7. Guardar un comentario en la Base de Datos y recargar la lista
+  const handleAgregarComentario = async (e) => { 
+    e.preventDefault(); 
+
+    if (!idUsuarioActual) {
+      alert("Iniciá sesión para publicar un comentario.");
+      return;
+    }
+
+    if (nuevoComentario.trim() === '') return; 
+
     try {
-      await navigator.clipboard.writeText(window.location.href);
-      alert('¡Enlace copiado al portapapeles! 📋');
+      const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/comentario`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id_usuario: idUsuarioActual,
+          comentario: nuevoComentario.trim()
+        })
+      });
+
+      if (response.ok) {
+        setNuevoComentario('');
+        // Se recarga la lista de comentarios para renderizar el recién ingresado
+        const resComentarios = await fetch(`http://localhost:3000/api/publicaciones/${id}/comentarios`);
+        if (resComentarios.ok) {
+          const data = await resComentarios.json();
+          setComentarios(data);
+        }
+      } else {
+        alert("No se pudo publicar el comentario.");
+      }
     } catch (error) {
-      console.error("Error al copiar el enlace:", error);
+      console.error("Error al agregar comentario:", error);
     }
   };
 
-  // 6. Agregar comentario local
-  const handleAgregarComentario = (e) => {
-    e.preventDefault();
-    if (nuevoComentario.trim() === '') return;
-    setComentarios([...comentarios, { usuario: usuarioTagHeader, texto: nuevoComentario.trim() }]);
-    setNuevoComentario('');
-  };
-
-  // 7. Eliminar publicación en MySQL y localStorage
-  const handleEliminarPublicacion = async () => {
-    const confirmar = window.confirm("¿Estás seguro de que querés eliminar esta publicación?");
+  // 8. Eliminar publicación en MySQL y localStorage 
+  const handleEliminarPublicacion = async () => { 
+    const confirmar = window.confirm("¿Estás seguro de que querés eliminar esta publicación?"); 
     if (!confirmar) return;
 
     try {
@@ -191,8 +235,8 @@ function Publicacion() {
     }
   };
 
-  return (
-    <div className="pagina-publicacion">
+  return ( 
+    <div className="pagina-publicacion"> 
       <Header />
 
       <main className="contenido-publicacion">
@@ -288,16 +332,16 @@ function Publicacion() {
               </strong>
             </div>
 
-            {/* Comentarios */}
+            {/* Comentarios renderizados desde la base de datos */}
             <div className="comentarios-contenedor">
               <div className="comentarios">
                 {comentarios.length === 0 ? (
                   <p style={{ color: '#9a6685', fontSize: '11px', margin: '10px 0' }}>Sé el primero en comentar...</p>
                 ) : (
-                  comentarios.map((com, index) => (
-                    <div className="comentario" key={index}>
-                      <strong>{com.usuario}</strong>
-                      <span>{com.texto}</span>
+                  comentarios.map((com) => (
+                    <div className="comentario" key={com.id_comentario || com.id}>
+                      <strong>{com.username ? `@${com.username}` : (com.usuario || '@usuario')}</strong>
+                      <span>{com.comentario || com.texto}</span>
                     </div>
                   ))
                 )}
@@ -319,7 +363,7 @@ function Publicacion() {
         </section>
       </main>
     </div>
-  );
+  ); 
 }
 
 export default Publicacion;
