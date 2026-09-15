@@ -20,16 +20,6 @@ function Publicacion() {
   const { id } = useParams();
   const idPublicacion = Number(id);
 
-  // Copiar la URL real de la publicación al portapapeles
-  const handleCompartir = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      alert('¡Enlace copiado al portapapeles! ');
-    } catch (error) {
-      console.error("Error al copiar el enlace:", error);
-    }
-  };
-
   const [menuOpciones, setMenuOpciones] = useState(false);
 
   // Cargar publicación de localStorage
@@ -40,8 +30,14 @@ function Publicacion() {
   const descripcionMostrar = postEncontrado?.descripcion || "Un look casual pero con un toque, perfecto para salir y sentirte increíble. ✨";
 
   // Obtenemos los datos del usuario dinámicamente desde localStorage
-  const usuarioSesion = JSON.parse(localStorage.getItem('usuario'));
+  const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
   const idUsuarioActual = usuarioSesion?.id_usuario;
+
+  const nombreUsuarioHeader = usuarioSesion.nombre 
+    ? `${usuarioSesion.nombre} ${usuarioSesion.apellido || ''}`.trim() 
+    : (usuarioSesion.username || 'Mi Usuario');
+  const usuarioTagHeader = usuarioSesion.username ? `@${usuarioSesion.username}` : '@usuario';
+  const fotoPerfilHeader = localStorage.getItem('grwm_foto_perfil') || usuarioSesion.foto_perfil || fotoPerfilPropio;
 
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -153,15 +149,25 @@ function Publicacion() {
     }
   };
 
-  // 5. Agregar comentario local
+  // 5. Copiar enlace real al portapapeles
+  const handleCompartir = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      alert('¡Enlace copiado al portapapeles! 📋');
+    } catch (error) {
+      console.error("Error al copiar el enlace:", error);
+    }
+  };
+
+  // 6. Agregar comentario local
   const handleAgregarComentario = (e) => {
     e.preventDefault();
     if (nuevoComentario.trim() === '') return;
-    setComentarios([...comentarios, { usuario: usuarioSesion?.username || '@taylor_swift13', texto: nuevoComentario.trim() }]);
+    setComentarios([...comentarios, { usuario: usuarioTagHeader, texto: nuevoComentario.trim() }]);
     setNuevoComentario('');
   };
 
-  // 6. Eliminar publicación en MySQL y localStorage
+  // 7. Eliminar publicación en MySQL y localStorage
   const handleEliminarPublicacion = async () => {
     const confirmar = window.confirm("¿Estás seguro de que querés eliminar esta publicación?");
     if (!confirmar) return;
@@ -201,15 +207,15 @@ function Publicacion() {
 
           <div className="publicacion-info">
             
-            {/* Encabezado con datos del usuario + Tres puntitos */}
+            {/* Encabezado con datos dinámicos del usuario + Tres puntitos */}
             <div className="usuario-publicacion-header">
               <div className="usuario-publicacion">
                 <div className="avatar-publicacion" onClick={() => navigate('/perfil_propio')} style={{ cursor: 'pointer' }}>
-                  <img src={fotoPerfilPropio} alt="Foto de perfil" />
+                  <img src={fotoPerfilHeader} alt="Foto de perfil" />
                 </div>
                 <div>
-                  <strong>Taylor Swift</strong>
-                  <span>@taylor_swift13</span>
+                  <strong>{nombreUsuarioHeader}</strong>
+                  <span>{usuarioTagHeader}</span>
                 </div>
               </div>
 

@@ -1,11 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import bannerFotoDePerfilPropio from '../../assets/imagenes/bannerFotoDePerfilPropio.jpg'
-import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg'
-import fotoPropia1 from '../../assets/imagenes/fotoPropia1.jpg'
-import fotoPropia2 from '../../assets/imagenes/fotoPropia2.jpg'
-import fotoPropia3 from '../../assets/imagenes/fotoPropia3.jpg'
-import fotoPropia4 from '../../assets/imagenes/fotoPropia4.jpg'
 import closetPropio1 from '../../assets/imagenes/closetPropio1.jpg'
 import closetPropio2 from '../../assets/imagenes/closetPropio2.jpg'
 import './perfil_propio.css'
@@ -16,21 +10,22 @@ function PerfilPropio() {
   const navigate = useNavigate();
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
 
-  const publicacionesPorDefecto = [
-    { id: 1, ruta: '/publicacion1', img: fotoPropia1, likes: 189, esFavorito: false },
-    { id: 2, ruta: '/publicacion2', img: fotoPropia2, likes: 245, esFavorito: false },
-    { id: 3, ruta: '/publicacion3', img: fotoPropia3, likes: 98, esFavorito: false },
-    { id: 4, ruta: '/publicacion4', img: fotoPropia4, likes: 150, esFavorito: false }
-  ];
+  // Datos dinámicos del usuario activo desde localStorage
+  const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
 
+  const nombreMostrar = usuarioSesion.nombre 
+    ? `${usuarioSesion.nombre} ${usuarioSesion.apellido || ''}`.trim() 
+    : (usuarioSesion.username || 'Mi Usuario');
+    
+  const usuarioTag = usuarioSesion.username ? `@${usuarioSesion.username}` : '@usuario';
+
+  // Foto de perfil personalizada si existe
+  const fotoPerfil = usuarioSesion.foto_perfil || localStorage.getItem('grwm_foto_perfil') || null;
+
+  // Lista de publicaciones (inicia vacía)
   const [listaPublicaciones, setListaPublicaciones] = useState(() => {
     const guardadas = localStorage.getItem('grwm_publicaciones');
-    if (guardadas) {
-      const parsed = JSON.parse(guardadas);
-      return parsed.length > 0 ? parsed : publicacionesPorDefecto;
-    }
-    localStorage.setItem('grwm_publicaciones', JSON.stringify(publicacionesPorDefecto));
-    return publicacionesPorDefecto;
+    return guardadas ? JSON.parse(guardadas) : [];
   });
 
   const prendasCloset = [
@@ -38,10 +33,9 @@ function PerfilPropio() {
     { id: 2, img: closetPropio2, nombre: 'Midnight Cardigan', categoria: 'Cardigans' }
   ];
 
-  // Estado para almacenar las publicaciones guardadas traídas de MySQL
   const [publicacionesFavoritas, setPublicacionesFavoritas] = useState([]);
 
-  // Estados del modal y formulario de carga
+  // Estados del modal de carga
   const [mostrarModal, setMostrarModal] = useState(false);
   const [imagenArchivo, setImagenArchivo] = useState(null);
   const [imagenPreview, setImagenPreview] = useState('');
@@ -51,21 +45,10 @@ function PerfilPropio() {
   const [tallePrenda, setTallePrenda] = useState('M');
   const [descripcion, setDescripcion] = useState('');
 
-  // 🔄 Refrescar los likes y publicaciones de localStorage al entrar o cambiar pestaña
-  useEffect(() => {
-    const guardadas = localStorage.getItem('grwm_publicaciones');
-    if (guardadas) {
-      setListaPublicaciones(JSON.parse(guardadas));
-    }
-  }, [pestanaActiva]);
-
-
-  // 🔄 Cargar las publicaciones favoritas desde la base de datos al seleccionar la pestaña
+  // Cargar publicaciones favoritas desde la base de datos
   useEffect(() => {
     const cargarFavoritosBD = async () => {
-      const usuarioSesion = JSON.parse(localStorage.getItem('usuario'));
       const idUsuarioActual = usuarioSesion?.id_usuario;
-
       if (!idUsuarioActual) return;
 
       try {
@@ -77,7 +60,7 @@ function PerfilPropio() {
           setPublicacionesFavoritas(data);
         }
       } catch (error) {
-        console.error("Error al cargar publicaciones favoritas desde la BD:", error);
+        console.error("Error al cargar publicaciones favoritas:", error);
       }
     };
 
@@ -86,9 +69,16 @@ function PerfilPropio() {
     }
   }, [pestanaActiva]);
 
-  // Manejar la selección del archivo local
+  // Refrescar lista de publicaciones al cambiar de pestaña
+  useEffect(() => {
+    const guardadas = localStorage.getItem('grwm_publicaciones');
+    if (guardadas) {
+      setListaPublicaciones(JSON.parse(guardadas));
+    }
+  }, [pestanaActiva]);
+
   const handleFileChange = (e) => {
-    const file = e.target.files.item(0);
+    const file = e.target.files && e.target.files;
     if (file) {
       setImagenArchivo(file);
       const reader = new FileReader();
@@ -99,7 +89,6 @@ function PerfilPropio() {
     }
   };
 
-  // Enviar el formulario y decidir el destino (Feed de fotos o "Mi Tienda")
   const handleCrearPublicacion = (e) => {
     e.preventDefault();
     if (!imagenPreview) {
@@ -153,35 +142,68 @@ function PerfilPropio() {
     <div className="pagina-perfil">
       <Header/>
 
-      {/* CONTENIDO PRINCIPAL */}
       <main className="contenido">
 
         {/* PORTADA + PERFIL */}
         <section className="tarjeta-perfil">
-          <div className="portada" style={{ backgroundImage: `url(${bannerFotoDePerfilPropio})` }}></div>
+          
+          {/* BANNER CON ÍCONO VECTORIAL Y DEGRADADO NUDE */}
+          <div 
+            className="portada" 
+            style={{ 
+              background: 'linear-gradient(135deg, #ebdcd3 0%, #d8c2af 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <svg 
+              width="64" 
+              height="64" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="#8b5274" 
+              strokeWidth="1.5" 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              style={{ opacity: 0.35 }}
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          
           <div className="datos-perfil">
-            <div className="avatar">
-              <img src={fotoPerfilPropio} alt="Avatar de Taylor Swift" />
+            
+            {/* AVATAR ESTÁTICO CON EL MISMO ÍCONO VECTORIAL */}
+            <div className="avatar" style={{ backgroundColor: '#f3e8ee' }}>
+              {fotoPerfil ? (
+                <img src={fotoPerfil} alt={`Avatar de ${nombreMostrar}`} />
+              ) : (
+                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#8b5274" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              )}
             </div>
+
+            {/* DATOS DINÁMICOS DEL USUARIO (Sin descripción) */}
             <div className="nombre-y-descripcion">
-              <h1>Taylor Swift</h1>
-              <p className="usuario">@taylor_swift13</p>
-              <p className="descripcion">
-                Cantante, compositora y amante de la moda <br />
-                Compartiendo looks de cada era ♬⋆.˚
-              </p>
+              <h1>{nombreMostrar}</h1>
+              <p className="usuario">{usuarioTag}</p>
             </div>
+
             <div className="estadisticas">
               <div>
                 <strong>{listaPublicaciones.length}</strong>
                 <span>Publicaciones</span>
               </div>
               <div>
-                <strong>1.8k</strong>
+                <strong>0</strong>
                 <span>Seguidores</span>
               </div>
               <div>
-                <strong>352</strong>
+                <strong>0</strong>
                 <span>Siguiendo</span>
               </div>
               <div className="botones">
@@ -214,21 +236,27 @@ function PerfilPropio() {
         <section className="grid-publicaciones">
           
           {/* VISTA 1: PUBLICACIONES SOCIALES */}
-          {pestanaActiva === 'publicaciones' && listaPublicaciones.map((post) => (
-            <button 
-              key={post.id} 
-              className="post" 
-              type="button" 
-              onClick={() => navigate(`/publicacion/${post.id}`)}
-            >
-              <div className="foto-post">
-                <img src={post.img} alt={`Publicación ${post.id}`} />
-              </div>
-              <div className="pie-post">
-                <span>♡ {post.likes}</span>
-              </div>
-            </button>
-          ))}
+          {pestanaActiva === 'publicaciones' && (
+            listaPublicaciones.length === 0 ? (
+              <p className="sin-contenido">No tenés publicaciones cargadas aún. ¡Hacé clic en '+ Publicar' para subir tu primer outfit! ✨</p>
+            ) : (
+              listaPublicaciones.map((post) => (
+                <button 
+                  key={post.id} 
+                  className="post" 
+                  type="button" 
+                  onClick={() => navigate(`/publicacion/${post.id}`)}
+                >
+                  <div className="foto-post">
+                    <img src={post.img} alt={`Publicación ${post.id}`} />
+                  </div>
+                  <div className="pie-post">
+                    <span>♡ {post.likes}</span>
+                  </div>
+                </button>
+              ))
+            )
+          )}
 
           {/* VISTA 2: CLOSET VIRTUAL */}
           {pestanaActiva === 'closet' && prendasCloset.map((prenda) => (
@@ -251,7 +279,7 @@ function PerfilPropio() {
               publicacionesFavoritas.map((fav) => {
                 const idPost = fav.id_publicacion || fav.id;
                 const postOriginal = listaPublicaciones.find(p => String(p.id) === String(idPost));
-                const imgAMostrar = postOriginal?.img || fotoPropia1;
+                const imgAMostrar = postOriginal?.img || closetPropio1;
                 const likesAMostrar = postOriginal?.likes || 0;
 
                 return (

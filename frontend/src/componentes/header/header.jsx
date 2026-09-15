@@ -1,17 +1,24 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "./header.css";
-import fotoPerfilPropio from "../../assets/imagenes/fotoDePerfilPropio.jpg";
 
 function Header() {
   const navigate = useNavigate();
   const [menuAbierto, setMenuAbierto] = useState(false);
 
+  // 👤 Datos dinámicos del usuario logueado desde localStorage
+  const usuarioGuardado = JSON.parse(localStorage.getItem("usuario")) || {};
+
+  const nombreMostrarHeader = usuarioGuardado.nombre 
+    ? `${usuarioGuardado.nombre} ${usuarioGuardado.apellido || ''}`.trim() 
+    : (usuarioGuardado.username || 'Mi Usuario');
+    
+  const usuarioTagHeader = usuarioGuardado.username ? `@${usuarioGuardado.username}` : '@usuario';
+  const fotoPerfilHeader = usuarioGuardado.foto_perfil || localStorage.getItem('grwm_foto_perfil') || null;
+
   // FUNCIÓN ELIMINAR CUENTA
   const handleEliminarCuenta = async () => {
-    // 1. Leemos el token y el usuario con las claves exactas de inicio_sesion.jsx
     const token = localStorage.getItem("token");
-    const usuarioGuardado = JSON.parse(localStorage.getItem("usuario"));
     const idUsuarioActual = usuarioGuardado?.id_usuario;
 
     if (!idUsuarioActual) {
@@ -26,7 +33,6 @@ function Header() {
     if (!confirmar) return;
 
     try {
-      // 2. Preparamos el encabezado de autorización con el token real
       const headers = {
         "Content-Type": "application/json"
       };
@@ -35,14 +41,12 @@ function Header() {
         headers["Authorization"] = `Bearer ${token}`;
       }
 
-      // 3. Enviamos la orden de eliminar a la API
       const response = await fetch(`http://localhost:3000/api/usuarios/${idUsuarioActual}`, {
         method: "DELETE",
         headers: headers
       });
 
       if (response.ok) {
-        // Limpiamos los datos del navegador
         localStorage.removeItem("token");
         localStorage.removeItem("usuario");
         localStorage.removeItem("grwm_publicaciones");
@@ -82,15 +86,30 @@ function Header() {
           <div 
             className={`mini-avatar ${menuAbierto ? 'activo' : ''}`} 
             onClick={() => setMenuAbierto(!menuAbierto)}
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              backgroundColor: '#f3e8ee',
+              borderRadius: '50%',
+              overflow: 'hidden'
+            }}
           >
-            <img src={fotoPerfilPropio} alt="Foto de perfil" />
+            {fotoPerfilHeader ? (
+              <img src={fotoPerfilHeader} alt="Foto de perfil" />
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5274" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            )}
           </div>
 
           {menuAbierto && (
             <div className="menu-desplegable-perfil">
               <div className="menu-usuario-detalles">
-                <strong>Taylor Swift</strong>
-                <span>@taylor_swift13</span>
+                <strong>{nombreMostrarHeader}</strong>
+                <span>{usuarioTagHeader}</span>
               </div>
               <div className="menu-divisor"></div>
               
