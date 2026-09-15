@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import closetPropio1 from '../../assets/imagenes/closetPropio1.jpg'
-import closetPropio2 from '../../assets/imagenes/closetPropio2.jpg'
 import './perfil_propio.css'
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
@@ -36,11 +34,6 @@ function PerfilPropio() {
     const guardadas = localStorage.getItem('grwm_publicaciones');
     return guardadas ? JSON.parse(guardadas) : [];
   });
-
-  const prendasCloset = [
-    { id: 1, img: closetPropio1, nombre: 'Folklore Cardigan', categoria: 'Cardigans' },
-    { id: 2, img: closetPropio2, nombre: 'Midnight Cardigan', categoria: 'Cardigans' }
-  ];
 
   const [publicacionesFavoritas, setPublicacionesFavoritas] = useState([]);
 
@@ -122,7 +115,7 @@ function PerfilPropio() {
     } else {
       const nuevoProducto = {
         id: Date.now(),
-        nombre: nombrePrenda || 'Prenda de Closet',
+        nombre: nombrePrenda || 'Prenda de Tienda',
         precio: Number(precioPrenda) || 0,
         descripcion: descripcion,
         img: imagenPreview,
@@ -231,12 +224,10 @@ function PerfilPropio() {
           </div>
         </section>
 
+        {/* PESTAÑAS (SOLO PUBLICACIONES Y FAVORITOS) */}
         <div className="pestanas">
           <button className={pestanaActiva === 'publicaciones' ? 'activa' : ''} onClick={() => setPestanaActiva('publicaciones')}>
             Publicaciones
-          </button>
-          <button className={pestanaActiva === 'closet' ? 'activa' : ''} onClick={() => setPestanaActiva('closet')}>
-            Mi Closet
           </button>
           <button className={pestanaActiva === 'favoritos' ? 'activa' : ''} onClick={() => setPestanaActiva('favoritos')}>
             Favoritos
@@ -267,18 +258,6 @@ function PerfilPropio() {
             )
           )}
 
-          {pestanaActiva === 'closet' && prendasCloset.map((prenda) => (
-            <div key={prenda.id} className="post" style={{ cursor: 'default' }}>
-              <div className="foto-post">
-                <img src={prenda.img} alt={prenda.nombre} />
-              </div>
-              <div className="pie-post">
-                <span>{prenda.categoria}</span>
-                <strong className="tag-prenda">{prenda.nombre}</strong>
-              </div>
-            </div>
-          ))}
-
           {pestanaActiva === 'favoritos' && (
             publicacionesFavoritas.length === 0 ? (
               <p className="sin-contenido">No tenés publicaciones guardadas en favoritos todavía.</p>
@@ -286,7 +265,7 @@ function PerfilPropio() {
               publicacionesFavoritas.map((fav) => {
                 const idPost = fav.id_publicacion || fav.id;
                 const postOriginal = listaPublicaciones.find(p => String(p.id) === String(idPost));
-                const imgAMostrar = postOriginal?.img || closetPropio1;
+                const imgAMostrar = postOriginal?.img || '';
                 const likesAMostrar = postOriginal?.likes || 0;
 
                 return (
