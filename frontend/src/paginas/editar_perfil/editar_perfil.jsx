@@ -1,87 +1,126 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import bannerFotoDePerfilPropio from '../../assets/imagenes/bannerFotoDePerfilPropio.jpg';
-import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg';
+import { useState } from "react"; 
+import { useNavigate } from "react-router-dom"; 
 import "./editar_perfil.css"; 
-import Header from "../../componentes/header/header";
+import Header from "../../componentes/header/header"; 
 import Footer from "../../componentes/footer/footer";
 
-function EditarPerfil() {
-  const navigate = useNavigate();
-  const [error, setError] = useState("");
-  const [toastMessage, setToastMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+// 🛠️ Función auxiliar para validar imágenes almacenadas en localStorage
+const obtenerImagenValida = (key) => {
+  const val = localStorage.getItem(key);
+  if (!val || val === 'null' || val === 'undefined' || val.trim() === '') {
+    return null;
+  }
+  return val;
+};
+
+function EditarPerfil() { 
+  const navigate = useNavigate(); 
+  const [error, setError] = useState(""); 
+  const [toastMessage, setToastMessage] = useState(""); 
+  const [isLoading, setIsLoading] = useState(false); 
   const [camposConError, setCamposConError] = useState({});
 
-  // Cargar datos previos si existen en localStorage
-  const [bannerImg, setBannerImg] = useState(() => localStorage.getItem('grwm_banner') || bannerFotoDePerfilPropio);
-  const [avatarImg, setAvatarImg] = useState(() => localStorage.getItem('grwm_avatar') || fotoPerfilPropio);
+  // 👤 Cargar datos del usuario en sesión
+  const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
 
-  const [formData, setFormData] = useState(() => {
-    const savedData = localStorage.getItem('grwm_user_profile');
-    if (savedData) {
-      return JSON.parse(savedData);
-    }
-    return {
-      fullName: "Taylor Swift",
-      username: "@taylor_Swift13",
-      bio: "Amante de la moda urbana. Vendiendo joyas de mi clóset vintage 👜🦋",
-      email: "taylor.swift@email.com",
-      phone: "+34 612 345 678",
-      instagram: "@taylor_swift",
-      tiktok: "@taylor_swift",
-      website: "www.TaylorStyle.com",
-    };
+  // Estado para Banner y Avatar con filtrado seguro
+  const [bannerImg, setBannerImg] = useState(() => obtenerImagenValida('grwm_banner')); 
+  const [avatarImg, setAvatarImg] = useState(() => {
+    return obtenerImagenValida('grwm_foto_perfil') || usuarioSesion.foto_perfil || null;
   });
 
-  const availableStyles = [
-    { id: "vintage", label: "Vintage", active: true },
-    { id: "urban", label: "Urban", active: true },
-    { id: "minimal", label: "Minimal", active: false },
-    { id: "aesthetic", label: "Aesthetic", active: true },
-    { id: "boho", label: "Boho", active: false },
-    { id: "streetwear", label: "Streetwear", active: false },
-    { id: "y2k", label: "Y2K", active: false },
+  // Inicialización dinámica con los datos reales del usuario
+  const [formData, setFormData] = useState(() => { 
+    const savedData = localStorage.getItem('grwm_user_profile'); 
+    if (savedData) { 
+      try {
+        const parsed = JSON.parse(savedData);
+        if (parsed.fullName && !parsed.fullName.toLowerCase().includes("taylor")) {
+          return parsed;
+        }
+      } catch (e) {
+        console.error("Error al leer perfil:", e);
+      }
+    } 
+
+    const nombreCompleto = usuarioSesion.nombre 
+      ? `${usuarioSesion.nombre} ${usuarioSesion.apellido || ''}`.trim() 
+      : (usuarioSesion.username || '');
+
+    return { 
+      fullName: nombreCompleto, 
+      username: usuarioSesion.username ? `@${usuarioSesion.username.replace('@', '')}` : '', 
+      bio: usuarioSesion.descripcion || '', 
+      email: usuarioSesion.mail || usuarioSesion.email || '', 
+      phone: usuarioSesion.telefono || '', 
+      instagram: usuarioSesion.instagram || '', 
+      tiktok: usuarioSesion.tiktok || '', 
+      website: usuarioSesion.website || '', 
+    }; 
+  });
+
+  const availableStyles = [ 
+    { id: "vintage", label: "Vintage", active: true }, 
+    { id: "urban", label: "Urban", active: true }, 
+    { id: "minimal", label: "Minimal", active: false }, 
+    { id: "aesthetic", label: "Aesthetic", active: true }, 
+    { id: "boho", label: "Boho", active: false }, 
+    { id: "streetwear", label: "Streetwear", active: false }, 
+    { id: "y2k", label: "Y2K", active: false }, 
   ];
 
   const [styles, setStyles] = useState(availableStyles);
 
-  const toggleStyle = (id) => {
-    setStyles(
-      styles.map((style) =>
-        style.id === id ? { ...style, active: !style.active } : style
-      )
-    );
+  const toggleStyle = (id) => { 
+    setStyles( 
+      styles.map((style) => style.id === id ? { ...style, active: !style.active } : style ) 
+    ); 
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (camposConError[e.target.name]) {
-      setCamposConError({ ...camposConError, [e.target.name]: false });
-    }
+  const handleChange = (e) => { 
+    setFormData({ ...formData, [e.target.name]: e.target.value }); 
+    if (camposConError[e.target.name]) { 
+      setCamposConError({ ...camposConError, [e.target.name]: false }); 
+    } 
   };
 
-  const handleBannerChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setBannerImg(imageUrl);
-      localStorage.setItem('grwm_banner', imageUrl);
-    }
+  // 🖼️ Cambiar Banner extrayendo el archivo mediante .item(0)
+  const handleBannerChange = (e) => { 
+    const files = e.target.files;
+    if (files && files.length > 0) { 
+      const file = files.item(0); 
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const res = reader.result;
+          setBannerImg(res);
+          localStorage.setItem('grwm_banner', res);
+        };
+        reader.readAsDataURL(file);
+      }
+    } 
   };
 
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setAvatarImg(imageUrl);
-      localStorage.setItem('grwm_avatar', imageUrl);
-    }
+  // 📸 Cambiar Avatar extrayendo el archivo mediante .item(0)
+  const handleAvatarChange = (e) => { 
+    const files = e.target.files;
+    if (files && files.length > 0) { 
+      const file = files.item(0); 
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const res = reader.result;
+          setAvatarImg(res);
+          localStorage.setItem('grwm_foto_perfil', res);
+        };
+        reader.readAsDataURL(file);
+      }
+    } 
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError("");
+  const handleSubmit = (e) => { 
+    e.preventDefault(); 
+    setError(""); 
     let erroresTemp = {};
 
     if (!formData.fullName.trim()) erroresTemp.fullName = true;
@@ -95,8 +134,30 @@ function EditarPerfil() {
 
     setIsLoading(true);
 
-    // Guardar datos permanentemente en la sesión del navegador
+    const partesNombre = formData.fullName.trim().split(" ");
+    const primerNombre = partesNombre || "";
+    const nuevoApellido = partesNombre.slice(1).join(" ") || "";
+    const nuevoUsername = formData.username.replace('@', '').trim();
+
+    const usuarioActualizado = {
+      ...usuarioSesion,
+      nombre: primerNombre,
+      apellido: nuevoApellido,
+      username: nuevoUsername,
+      mail: formData.email,
+      descripcion: formData.bio,
+      foto_perfil: avatarImg
+    };
+
+    localStorage.setItem('usuario', JSON.stringify(usuarioActualizado));
     localStorage.setItem('grwm_user_profile', JSON.stringify(formData));
+    
+    if (bannerImg) {
+      localStorage.setItem('grwm_banner', bannerImg);
+    }
+    if (avatarImg) {
+      localStorage.setItem('grwm_foto_perfil', avatarImg);
+    }
 
     setTimeout(() => {
       setIsLoading(false);
@@ -104,13 +165,12 @@ function EditarPerfil() {
       
       setTimeout(() => {
         navigate("/perfil_propio");
-      }, 1200);
-    }, 1500);
+      }, 1000);
+    }, 1000);
   };
 
-  return (
+  return ( 
     <div className="EditarPerfil-Page">
-      
       {toastMessage && (
         <div className="toast-notification">
           {toastMessage}
@@ -122,7 +182,37 @@ function EditarPerfil() {
       <main className="editar-contenido-principal">
         <div className="EditarPerfil-Container">
           
-          <div className="editar-portada" style={{ backgroundImage: `url(${bannerImg})` }}>
+          {/* BANNER CENTRADO */}
+          <div 
+            className="editar-portada" 
+            style={{ 
+              backgroundImage: bannerImg ? `url("${bannerImg}")` : 'linear-gradient(135deg, #ebdcd3 0%, #d8c2af 100%)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative'
+            }}
+          >
+            {!bannerImg && (
+              <svg 
+                width="64" 
+                height="64" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="#8b5274" 
+                strokeWidth="1.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                style={{ opacity: 0.4 }}
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            )}
+
             <label className="btn-cambiar-portada" style={{ cursor: 'pointer' }}>
               Cambiar portada
               <input 
@@ -136,7 +226,28 @@ function EditarPerfil() {
 
           <div className="EditarPerfil-Header">
             <div className="editar-avatar-wrapper">
-              <img src={avatarImg} alt="Avatar" className="editar-avatar-img" />
+              
+              {/* AVATAR VECTORIAL O FOTO */}
+              <div 
+                className="editar-avatar-img" 
+                style={{ 
+                  backgroundColor: '#f3e8ee', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  overflow: 'hidden'
+                }}
+              >
+                {avatarImg ? (
+                  <img src={avatarImg} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8b5274" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                )}
+              </div>
+
               <label className="btn-cambiar-avatar" style={{ cursor: 'pointer' }}>
                 Editar foto
                 <input 
@@ -147,6 +258,7 @@ function EditarPerfil() {
                 />
               </label>
             </div>
+
             <div className="editar-info-textos">
               <h1>Editar Perfil</h1>
               <p>Personaliza la información pública de tu cuenta</p>
@@ -269,7 +381,7 @@ function EditarPerfil() {
       <Footer/>
 
     </div>
-  );
+  ); 
 }
 
 export default EditarPerfil;

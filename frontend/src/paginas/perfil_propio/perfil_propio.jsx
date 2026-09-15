@@ -6,11 +6,19 @@ import './perfil_propio.css'
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
 
+// 🛠️ Función auxiliar para validar imágenes almacenadas en localStorage
+const obtenerImagenValida = (key) => {
+  const val = localStorage.getItem(key);
+  if (!val || val === 'null' || val === 'undefined' || val.trim() === '') {
+    return null;
+  }
+  return val;
+};
+
 function PerfilPropio() {
   const navigate = useNavigate();
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
 
-  // Datos dinámicos del usuario activo desde localStorage
   const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
 
   const nombreMostrar = usuarioSesion.nombre 
@@ -18,11 +26,12 @@ function PerfilPropio() {
     : (usuarioSesion.username || 'Mi Usuario');
     
   const usuarioTag = usuarioSesion.username ? `@${usuarioSesion.username}` : '@usuario';
+  const descripcionMostrar = usuarioSesion.descripcion || '';
 
-  // Foto de perfil personalizada si existe
-  const fotoPerfil = usuarioSesion.foto_perfil || localStorage.getItem('grwm_foto_perfil') || null;
+  // 🖼️ Obtención segura del Banner y Avatar
+  const bannerImg = obtenerImagenValida('grwm_banner');
+  const fotoPerfil = obtenerImagenValida('grwm_foto_perfil') || usuarioSesion.foto_perfil || null;
 
-  // Lista de publicaciones (inicia vacía)
   const [listaPublicaciones, setListaPublicaciones] = useState(() => {
     const guardadas = localStorage.getItem('grwm_publicaciones');
     return guardadas ? JSON.parse(guardadas) : [];
@@ -35,7 +44,6 @@ function PerfilPropio() {
 
   const [publicacionesFavoritas, setPublicacionesFavoritas] = useState([]);
 
-  // Estados del modal de carga
   const [mostrarModal, setMostrarModal] = useState(false);
   const [imagenArchivo, setImagenArchivo] = useState(null);
   const [imagenPreview, setImagenPreview] = useState('');
@@ -45,7 +53,6 @@ function PerfilPropio() {
   const [tallePrenda, setTallePrenda] = useState('M');
   const [descripcion, setDescripcion] = useState('');
 
-  // Cargar publicaciones favoritas desde la base de datos
   useEffect(() => {
     const cargarFavoritosBD = async () => {
       const idUsuarioActual = usuarioSesion?.id_usuario;
@@ -67,9 +74,8 @@ function PerfilPropio() {
     if (pestanaActiva === 'favoritos') {
       cargarFavoritosBD();
     }
-  }, [pestanaActiva]);
+  }, [pestanaActiva, usuarioSesion?.id_usuario]);
 
-  // Refrescar lista de publicaciones al cambiar de pestaña
   useEffect(() => {
     const guardadas = localStorage.getItem('grwm_publicaciones');
     if (guardadas) {
@@ -78,14 +84,17 @@ function PerfilPropio() {
   }, [pestanaActiva]);
 
   const handleFileChange = (e) => {
-    const file = e.target.files && e.target.files;
-    if (file) {
-      setImagenArchivo(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagenPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const file = files.item(0);
+      if (file) {
+        setImagenArchivo(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagenPreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 
@@ -144,38 +153,41 @@ function PerfilPropio() {
 
       <main className="contenido">
 
-        {/* PORTADA + PERFIL */}
         <section className="tarjeta-perfil">
           
-          {/* BANNER CON ÍCONO VECTORIAL Y DEGRADADO NUDE */}
+          {/* BANNER CENTRADO */}
           <div 
             className="portada" 
             style={{ 
-              background: 'linear-gradient(135deg, #ebdcd3 0%, #d8c2af 100%)',
+              backgroundImage: bannerImg ? `url("${bannerImg}")` : 'linear-gradient(135deg, #ebdcd3 0%, #d8c2af 100%)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}
           >
-            <svg 
-              width="64" 
-              height="64" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="#8b5274" 
-              strokeWidth="1.5" 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              style={{ opacity: 0.35 }}
-            >
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
+            {!bannerImg && (
+              <svg 
+                width="64" 
+                height="64" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="#8b5274" 
+                strokeWidth="1.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                style={{ opacity: 0.35 }}
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            )}
           </div>
           
           <div className="datos-perfil">
             
-            {/* AVATAR ESTÁTICO CON EL MISMO ÍCONO VECTORIAL */}
             <div className="avatar" style={{ backgroundColor: '#f3e8ee' }}>
               {fotoPerfil ? (
                 <img src={fotoPerfil} alt={`Avatar de ${nombreMostrar}`} />
@@ -187,10 +199,10 @@ function PerfilPropio() {
               )}
             </div>
 
-            {/* DATOS DINÁMICOS DEL USUARIO (Sin descripción) */}
             <div className="nombre-y-descripcion">
               <h1>{nombreMostrar}</h1>
               <p className="usuario">{usuarioTag}</p>
+              {descripcionMostrar && <p className="descripcion">{descripcionMostrar}</p>}
             </div>
 
             <div className="estadisticas">
@@ -219,7 +231,6 @@ function PerfilPropio() {
           </div>
         </section>
 
-        {/* PESTAÑAS INTERACTIVAS */}
         <div className="pestanas">
           <button className={pestanaActiva === 'publicaciones' ? 'activa' : ''} onClick={() => setPestanaActiva('publicaciones')}>
             Publicaciones
@@ -232,10 +243,8 @@ function PerfilPropio() {
           </button>
         </div>
 
-        {/* GRID DE CONTENIDO */}
         <section className="grid-publicaciones">
           
-          {/* VISTA 1: PUBLICACIONES SOCIALES */}
           {pestanaActiva === 'publicaciones' && (
             listaPublicaciones.length === 0 ? (
               <p className="sin-contenido">No tenés publicaciones cargadas aún. ¡Hacé clic en '+ Publicar' para subir tu primer outfit! ✨</p>
@@ -258,7 +267,6 @@ function PerfilPropio() {
             )
           )}
 
-          {/* VISTA 2: CLOSET VIRTUAL */}
           {pestanaActiva === 'closet' && prendasCloset.map((prenda) => (
             <div key={prenda.id} className="post" style={{ cursor: 'default' }}>
               <div className="foto-post">
@@ -271,7 +279,6 @@ function PerfilPropio() {
             </div>
           ))}
 
-          {/* VISTA 3: FAVORITOS DESDE LA BASE DE DATOS */}
           {pestanaActiva === 'favoritos' && (
             publicacionesFavoritas.length === 0 ? (
               <p className="sin-contenido">No tenés publicaciones guardadas en favoritos todavía.</p>
@@ -305,7 +312,6 @@ function PerfilPropio() {
 
       </main>
 
-      {/* MODAL INTERACTIVO DE CARGA */}
       {mostrarModal && (
         <div className="modal-overlay">
           <div className="modal-contenido">
