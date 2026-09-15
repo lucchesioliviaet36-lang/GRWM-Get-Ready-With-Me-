@@ -48,6 +48,10 @@ router.post("/:id_publicacion/comentario", (req, res) => {
     comentarioController.crearComentario(req, res);
 });
 
+router.delete("/comentario/:id_comentario", (req, res) => {
+    comentarioController.eliminarComentario(req, res);
+});
+
 // --- ELIMINAR PUBLICACIÓN ---
 router.delete("/:id_publicacion", (req, res) => {
     publicacionController.eliminarPublicacion(req, res);

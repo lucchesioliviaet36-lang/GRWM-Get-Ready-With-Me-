@@ -48,6 +48,33 @@ function Publicacion() {
   const [comentarios, setComentarios] = useState([]); 
   const [nuevoComentario, setNuevoComentario] = useState('');
 
+  // 🗑️ Función para eliminar un comentario
+  const handleEliminarComentario = async (idComentario) => {
+    const confirmar = window.confirm("¿Querés borrar este comentario?");
+    if (!confirmar) return;
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/publicaciones/comentario/${idComentario}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_usuario: idUsuarioActual })
+      });
+
+      if (response.ok) {
+        // Recargamos los comentarios actualizados
+        const resComentarios = await fetch(`http://localhost:3000/api/publicaciones/${id}/comentarios`);
+        if (resComentarios.ok) {
+          const data = await resComentarios.json();
+          setComentarios(data);
+        }
+      } else {
+        alert("No se pudo eliminar el comentario.");
+      }
+    } catch (error) {
+      console.error("Error al eliminar el comentario:", error);
+    }
+  };
+
   // 💬 1. Consultar comentarios reales desde la Base de Datos al cargar la vista
   useEffect(() => {
     const cargarComentariosBD = async () => {
@@ -168,7 +195,7 @@ function Publicacion() {
   const handleCompartir = async () => { 
     try { 
       await navigator.clipboard.writeText(window.location.href); 
-      alert('¡Enlace copiado al portapapeles! 📋'); 
+      alert('¡Enlace copiado al portapapeles! '); 
     } catch (error) { 
       console.error("Error al copiar el enlace:", error); 
     } 
@@ -339,9 +366,35 @@ function Publicacion() {
                   <p style={{ color: '#9a6685', fontSize: '11px', margin: '10px 0' }}>Sé el primero en comentar...</p>
                 ) : (
                   comentarios.map((com) => (
-                    <div className="comentario" key={com.id_comentario || com.id}>
-                      <strong>{com.username ? `@${com.username}` : (com.usuario || '@usuario')}</strong>
-                      <span>{com.comentario || com.texto}</span>
+                    <div 
+                      className="comentario" 
+                      key={com.id_comentario || com.id}
+                      style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                    >
+                      <div>
+                        <strong>{com.username ? `@${com.username}` : (com.usuario || '@usuario')}</strong>
+                        <span style={{ marginLeft: '6px' }}>{com.comentario || com.texto}</span>
+                      </div>
+
+                      {/* Mostrar tachito de basura solo si el comentario pertenece al usuario logueado */}
+                      {Number(com.id_usuario) === Number(idUsuarioActual) && (
+                        <button
+                          type="button"
+                          onClick={() => handleEliminarComentario(com.id_comentario)}
+                          title="Eliminar comentario"
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#d93838',
+                            fontSize: '12px',
+                            cursor: 'pointer',
+                            opacity: 0.7,
+                            padding: '0 4px'
+                          }}
+                        >
+                          ✕
+                        </button>
+                      )}
                     </div>
                   ))
                 )}

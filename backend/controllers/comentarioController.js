@@ -33,6 +33,24 @@ class ComentarioController {
       res.status(500).json({ error: "Error al guardar el comentario" });
     }
   }
+
+  // 🗑️ Eliminar comentario
+  async eliminarComentario(req, res) {
+    try {
+      const { id_comentario } = req.params;
+      const { id_usuario } = req.body;
+
+      if (!id_usuario) {
+        return res.status(400).json({ error: "Falta el id_usuario" });
+      }
+
+      await comentarioService.eliminarComentario(id_comentario, id_usuario);
+      res.status(200).json({ mensaje: "Comentario eliminado correctamente" });
+    } catch (error) {
+      console.error("Error al eliminar comentario:", error);
+      res.status(500).json({ error: "Error al eliminar el comentario" });
+    }
+  }
 }
 
 module.exports = new ComentarioController();

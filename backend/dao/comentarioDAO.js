@@ -28,6 +28,17 @@ class ComentarioDAO {
       }
     );
   }
+
+  // 🗑️ Eliminar comentario (validando que sea del usuario)
+  async eliminarComentario(id_comentario, id_usuario) {
+    return await sequelize.query(
+      `DELETE FROM Publicacion_Comentario 
+       WHERE id_comentario = :id_comentario AND id_usuario = :id_usuario`,
+      {
+        replacements: { id_comentario, id_usuario }
+      }
+    );
+  }
 }
 
 module.exports = new ComentarioDAO();
