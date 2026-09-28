@@ -162,13 +162,15 @@ TARJETA PRINCIPAL
 ========================= */
 .publicacion-card {
   width: 100%;
+  max-width: 850px;        /* Ancho prolijo y centrado */
+  margin: 0 auto;
   background: white;
   border: 1px solid #efd5e0;
-  border-radius: 18px;
+  border-radius: 16px;
   overflow: hidden;
   display: grid;
   grid-template-columns: 55% 45%;
-  min-height: 580px;
+  height: 620px;           /* Altura fija y uniforme para toda la tarjeta */
   box-shadow: 0 6px 20px rgba(112, 60, 94, 0.05);
 }
 
@@ -179,12 +181,16 @@ TARJETA PRINCIPAL
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  width: 100%;
+  height: 100%;            /* Ocupa el 100% del alto disponible en la tarjeta */
+  min-height: 480px;       /* Mantiene un tamaño mínimo parejo */
 }
 
 .publicacion-foto img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover;       /* Recorta y ajusta sin deformar la foto */
+  object-position: center; /* Centra el enfoque de la imagen */
   display: block;
 }
 

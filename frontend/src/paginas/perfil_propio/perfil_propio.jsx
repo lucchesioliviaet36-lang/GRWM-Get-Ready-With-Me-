@@ -100,7 +100,7 @@ function PerfilPropio() {
     }
   };
 
-  const handleCrearPublicacion = (e) => {
+  const handleCrearPublicacion = async (e) => {
     e.preventDefault();
     if (!imagenPreview) {
       alert("Por favor selecciona una foto.");
@@ -108,20 +108,53 @@ function PerfilPropio() {
     }
 
     if (tipoPublicacion === 'feed') {
-      const nuevoPost = {
-        id: Date.now(),
-        ruta: `/publicacion_nueva_${Date.now()}`,
-        img: imagenPreview,
-        likes: 0,
-        esFavorito: false,
-        descripcion: descripcion
-      };
+      try {
+        // 1. Llamamos a tu backend enviando solo id_usuario y descripcion (como lo requiere publicacionController.js)
+        const response = await fetch("http://localhost:3000/api/publicaciones", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id_usuario: usuarioSesion?.id_usuario,
+            descripcion: descripcion
+          })
+        });
 
-      const nuevasPublicaciones = [nuevoPost, ...listaPublicaciones];
-      setListaPublicaciones(nuevasPublicaciones);
-      localStorage.setItem('grwm_publicaciones', JSON.stringify(nuevasPublicaciones));
-      alert("¡Tu outfit ha sido publicado en tu Feed!");
+        if (response.ok) {
+          const data = await response.json();
+          // MySQL devuelve el id_publicacion real generado en la base de datos
+          const idReal = data.id_publicacion || data.id;
+
+          const nuevoPost = {
+            id: idReal,
+            ruta: `/publicacion/${idReal}`,
+            img: imagenPreview,
+            likes: 0,
+            esFavorito: false,
+            descripcion: descripcion
+          };
+
+          const nuevasPublicaciones = [nuevoPost, ...listaPublicaciones];
+          setListaPublicaciones(nuevasPublicaciones);
+          localStorage.setItem('grwm_publicaciones', JSON.stringify(nuevasPublicaciones));
+
+          alert("¡Tu outfit ha sido publicado con éxito! ✨");
+          setImagenArchivo(null);
+          setImagenPreview('');
+          setTipoPublicacion('feed');
+          setPrecioPrenda('');
+          setNombrePrenda('');
+          setTallePrenda('M');
+          setDescripcion('');
+          setMostrarModal(false);
+        } else {
+          alert("Ocurrió un error al guardar la publicación en el servidor.");
+        }
+      } catch (error) {
+        console.error("Error al conectar con el servidor:", error);
+        alert("Error de conexión al intentar publicar.");
+      }
     } else {
+      // Guardado de prenda para la tienda...
       const nuevoProducto = {
         id: Date.now(),
         nombre: nombrePrenda || 'Prenda de Tienda',
@@ -137,16 +170,15 @@ function PerfilPropio() {
       localStorage.setItem('grwm_tienda_productos', JSON.stringify(nuevaTienda));
 
       alert("¡Prenda cargada con éxito! Ya se encuentra disponible en 'Mi Tienda'.");
+      setImagenArchivo(null);
+      setImagenPreview('');
+      setTipoPublicacion('feed');
+      setPrecioPrenda('');
+      setNombrePrenda('');
+      setTallePrenda('M');
+      setDescripcion('');
+      setMostrarModal(false);
     }
-
-    setImagenArchivo(null);
-    setImagenPreview('');
-    setTipoPublicacion('feed');
-    setPrecioPrenda('');
-    setNombrePrenda('');
-    setTallePrenda('M');
-    setDescripcion('');
-    setMostrarModal(false);
   };
 
   return (
@@ -303,7 +335,7 @@ function PerfilPropio() {
       {mostrarModal && (
         <div className="modal-overlay">
           <div className="modal-contenido">
-            2. <h2>Cargar prenda o look</h2>
+            <h2>Cargar prenda o look</h2>
             
             <form onSubmit={handleCrearPublicacion}>
               
