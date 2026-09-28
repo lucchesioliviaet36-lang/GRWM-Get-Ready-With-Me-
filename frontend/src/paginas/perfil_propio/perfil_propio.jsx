@@ -19,10 +19,19 @@ function PerfilPropio() {
 
   const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
 
-  const nombreMostrar = usuarioSesion.nombre 
-    ? `${usuarioSesion.nombre} ${usuarioSesion.apellido || ''}`.trim() 
-    : (usuarioSesion.username || 'Mi Usuario');
-    
+  // 🧹 LIMPIEZA SEGURA DEL NOMBRE (Toma la primera palabra si viene como arreglo y quita comas)
+  const nomStr = Array.isArray(usuarioSesion.nombre) ? usuarioSesion.nombre : String(usuarioSesion.nombre || '');
+  const apeStr = Array.isArray(usuarioSesion.apellido) ? usuarioSesion.apellido.join(' ') : String(usuarioSesion.apellido || '');
+  const textoNombre = `${nomStr} ${apeStr}`.replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
+
+  const palabrasNombre = [];
+  textoNombre.split(' ').forEach(p => {
+    if (p && (palabrasNombre.length === 0 || palabrasNombre[palabrasNombre.length - 1].toLowerCase() !== p.toLowerCase())) {
+      palabrasNombre.push(p);
+    }
+  });
+
+  const nombreMostrar = palabrasNombre.join(' ') || usuarioSesion.username || 'Mi Usuario';
   const usuarioTag = usuarioSesion.username ? `@${usuarioSesion.username}` : '@usuario';
   const descripcionMostrar = usuarioSesion.descripcion || '';
 
@@ -126,7 +135,7 @@ function PerfilPropio() {
       const tiendaActual = JSON.parse(localStorage.getItem('grwm_tienda_productos')) || [];
       const nuevaTienda = [nuevoProducto, ...tiendaActual];
       localStorage.setItem('grwm_tienda_productos', JSON.stringify(nuevaTienda));
-      
+
       alert("¡Prenda cargada con éxito! Ya se encuentra disponible en 'Mi Tienda'.");
     }
 
@@ -294,7 +303,7 @@ function PerfilPropio() {
       {mostrarModal && (
         <div className="modal-overlay">
           <div className="modal-contenido">
-            <h2>Cargar prenda o look</h2>
+            2. <h2>Cargar prenda o look</h2>
             
             <form onSubmit={handleCrearPublicacion}>
               

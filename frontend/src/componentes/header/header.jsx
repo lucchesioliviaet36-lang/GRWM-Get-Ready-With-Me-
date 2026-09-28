@@ -9,10 +9,24 @@ function Header() {
   // 👤 Datos dinámicos del usuario logueado desde localStorage
   const usuarioGuardado = JSON.parse(localStorage.getItem("usuario")) || {};
 
-  const nombreMostrarHeader = usuarioGuardado.nombre 
-    ? `${usuarioGuardado.nombre} ${usuarioGuardado.apellido || ''}`.trim() 
-    : (usuarioGuardado.username || 'Mi Usuario');
-    
+  // 🧹 LIMPIEZA SEGURA DEL NOMBRE PARA EL MENÚ
+  const nomStr = Array.isArray(usuarioGuardado.nombre)
+    ? usuarioGuardado.nombre.join(' ')
+    : String(usuarioGuardado.nombre || '');
+  const apeStr = Array.isArray(usuarioGuardado.apellido)
+    ? usuarioGuardado.apellido.join(' ')
+    : String(usuarioGuardado.apellido || '');
+
+  const textoNombre = `${nomStr} ${apeStr}`.replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
+
+  const palabrasNombre = [];
+  textoNombre.split(' ').forEach(p => {
+    if (p && (palabrasNombre.length === 0 || palabrasNombre[palabrasNombre.length - 1].toLowerCase() !== p.toLowerCase())) {
+      palabrasNombre.push(p);
+    }
+  });
+
+  const nombreMostrarHeader = palabrasNombre.join(' ') || usuarioGuardado.username || 'Mi Usuario';
   const usuarioTagHeader = usuarioGuardado.username ? `@${usuarioGuardado.username}` : '@usuario';
   const fotoPerfilHeader = usuarioGuardado.foto_perfil || localStorage.getItem('grwm_foto_perfil') || null;
 
@@ -47,9 +61,14 @@ function Header() {
       });
 
       if (response.ok) {
+        // 🧹 Limpieza completa de todos los datos del usuario en el navegador
         localStorage.removeItem("token");
         localStorage.removeItem("usuario");
         localStorage.removeItem("grwm_publicaciones");
+        localStorage.removeItem("grwm_banner");
+        localStorage.removeItem("grwm_foto_perfil");
+        localStorage.removeItem("grwm_user_profile");
+        localStorage.removeItem("grwm_favoritos");
 
         alert("Tu cuenta fue eliminada correctamente.");
         navigate("/");

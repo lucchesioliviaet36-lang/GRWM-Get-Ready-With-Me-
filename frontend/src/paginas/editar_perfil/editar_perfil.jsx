@@ -30,22 +30,43 @@ function EditarPerfil() {
   });
 
   // Inicialización dinámica con los datos reales del usuario
-  const [formData, setFormData] = useState(() => { 
-    const savedData = localStorage.getItem('grwm_user_profile'); 
-    if (savedData) { 
+  const [formData, setFormData] = useState(() => {
+    const savedData = localStorage.getItem('grwm_user_profile');
+    if (savedData) {
       try {
         const parsed = JSON.parse(savedData);
         if (parsed.fullName && !parsed.fullName.toLowerCase().includes("taylor")) {
-          return parsed;
+          // Limpiamos comas y palabras repetidas del perfil guardado en localStorage
+          const textoLimpio = parsed.fullName.replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
+          const palabras = [];
+          textoLimpio.split(' ').forEach(p => {
+            if (p && (palabras.length === 0 || palabras[palabras.length - 1].toLowerCase() !== p.toLowerCase())) {
+              palabras.push(p);
+            }
+          });
+          return {
+            ...parsed,
+            fullName: palabras.join(' ')
+          };
         }
       } catch (e) {
         console.error("Error al leer perfil:", e);
       }
-    } 
+    }
 
-    const nombreCompleto = usuarioSesion.nombre 
-      ? `${usuarioSesion.nombre} ${usuarioSesion.apellido || ''}`.trim() 
-      : (usuarioSesion.username || '');
+    // Si no había nada en grwm_user_profile, usa los datos de la sesión
+    const nomRaw = Array.isArray(usuarioSesion.nombre) ? usuarioSesion.nombre.join(' ') : String(usuarioSesion.nombre || '');
+    const apeRaw = Array.isArray(usuarioSesion.apellido) ? usuarioSesion.apellido.join(' ') : String(usuarioSesion.apellido || '');
+    
+    const textoUnificado = `${nomRaw} ${apeRaw}`.replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
+    const palabrasUnicas = [];
+    textoUnificado.split(' ').forEach(palabra => {
+      if (palabra && (palabrasUnicas.length === 0 || palabrasUnicas[palabrasUnicas.length - 1].toLowerCase() !== palabra.toLowerCase())) {
+        palabrasUnicas.push(palabra);
+      }
+    });
+
+    const nombreCompleto = palabrasUnicas.join(' ') || usuarioSesion.username || '';
 
     return { 
       fullName: nombreCompleto, 
@@ -58,6 +79,7 @@ function EditarPerfil() {
       website: usuarioSesion.website || '', 
     }; 
   });
+
 
   const availableStyles = [ 
     { id: "vintage", label: "Vintage", active: true }, 
@@ -118,13 +140,13 @@ function EditarPerfil() {
     } 
   };
 
-  const handleSubmit = (e) => { 
-    e.preventDefault(); 
-    setError(""); 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError("");
     let erroresTemp = {};
 
-    if (!formData.fullName.trim()) erroresTemp.fullName = true;
-    if (!formData.email.trim()) erroresTemp.email = true;
+    if (!formData.fullName || !formData.fullName.trim()) erroresTemp.fullName = true;
+    if (!formData.email || !formData.email.trim()) erroresTemp.email = true;
 
     if (Object.keys(erroresTemp).length > 0) {
       setCamposConError(erroresTemp);
@@ -134,39 +156,63 @@ function EditarPerfil() {
 
     setIsLoading(true);
 
-    const partesNombre = formData.fullName.trim().split(" ");
-    const primerNombre = partesNombre || "";
-    const nuevoApellido = partesNombre.slice(1).join(" ") || "";
-    const nuevoUsername = formData.username.replace('@', '').trim();
+    try {
+      // 1. Limpiamos comas y palabras repetidas del texto ingresado
+      const textoLimpio = (formData.fullName || '').replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
+      const palabras = [];
+      textoLimpio.split(' ').forEach(p => {
+        if (p && (palabras.length === 0 || palabras[palabras.length - 1].toLowerCase() !== p.toLowerCase())) {
+          palabras.push(p);
+        }
+      });
 
-    const usuarioActualizado = {
-      ...usuarioSesion,
-      nombre: primerNombre,
-      apellido: nuevoApellido,
-      username: nuevoUsername,
-      mail: formData.email,
-      descripcion: formData.bio,
-      foto_perfil: avatarImg
-    };
+      // 2. Extraemos el primer nombre con  e índice seguro
+      const primerNombre = palabras || "";
+      const nuevoApellido = palabras.slice(1).join(" ") || "";
+      const nuevoUsername = (formData.username || "").replace('@', '').trim();
+      const fullNameLimpio = palabras.join(' ');
 
-    localStorage.setItem('usuario', JSON.stringify(usuarioActualizado));
-    localStorage.setItem('grwm_user_profile', JSON.stringify(formData));
-    
-    if (bannerImg) {
-      localStorage.setItem('grwm_banner', bannerImg);
-    }
-    if (avatarImg) {
-      localStorage.setItem('grwm_foto_perfil', avatarImg);
-    }
+      // 3. Guardamos los datos del usuario en la sesión
+      const usuarioActualizado = {
+        ...usuarioSesion,
+        nombre: primerNombre,
+        apellido: nuevoApellido,
+        username: nuevoUsername,
+        mail: formData.email,
+        descripcion: formData.bio || '',
+        foto_perfil: avatarImg
+      };
 
-    setTimeout(() => {
-      setIsLoading(false);
-      setToastMessage("¡Cambios guardados con éxito ✨!");
-      
+      localStorage.setItem('usuario', JSON.stringify(usuarioActualizado));
+      localStorage.setItem('grwm_user_profile', JSON.stringify({
+        ...formData,
+        fullName: fullNameLimpio,
+        username: `@${nuevoUsername}`
+      }));
+
+      // 4. Guardado seguro de imágenes evitando que la cuota de localStorage rompa la ejecución
+      if (bannerImg) {
+        try { localStorage.setItem('grwm_banner', bannerImg); } catch (e) { console.warn("Banner excede tamaño en localStorage"); }
+      }
+      if (avatarImg) {
+        try { localStorage.setItem('grwm_foto_perfil', avatarImg); } catch (e) { console.warn("Avatar excede tamaño en localStorage"); }
+      }
+
+      // 5. Finalización exitosa
       setTimeout(() => {
-        navigate("/perfil_propio");
+        setIsLoading(false);
+        setToastMessage("¡Cambios guardados con éxito ✨!");
+        
+        setTimeout(() => {
+          navigate("/perfil_propio");
+        }, 1000);
       }, 1000);
-    }, 1000);
+
+    } catch (err) {
+      console.error("Error al guardar el perfil:", err);
+      setIsLoading(false);
+      setError("Ocurrió un problema al guardar los cambios. Inténtalo nuevamente.");
+    }
   };
 
   return ( 
