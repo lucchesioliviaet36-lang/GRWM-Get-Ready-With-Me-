@@ -8,44 +8,51 @@ import fotoPropia4 from '../../assets/imagenes/fotoPropia4.jpg'
 import Header from "../../componentes/header/header"
 import './publicacion.css'
 
-const mapaFotos = { 
-  1: fotoPropia1, 
-  2: fotoPropia2, 
-  3: fotoPropia3, 
-  4: fotoPropia4 
-};
+const mapaFotos = { 1: fotoPropia1, 2: fotoPropia2, 3: fotoPropia3, 4: fotoPropia4 };
 
-function Publicacion() { 
-  const navigate = useNavigate(); 
-  const { id } = useParams(); 
+function Publicacion() {
+  const navigate = useNavigate();
+  const { id } = useParams();
   const idPublicacion = Number(id);
 
   const [menuOpciones, setMenuOpciones] = useState(false);
 
-  // Cargar publicación de localStorage 
-  const publicacionesGuardadas = JSON.parse(localStorage.getItem('grwm_publicaciones')) || []; 
+  // Cargar publicación de localStorage
+  const publicacionesGuardadas = JSON.parse(localStorage.getItem('grwm_publicaciones')) || [];
   const postEncontrado = publicacionesGuardadas.find(p => String(p.id) === String(id));
 
-  const fotoAMostrar = postEncontrado?.img || mapaFotos[idPublicacion] || fotoPropia1; 
+  const fotoAMostrar = postEncontrado?.img || mapaFotos[idPublicacion] || fotoPropia1;
   const descripcionMostrar = postEncontrado?.descripcion || "Un look casual pero con un toque, perfecto para salir y sentirte increíble. ✨";
 
-  // Obtenemos los datos del usuario dinámicamente desde localStorage 
-  const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {}; 
+  // Obtenemos los datos del usuario dinámicamente desde localStorage
+  const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
   const idUsuarioActual = usuarioSesion?.id_usuario;
 
-  const nombreUsuarioHeader = usuarioSesion.nombre 
-    ? `${usuarioSesion.nombre} ${usuarioSesion.apellido || ''}`.trim() 
-    : (usuarioSesion.username || 'Mi Usuario'); 
-    
-  const usuarioTagHeader = usuarioSesion.username ? `@${usuarioSesion.username}` : '@usuario'; 
-  const fotoPerfilHeader = localStorage.getItem('grwm_foto_perfil') || usuarioSesion.foto_perfil || fotoPerfilPropio;
+  // 🧹 LIMPIEZA SEGURA DEL NOMBRE
+  const nomStr = Array.isArray(usuarioSesion.nombre) ? usuarioSesion.nombre : String(usuarioSesion.nombre || '');
+  const apeStr = Array.isArray(usuarioSesion.apellido) ? usuarioSesion.apellido.join(' ') : String(usuarioSesion.apellido || '');
+  const textoNombre = `${nomStr} ${apeStr}`.replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
 
-  const [liked, setLiked] = useState(false); 
-  const [saved, setSaved] = useState(false); 
+  const palabrasNombre = [];
+  textoNombre.split(' ').forEach(p => {
+    if (p && (palabrasNombre.length === 0 || palabrasNombre[palabrasNombre.length - 1].toLowerCase() !== p.toLowerCase())) {
+      palabrasNombre.push(p);
+    }
+  });
+
+  const nombreUsuarioHeader = palabrasNombre.join(' ') || usuarioSesion.username || 'Mi Usuario';
+  const usuarioTagHeader = usuarioSesion.username ? `@${usuarioSesion.username}` : '@usuario';
+  const fotoGuardada = localStorage.getItem('grwm_foto_perfil');
+  const fotoPerfilHeader = (fotoGuardada && fotoGuardada !== 'null' && fotoGuardada !== 'undefined' && fotoGuardada.trim() !== '')
+    ? fotoGuardada
+    : (usuarioSesion.foto_perfil && !usuarioSesion.foto_perfil.includes('fotoDePerfilPropio') ? usuarioSesion.foto_perfil : null);
+
+  const [liked, setLiked] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [totalLikes, setTotalLikes] = useState(postEncontrado?.likes || 0);
 
   // Estado de comentarios
-  const [comentarios, setComentarios] = useState([]); 
+  const [comentarios, setComentarios] = useState([]);
   const [nuevoComentario, setNuevoComentario] = useState('');
 
   // 🗑️ Función para eliminar un comentario
@@ -61,7 +68,6 @@ function Publicacion() {
       });
 
       if (response.ok) {
-        // Recargamos los comentarios actualizados
         const resComentarios = await fetch(`http://localhost:3000/api/publicaciones/${id}/comentarios`);
         if (resComentarios.ok) {
           const data = await resComentarios.json();
@@ -93,48 +99,48 @@ function Publicacion() {
     cargarComentariosBD();
   }, [id]);
 
-  // 2. Consultar estado inicial de Me Gusta en la base de datos 
-  useEffect(() => { 
-    const consultarEstadoInicialLike = async () => { 
-      if (!id || !idUsuarioActual) return; 
-      try { 
-        const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/likes?id_usuario=${idUsuarioActual}`); 
-        if (response.ok) { 
-          const data = await response.json(); 
-          setLiked(data.dioLike); 
-          setTotalLikes(data.totalLikes); 
-        } 
-      } catch (error) { 
-        console.error("Error al consultar likes iniciales:", error); 
-      } 
+  // 2. Consultar estado inicial de Me Gusta en la base de datos
+  useEffect(() => {
+    const consultarEstadoInicialLike = async () => {
+      if (!id || !idUsuarioActual) return;
+      try {
+        const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/likes?id_usuario=${idUsuarioActual}`);
+        if (response.ok) {
+          const data = await response.json();
+          setLiked(data.dioLike);
+          setTotalLikes(data.totalLikes);
+        }
+      } catch (error) {
+        console.error("Error al consultar likes iniciales:", error);
+      }
     };
 
     consultarEstadoInicialLike();
   }, [id, idUsuarioActual]);
 
-  // 3. Consultar estado inicial de Favorito en la base de datos 
-  useEffect(() => { 
-    const consultarEstadoInicialFavorito = async () => { 
-      if (!id || !idUsuarioActual) return; 
-      try { 
-        const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/favorito?id_usuario=${idUsuarioActual}`); 
-        if (response.ok) { 
-          const data = await response.json(); 
-          setSaved(data.esFavorito); 
-        } 
-      } catch (error) { 
-        console.error("Error al consultar estado inicial de favorito:", error); 
-      } 
+  // 3. Consultar estado inicial de Favorito en la base de datos
+  useEffect(() => {
+    const consultarEstadoInicialFavorito = async () => {
+      if (!id || !idUsuarioActual) return;
+      try {
+        const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/favorito?id_usuario=${idUsuarioActual}`);
+        if (response.ok) {
+          const data = await response.json();
+          setSaved(data.esFavorito);
+        }
+      } catch (error) {
+        console.error("Error al consultar estado inicial de favorito:", error);
+      }
     };
 
     consultarEstadoInicialFavorito();
   }, [id, idUsuarioActual]);
 
-  // 4. Alternar Me Gusta (Dar / Quitar) 
-  const handleLike = async () => { 
-    if (!idUsuarioActual) { 
-      alert("Iniciá sesión para dar Me Gusta."); 
-      return; 
+  // 4. Alternar Me Gusta (Dar / Quitar)
+  const handleLike = async () => {
+    if (!idUsuarioActual) {
+      alert("Iniciá sesión para dar Me Gusta.");
+      return;
     }
 
     try {
@@ -151,7 +157,6 @@ function Publicacion() {
         setLiked(data.dioLike);
         setTotalLikes(data.totalLikes);
 
-        // Actualizamos el total de likes en localStorage
         const publicacionesGuardadas = JSON.parse(localStorage.getItem('grwm_publicaciones')) || [];
         const actualizadas = publicacionesGuardadas.map(p => {
           if (String(p.id) === String(id)) {
@@ -166,11 +171,11 @@ function Publicacion() {
     }
   };
 
-  // 5. Alternar Favorito (Guardar / Quitar) 
-  const handleToggleFavorito = async () => { 
-    if (!idUsuarioActual) { 
-      alert("Iniciá sesión para guardar publicaciones."); 
-      return; 
+  // 5. Alternar Favorito (Guardar / Quitar)
+  const handleToggleFavorito = async () => {
+    if (!idUsuarioActual) {
+      alert("Iniciá sesión para guardar publicaciones.");
+      return;
     }
 
     try {
@@ -191,26 +196,26 @@ function Publicacion() {
     }
   };
 
-  // 6. Copiar enlace real al portapapeles 
-  const handleCompartir = async () => { 
-    try { 
-      await navigator.clipboard.writeText(window.location.href); 
-      alert('¡Enlace copiado al portapapeles! '); 
-    } catch (error) { 
-      console.error("Error al copiar el enlace:", error); 
-    } 
+  // 6. Copiar enlace real al portapapeles
+  const handleCompartir = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      alert('¡Enlace copiado al portapapeles!');
+    } catch (error) {
+      console.error("Error al copiar el enlace:", error);
+    }
   };
 
   // 📩 7. Guardar un comentario en la Base de Datos y recargar la lista
-  const handleAgregarComentario = async (e) => { 
-    e.preventDefault(); 
+  const handleAgregarComentario = async (e) => {
+    e.preventDefault();
 
     if (!idUsuarioActual) {
       alert("Iniciá sesión para publicar un comentario.");
       return;
     }
 
-    if (nuevoComentario.trim() === '') return; 
+    if (nuevoComentario.trim() === '') return;
 
     try {
       const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/comentario`, {
@@ -224,7 +229,6 @@ function Publicacion() {
 
       if (response.ok) {
         setNuevoComentario('');
-        // Se recarga la lista de comentarios para renderizar el recién ingresado
         const resComentarios = await fetch(`http://localhost:3000/api/publicaciones/${id}/comentarios`);
         if (resComentarios.ok) {
           const data = await resComentarios.json();
@@ -238,9 +242,9 @@ function Publicacion() {
     }
   };
 
-  // 8. Eliminar publicación en MySQL y localStorage 
-  const handleEliminarPublicacion = async () => { 
-    const confirmar = window.confirm("¿Estás seguro de que querés eliminar esta publicación?"); 
+  // 8. Eliminar publicación en MySQL y localStorage
+  const handleEliminarPublicacion = async () => {
+    const confirmar = window.confirm("¿Estás seguro de que querés eliminar esta publicación?");
     if (!confirmar) return;
 
     try {
@@ -262,8 +266,8 @@ function Publicacion() {
     }
   };
 
-  return ( 
-    <div className="pagina-publicacion"> 
+  return (
+    <div className="pagina-publicacion">
       <Header />
 
       <main className="contenido-publicacion">
@@ -281,9 +285,42 @@ function Publicacion() {
             {/* Encabezado con datos dinámicos del usuario + Tres puntitos */}
             <div className="usuario-publicacion-header">
               <div className="usuario-publicacion">
-                <div className="avatar-publicacion" onClick={() => navigate('/perfil_propio')} style={{ cursor: 'pointer' }}>
-                  <img src={fotoPerfilHeader} alt="Foto de perfil" />
-                </div>
+            <div 
+              className="avatar-publicacion" 
+              style={{ 
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#f3e8ee',
+                flexShrink: 0
+              }}
+            >
+              {fotoPerfilHeader ? (
+                <img 
+                  src={fotoPerfilHeader} 
+                  alt="Foto de perfil" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                />
+              ) : (
+                <svg 
+                  width="22" 
+                  height="22" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="#8b5274" 
+                  strokeWidth="1.8" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              )}
+            </div>
                 <div>
                   <strong>{nombreUsuarioHeader}</strong>
                   <span>{usuarioTagHeader}</span>
@@ -416,7 +453,7 @@ function Publicacion() {
         </section>
       </main>
     </div>
-  ); 
+  );
 }
 
 export default Publicacion;
