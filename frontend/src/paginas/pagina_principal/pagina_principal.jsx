@@ -15,6 +15,22 @@ export default function Feed() {
   const [likes, setLikes] = useState({});
   const [guardados, setGuardados] = useState({});
   const [corazonGrande, setCorazonGrande] = useState(null);
+  const [historiaActiva, setHistoriaActiva] = useState(null);
+  const [comentario, setComentario] = useState('');//nuevo
+  const [liked, setLiked] = useState(false);
+
+  const abrirHistoria = (historia) => {
+    setHistoriaActiva(historia);
+    setLiked(false);
+    setComentario('');
+  };
+
+  const handleEnviarComentario = (e) => {
+    e.preventDefault();
+    if (!comentario.trim()) return;
+    alert(`Mensaje enviado a ${historiaActiva.usuario}`);
+    setComentario('');
+  };//nuevo
 
 
   // ==========================================
@@ -367,6 +383,7 @@ export default function Feed() {
                 <div
                   className="story-item"
                   key={historia.id}
+                  onClick={() => setHistoriaActiva(historia)} 
                 >
 
                   <div
@@ -396,8 +413,48 @@ export default function Feed() {
 
             </section>
 
+            {/* Ventana flotante de la historia */}
+            {historiaActiva && (
+              <div className="story-modal-overlay" onClick={() => setHistoriaActiva(null)}>
+                <div className="story-modal-content" onClick={(e) => e.stopPropagation()}>
+                  
+                  {/* Cabecera */}
+                  <div className="story-header">
+                    <img src={historiaActiva.img} alt={historiaActiva.usuario} className="story-header-avatar" />
+                    <span>{historiaActiva.usuario}</span>
+                    <button className="story-close-btn" onClick={() => setHistoriaActiva(null)}>✕</button>
+                  </div>
 
+                  {/* Imagen de la historia */}
+                  <div className="story-body">
+                    <img src={historiaActiva.contenidoImg || historiaActiva.img} alt="Historia" />
+                  </div>
 
+                  {/* Barra inferior de interacciones */}
+                  <div className="story-footer">
+                    <form className="story-comment-form" onSubmit={handleEnviarComentario}>
+                      <input
+                        type="text"
+                        placeholder={`Enviar mensaje a ${historiaActiva.usuario}...`}
+                        value={comentario}
+                        onChange={(e) => setComentario(e.target.value)}
+                      />
+                      {comentario.trim() && (
+                        <button type="submit" className="story-send-btn">Enviar</button>
+                      )}
+                    </form>
+
+                    <button 
+                      className={`story-like-btn ${liked ? 'liked' : ''}`}
+                      onClick={() => setLiked(!liked)}
+                    >
+                      {liked ? '❤️' : '🤍'}
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            )}
             {/* ==================================
                 PUBLICACIONES
             =================================== */}
