@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './PerfilUsuario.css';
+import './perfil_usuario.css';
 
 export default function PerfilUsuario() {
   const [siguiendo, setSiguiendo] = useState(false);

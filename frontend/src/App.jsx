@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import PaginaPrincipal from './paginas/pagina_principal/pagina_principal'
 import PerfilPropio from './paginas/perfil_propio/perfil_propio'
-import PerfilUsuario from './paginas/perfil_usuario/perfil_usuario' 
 import Publicacion from './paginas/publicacion/publicacion'
 import InicioSesion from './paginas/inicio_sesion/inicio_sesion'
 import Registro from './paginas/registro/registro'
@@ -14,6 +13,7 @@ import MiArmario from './paginas/miArmario/miArmario'
 import AgregarPrenda from './paginas/agregar_prenda/agregar_prenda'
 import Pago from './paginas/pago/pago'
 import ChatIA from './paginas/inspiracion_chat/inspiracion_chat'
+import PerfilUsuario from './paginas/perfil_usuario/perfil_usuario'
 
 function App() {
   return (
