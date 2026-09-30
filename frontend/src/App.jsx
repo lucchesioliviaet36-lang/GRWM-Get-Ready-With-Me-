@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import PaginaPrincipal from './paginas/pagina_principal/pagina_principal'
 import PerfilPropio from './paginas/perfil_propio/perfil_propio'
+import PerfilUsuario from './paginas/perfil_usuario/perfil_usuario' 
 import Publicacion from './paginas/publicacion/publicacion'
 import InicioSesion from './paginas/inicio_sesion/inicio_sesion'
 import Registro from './paginas/registro/registro'
@@ -21,6 +22,7 @@ function App() {
         <Route path="/IniciarSesion" element={<InicioSesion />} /> 
         <Route path="/" element={<Registro />} />
         <Route path="/perfil_propio" element={<PerfilPropio />} />
+        <Route path="/perfil_usuario/" element={<PerfilUsuario />} />
         <Route path="/editar_perfil" element={<EditarPerfil />} />
         <Route path="/miTienda" element={<MiTienda />} />
         <Route path="/paginaPrincipal" element={<PaginaPrincipal />} />
