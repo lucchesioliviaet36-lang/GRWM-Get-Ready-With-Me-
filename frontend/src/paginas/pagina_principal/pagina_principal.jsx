@@ -1,5 +1,5 @@
 import './pagina_principal.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
@@ -19,10 +19,48 @@ export default function Feed() {
   const [comentario, setComentario] = useState('');//nuevo
   const [liked, setLiked] = useState(false);
 
-  const abrirHistoria = (historia) => {
+  // ==========================================
+  // FUNCIONES DE HISTORIAS (CON VERIFICACIÓN SEGURA)
+  // ==========================================
+
+  const abrirHistoria = (historia, index = 0) => {
+    if (!historia) return;
     setHistoriaActiva(historia);
+    setIndiceActual(index);
+    setProgreso(0);
+    setPausado(false);
     setLiked(false);
     setComentario('');
+  };
+
+  const cerrarHistoria = () => {
+    setHistoriaActiva(null);
+    setProgreso(0);
+    setPausado(false);
+  };
+
+  const siguienteHistoria = () => {
+    if (typeof historias !== 'undefined' && historias && indiceActual < historias.length - 1) {
+      const siguienteIndex = indiceActual + 1;
+      setIndiceActual(siguienteIndex);
+      setHistoriaActiva(historias[siguienteIndex]);
+      setProgreso(0);
+      setLiked(false);
+      setComentario('');
+    } else {
+      cerrarHistoria();
+    }
+  };
+
+  const anteriorHistoria = () => {
+    if (typeof historias !== 'undefined' && historias && indiceActual > 0) {
+      const anteriorIndex = indiceActual - 1;
+      setIndiceActual(anteriorIndex);
+      setHistoriaActiva(historias[anteriorIndex]);
+      setProgreso(0);
+      setLiked(false);
+      setComentario('');
+    }
   };
 
   const handleEnviarComentario = (e) => {
@@ -31,8 +69,16 @@ export default function Feed() {
     alert(`Mensaje enviado a ${historiaActiva.usuario}`);
     setComentario('');
   };//nuevo
+  // // 1. AGREGAR: Estados para la barra de progreso y el índice de la historia
+  const [pausado, setPausado] = useState(false);// Estado para pausar la historia al hacer clic
+  const [progreso, setProgreso] = useState(0);       // Porcentaje de la barra (0 a 100)
+  const [indiceActual, setIndiceActual] = useState(0); // Posición de la historia visible
 
+  // // 2. AGREGAR: Tiempos de duración
+  const DURACION_HISTORIA = 10000; // Duración de cada historia en milisegundos (10 segundos)
+  const INTERVALO_BARRA = 100;     // Actualización cada 100ms
 
+  
   // ==========================================
   // HISTORIAS
   // ==========================================
@@ -71,7 +117,87 @@ export default function Feed() {
     }
   ];
 
+  useEffect(() => {
+    if (!historiaActiva || pausado) return; // Si está pausado, se congelan los timers
 
+    const timerProgreso = setInterval(() => {
+      setProgreso((prev) => {
+        if (prev >= 100) return 100;
+        return prev + (INTERVALO_BARRA / DURACION_HISTORIA) * 100;
+      });
+    }, INTERVALO_BARRA);
+
+    const timerCambio = setTimeout(() => {
+      siguienteHistoria();
+    }, DURACION_HISTORIA * (1 - progreso / 100)); // Tiempo restante proporcional
+
+    return () => {
+      clearInterval(timerProgreso);
+      clearTimeout(timerCambio);
+    };
+  }, [historiaActiva, indiceActual, pausado]);
+  {/* Solo renderiza si historiaActiva tiene datos */}
+  
+{/* VISOR DE HISTORIAS MODAL */}
+      {historiaActiva && (
+        <div className="historias-overlay">
+          <div className="historias-contenedor">
+            
+            {/* Barra de progreso */}
+            <div className="barras-progreso-contenedor">
+              <div className="barra-fondo">
+                <div 
+                  className="barra-relleno"
+                  style={{ width: `${progreso}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Cabecera (Se oculta si querés al estar pausado) */}
+            <div className={`historias-header ${pausado ? 'oculto' : ''}`}>
+              <img 
+                src={historiaActiva?.avatar || historiaActiva?.img} 
+                alt={historiaActiva?.usuario || 'Usuario'} 
+                className="historia-avatar" 
+              />
+              <span className="historia-usuario">{historiaActiva?.usuario}</span>
+              <button className="btn-cerrar-historia" onClick={cerrarHistoria}>✕</button>
+            </div>
+
+            {/* Imagen principal con eventos de mantener presionado */}
+            <div 
+              className="historia-contenido"
+              onMouseDown={() => setPausado(true)}  // En PC: Al presionar click
+              onMouseUp={() => setPausado(false)}    // En PC: Al soltar click
+              onTouchStart={() => setPausado(true)} // En celular: Al tocar pantalla
+              onTouchEnd={() => setPausado(false)}   // En celular: Al levantar el dedo
+            >
+              <img 
+                src={historiaActiva?.imagen || historiaActiva?.img} 
+                alt="Historia" 
+                className="historia-img" 
+              />
+
+              {/* Zonas de toque lateral para avanzar/retroceder al hacer clic simple */}
+              <div 
+                className="touch-zone izq" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  anteriorHistoria();
+                }} 
+              />
+              <div 
+                className="touch-zone der" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  siguienteHistoria();
+                }} 
+              />
+            </div>
+
+          </div>
+        </div>
+      )}
   // ==========================================
   // PUBLICACIONES
   // ==========================================
@@ -358,6 +484,7 @@ export default function Feed() {
 
         </aside>
 
+        
 
 
         {/* ==================================
