@@ -10,64 +10,6 @@
   padding-bottom: 40px;
 }
 
-/* NAVBAR SUPERIOR */
-.perfil-navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 40px;
-  background-color: #ffffff;
-  border-bottom: 1px solid #f2e2e6;
-}
-
-.logo-badge {
-  background-color: #fff0f3;
-  color: #70485b;
-  font-weight: bold;
-  padding: 6px 16px;
-  border-radius: 20px;
-  border: 1px solid #f3d5de;
-  font-size: 14px;
-}
-
-.nav-search {
-  display: flex;
-  align-items: center;
-  background-color: #ffffff;
-  border: 1px solid #e8d0d8;
-  border-radius: 25px;
-  padding: 8px 16px;
-  width: 380px;
-}
-
-.nav-search input {
-  border: none;
-  outline: none;
-  width: 100%;
-  margin-left: 8px;
-  font-size: 13px;
-  color: #555;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: #70485b;
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.nav-user-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-}
 
 /* TARJETA DE PERFIL CENTRAL */
 .perfil-card {

@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import './perfil_usuario.css';
+import Header from "../../componentes/header/header";
+import Footer from "../../componentes/footer/footer";
 
 export default function PerfilUsuario() {
   const [siguiendo, setSiguiendo] = useState(false);
@@ -25,22 +27,9 @@ export default function PerfilUsuario() {
 
   return (
     <div className="perfil-container">
-      {/* Navbar Superior */}
-      <header className="perfil-navbar">
-        <div className="nav-logo">
-          <span className="logo-badge">🌸 GRWM</span>
-        </div>
-        <div className="nav-search">
-          <span className="search-icon">🔍</span>
-          <input type="text" placeholder="Buscar outfits, marcas, tendencias..." />
-        </div>
-        <nav className="nav-links">
-          <a href="#comunidad">Comunidad</a>
-          <a href="#tienda">Tienda</a>
-          <a href="#soporte">Soporte</a>
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format&fit=crop" alt="Mi Perfil" className="nav-user-avatar" />
-        </nav>
-      </header>
+    <div className="perfil-container">
+      {/* 1. AGREGAR HEADER ACÁ */}
+      <Header />
 
       {/* Tarjeta de Perfil */}
       <main className="perfil-card">
@@ -114,9 +103,7 @@ export default function PerfilUsuario() {
           </button>
         </div>
       </main>
-
-      {/* Grilla de Publicaciones */}
-      <section className="perfil-posts-grid">
+       <section className="perfil-posts-grid">
         {usuario.publicaciones.map((post) => (
           <div className="post-card" key={post.id}>
             <div className="post-image-wrapper">
@@ -129,6 +116,11 @@ export default function PerfilUsuario() {
           </div>
         ))}
       </section>
+
+      {/* 2. AGREGAR FOOTER ACÁ */}
+      <Footer />
+    </div>
+
     </div>
   );
 }
