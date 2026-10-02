@@ -6,6 +6,7 @@ import Footer from "../../componentes/footer/footer";
 export default function PerfilUsuario() {
   const [siguiendo, setSiguiendo] = useState(false);
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
+  const [fotoAgrando, setFotoAgrando] = useState(false);
 
   // Datos mockeados del usuario visitado
   const usuario = {
@@ -39,11 +40,10 @@ export default function PerfilUsuario() {
 
         <div className="perfil-info-wrapper">
           <div className="perfil-header-content">
-            {/* Avatar Flotante */}
-            <div className="perfil-avatar-container">
+              {/* Avatar Flotante */}
+            <div className="perfil-avatar-container" onClick={() => setFotoAgrando(true)}>
               <img src={usuario.avatar} alt={usuario.nombre} className="perfil-avatar" />
             </div>
-
             {/* Datos del usuario */}
             <div className="perfil-user-details">
               <h2>{usuario.nombre}</h2>
@@ -116,6 +116,15 @@ export default function PerfilUsuario() {
           </div>
         ))}
       </section>
+      {/* MODAL FOTO AGRANDADA */}
+      {fotoAgrando && (
+        <div className="modal-foto-overlay" onClick={() => setFotoAgrando(false)}>
+          <div className="modal-foto-contenido" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-cerrar-btn" onClick={() => setFotoAgrando(false)}>✕</button>
+            <img src={usuario.avatar} alt={usuario.nombre} className="foto-agrandada" />
+          </div>
+        </div>
+      )}
 
       {/* 2. AGREGAR FOOTER ACÁ */}
       <Footer />
