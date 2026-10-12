@@ -40,25 +40,31 @@ class authController{
     }
 
     async iniciar_sesion(req, res) {
-
         try {
-            const {
-                username,
-                contraseña
-            } = req.body;
+            const { username, contraseña } = req.body;
 
-            const resultado = await authService.iniciar_sesion(username, contraseña);
+            const resultado =
+                await authService.iniciar_sesion(
+                    username,
+                    contraseña
+                );
 
-            res.status(200).json({
+            return res.status(200).json({
+                success: true,
                 mensaje: "Inicio de sesión exitoso",
                 token: resultado.token,
                 usuario: resultado.usuario
             });
 
-        }
-        catch (error) {
-            console.error("Error en login:", error);
-            res.status(401).json({
+        } catch (error) {
+            console.error("Error en login:", error.message);
+
+            const bloqueado =
+                error.message.includes("bloqueada") ||
+                error.message.includes("Alcanzaste los 5 intentos");
+
+            return res.status(bloqueado ? 429 : 401).json({
+                success: false,
                 mensaje: error.message
             });
         }

@@ -46,6 +46,17 @@ const Usuario = sequelize.define(
             type: DataTypes.DATEONLY,
             allowNull: false
         },
+        intentos_fallidos:{
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        },
+
+        bloqueado_hasta:{
+            type: DataTypes.DATE,
+            allowNull: true,
+            defaultValue: null
+        },
 
         DVH: {
             type: DataTypes.INTEGER,

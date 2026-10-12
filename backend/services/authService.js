@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const usuarioDAO = require("../dao/usuarioDAO.js");
+const MAX_INTENTOS = 5;
+const TIEMPO_BLOQUEO_MINUTOS = 30;
 
 class AuthService{
 
@@ -46,6 +48,13 @@ class AuthService{
     }
 
     async iniciar_sesion(username, contraseña) {
+
+        if (!username || !contraseña) {
+            throw new Error(
+                "Debés ingresar el username y la contraseña"
+            );
+        }
+
         const usuario = await usuarioDAO.buscarPorUsername(username);
 
         if (!usuario) {
@@ -54,31 +63,89 @@ class AuthService{
             );
         }
 
+        const ahora = new Date();
+
+        // 1. Comprobar si la cuenta está bloqueada.
+        if (usuario.bloqueado_hasta) {
+            const fechaDesbloqueo = new Date(usuario.bloqueado_hasta);
+
+            if (fechaDesbloqueo > ahora) {
+                throw new Error(
+                    "Cuenta temporalmente bloqueada. Intentá nuevamente más tarde."
+                );
+            }
+
+            // El bloqueo ya venció: reiniciar los intentos.
+            await usuarioDAO.reiniciarIntentos(
+                usuario.id_usuario
+            );
+
+            usuario.intentos_fallidos = 0;
+            usuario.bloqueado_hasta = null;
+        }
+
+        // 2. Comparar la contraseña con el hash guardado.
         const contraseñaCorrecta =
             await bcrypt.compare(
                 contraseña,
                 usuario.contraseña
             );
 
+        // 3. Si es incorrecta, sumar un intento.
         if (!contraseñaCorrecta) {
+            const intentosActuales = Number(usuario.intentos_fallidos || 0) + 1;
+
+            let bloqueadoHasta = null;
+
+            if (intentosActuales >= MAX_INTENTOS) {
+                bloqueadoHasta = new Date(
+                    ahora.getTime() +
+                    TIEMPO_BLOQUEO_MINUTOS * 60 * 1000
+                );
+            }
+
+            await usuarioDAO.actualizarIntentos(
+                usuario.id_usuario,
+                intentosActuales,
+                bloqueadoHasta
+            );
+
+            if (intentosActuales >= MAX_INTENTOS) {
+                throw new Error(
+                    "Alcanzaste los 5 intentos fallidos. Tu cuenta quedó bloqueada durante 30 minutos."
+                );
+            }
+
             throw new Error(
-                "Username o contraseña incorrectos"
+                `Username o contraseña incorrectos. Intento ${intentosActuales} de ${MAX_INTENTOS}.`
             );
         }
 
-        const token =
-            jwt.sign(
-                {
-                    id_usuario: usuario.id_usuario,
-                    username: usuario.username,
-                    rol: usuario.rol
-                },
-                process.env.JWT_SECRET,
-                {
-                    expiresIn: "2h"
-                }
-            );
+        // 4. Si la contraseña es correcta, reiniciar el contador.
+        await usuarioDAO.reiniciarIntentos(
+            usuario.id_usuario
+        );
 
+        // 5. Crear el JWT.
+        if (!process.env.JWT_SECRET) {
+            throw new Error(
+                "Falta configurar JWT_SECRET en el archivo .env"
+            );
+        }
+
+        const token = jwt.sign(
+            {
+                id_usuario: usuario.id_usuario,
+                username: usuario.username,
+                rol: usuario.rol
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "2h"
+            }
+        );
+
+        // 6. Devolver el token y los datos públicos.
         return {
             token,
             usuario: {
@@ -87,6 +154,7 @@ class AuthService{
                 apellido: usuario.apellido,
                 username: usuario.username,
                 mail: usuario.mail,
+                rol: usuario.rol
             }
         };
     }

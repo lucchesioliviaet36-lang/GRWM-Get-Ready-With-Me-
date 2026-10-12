@@ -75,6 +75,30 @@ class UsuarioDao {
         return await Usuario.create(usuario);
     }
 
+    async actualizarIntentos(id_usuario, cantidad, bloqueadoHasta = null){
+        await Usuario.update(
+            {
+                intentos_fallidos: cantidad,
+                bloqueado_hasta: bloqueadoHasta
+            },
+            {
+                where:{id_usuario}
+            }
+        );
+    }
+
+    async reiniciarIntentos(id_usuario){
+        await Usuario.update(
+            {
+                intentos_fallidos: 0,
+                bloqueado_hasta: null
+            },
+            {
+                where: {id_usuario}
+            }
+        );
+    }
+
     async eliminarUsuario(id_usuario) {
         // Obtenemos los modelos registrados en Sequelize
         const models = Usuario.sequelize ? Usuario.sequelize.models : {};
