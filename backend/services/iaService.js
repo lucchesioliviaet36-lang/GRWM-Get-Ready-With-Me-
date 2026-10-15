@@ -1,9 +1,8 @@
 const prendaService = require("./prendaService");
-const catalgoService = require("./catalogoService");
-const aiService = require("./iaService");
-const Prenda = require("../models/prenda");
+const catalogoService = require("./catalogoService");
+const aiService = require("./aiService");
 
-const categoriasValidas =[
+const CATEGORIAS_VALIDAS = [
     "remeras",
     "abrigos",
     "partes_abajo",
@@ -12,13 +11,13 @@ const categoriasValidas =[
     "accesorios"
 ];
 
-const temporadas = [
+const TEMPORADAS_VALIDAS = [
     "veraniego",
     "media_estacion",
     "abrigado"
 ];
 
-const modosValidos = [
+const MODOS_VALIDOS = [
     "armario",
     "catalogo",
     "mixto"
@@ -28,12 +27,10 @@ const normalizarPrendaArmario = (prenda) => {
 
     const datos = typeof prenda.toJSON === "function" ? prenda.toJSON() : prenda;
 
-    return{
+    return {
         id: datos.id_prenda,
         idOriginal: datos.id_prenda,
-
         origen: "armario",
-
         nombre: datos.nombre,
         categoria: datos.categoria,
         color: datos.color || null,
@@ -47,33 +44,33 @@ const normalizarPrendaCatalogo = (producto, categoriaInterna) => {
     return {
         id: producto.idExterno,
         idOriginal: producto.idExterno,
-
         origen: "catalogo",
         nombre: producto.nombre,
         categoria: categoriaInterna,
         color: producto.color || null,
-        descripcion: producto.descripcion || null,
-        imagen: producto.imagen_url || null
+        descripcion:producto.descripcion || null,
+        imagen:producto.imagen || null
     };
 };
 
 const validarCategorias = (categorias) => {
 
-    if(!Array.isArray(categorias)) {
+    if (!Array.isArray(categorias)) {
         throw new Error(
-            "Las categorias debem enviarse como un array"
+            "Las categorías deben enviarse como un array"
         );
     }
 
-    const invalidas = categorias.filter((categoria) => !categoriasValidas.includes(categoria));
+    const invalidas = categorias.filter((categoria) => !CATEGORIAS_VALIDAS.includes(categoria));
 
     if (invalidas.length > 0) {
-        throw new Error ( `Categorías inválidas: ${invalidas.join(", ")}`);
+        throw new Error(
+            `Categorías inválidas: ${invalidas.join(", ")}`
+        );
     }
-
 };
 
-const obtenerPrendasArmario = async( idUsuario, categorias) => {
+const obtenerPrendasArmario = async ( idUsuario, categorias) => {
     const prendas = await prendaService.obtenerArmario(idUsuario);
     const normalizadas = prendas.map(normalizarPrendaArmario);
 
@@ -81,39 +78,51 @@ const obtenerPrendasArmario = async( idUsuario, categorias) => {
         return normalizadas;
     }
 
-    return normalizadas.filter((prenda) =>
-    categorias.includes(prenda.categoria));
+    return normalizadas.filter((prenda) => categorias.includes(prenda.categoria));
 };
 
-const obtenerPrendasCatalogo = async(categorias) =>{
+const obtenerPrendasCatalogo = async (categorias) => {
+
     const resultados = [];
 
     for (const categoria of categorias) {
-        try{
-            const productos = await catalgoService.obtenerParaGRWM(categoria);
-            const normalizados = productos.map((producto) => normalizarPrendaCatalogo(producto,categoria));
+
+        try {
+
+            const productos = await catalogoService.obtenerParaGRWM(categoria);
+            const normalizados = productos.map((producto) => normalizarPrendaCatalogo(producto, categoria));
 
             resultados.push(...normalizados);
-        }
-        catch(error) {
-            console.error(`Error obteniendo catálogo de ${categoria}:`,
-                error.message);
+
+        } catch (error) {
+
+            console.error(
+                `Error obteniendo catálogo de ${categoria}:`,
+                error.message
+            );
+
         }
     }
+
 
     return resultados;
 };
 
 const eliminarDuplicados = (prendas) => {
-    const vistos = new set();
+
+    const vistos = new Set();
+
 
     return prendas.filter((prenda) => {
 
-        const clave = `${prenda.origen}-${prenda.idOriginal}`;
+        const clave =
+            `${prenda.origen}-${prenda.idOriginal}`;
+
 
         if (vistos.has(clave)) {
             return false;
         }
+
 
         vistos.add(clave);
 
@@ -121,25 +130,153 @@ const eliminarDuplicados = (prendas) => {
     });
 };
 
+// OBTENER TODAS LAS PRENDAS DISPONIBLES
 const obtenerCandidatos = async ({
     idUsuario,
-    categorias = categoriasValidas,
+    categorias = CATEGORIAS_VALIDAS,
     modo = "mixto",
     busqueda = ""
 }) => {
 
     validarCategorias(categorias);
 
-    if (!modosValidos.includes(modo)) {
-        throw new Error (
-            "Modo invalido.Seleccione el modo armario, catalogo o mixto"
+
+    if (!MODOS_VALIDOS.includes(modo)) {
+        throw new Error(
+            "Modo inválido. Use armario, catalogo o mixto"
         );
     }
 
-    let prendasArmario = [];
-    let prendasCatalogo =[];
 
-    if (modo === "armario" || modo === "mixto" ){
-        prendasArmario = await obtenerPrendasArmario
+    let prendasArmario = [];
+    let prendasCatalogo = [];
+
+    // MI ARMARIO
+    if ( modo === "armario" || modo === "mixto") {
+        prendasArmario = await obtenerPrendasArmario(idUsuario, categorias);
     }
-}
+
+    // CATÁLOGO
+    if (modo === "catalogo" || modo === "mixto" ) {
+        prendasCatalogo = await obtenerPrendasCatalogo(categorias);
+    }
+
+
+    let candidatos =
+        eliminarDuplicados([
+            ...prendasArmario,
+            ...prendasCatalogo
+        ]);
+
+     if (busqueda.trim() !== "") {
+
+        const texto =
+            busqueda
+                .toLowerCase()
+                .trim();
+
+
+        candidatos = candidatos.filter(
+            (prenda) => {
+
+                const contenido = `
+                    ${prenda.nombre || ""}
+                    ${prenda.categoria || ""}
+                    ${prenda.color || ""}
+                    ${prenda.descripcion || ""}
+                `.toLowerCase();
+
+
+                return contenido.includes(texto);
+            }
+        );
+    }
+
+
+    return candidatos;
+};
+
+// GENERAR OUTFIT
+const generarOutfit = async ({
+    idUsuario,
+    mensaje,
+    temporada,
+    categorias,
+    modo = "mixto",
+    prendasSeleccionadas = []
+}) => {
+
+    // VALIDACIONES
+    if (!mensaje || mensaje.trim() === "") {
+        throw new Error(
+            "Debe escribir qué tipo de outfit está buscando"
+        );
+    }
+
+
+    if (!Array.isArray(categorias) || categorias.length === 0) {
+        throw new Error(
+            "Debe seleccionar al menos una categoría"
+        );
+    }
+
+    validarCategorias(categorias);
+
+    if (!TEMPORADAS_VALIDAS.includes()) {
+        throw new Error(
+            "Temporada inválida"
+        );
+    }
+
+
+    if (!MODOS_VALIDOS.includes(modo)) {
+        throw new Error(
+            "Modo inválido"
+        );
+    }
+
+    // BUSCAR PRENDAS
+    const candidatos =
+        await obtenerCandidatos({
+            idUsuario,
+            categorias,
+            modo
+        });
+
+
+    if (candidatos.length === 0) {
+        throw new Error(
+            "No se encontraron prendas disponibles"
+        );
+    }
+
+    // VERIFICAR PRENDAS SELECCIONADAS
+    const seleccionadasValidas = [];
+
+
+    for (const seleccionada of prendasSeleccionadas) {
+
+        const encontrada = candidatos.find((prenda) =>
+            String(prenda.idOriginal) === String(seleccionada.id) && prenda.origen === seleccionada.origen );
+
+        if (encontrada) {
+            seleccionadasValidas.push(encontrada);
+        }
+    }
+
+    // LLAMAR SERVICIO IA
+    const outfit =
+        await aiService.generarOutfit({
+            mensaje,
+            temporada,
+            categorias,
+            candidatos,
+            prendasSeleccionadas:
+                seleccionadasValidas
+        });
+
+        return outfit;
+};
+
+
+module.exports = { obtenerCandidatos, generarOutfit };
