@@ -1,4 +1,4 @@
-const aiOutfitService = require("../services/aiOutfitService");
+const iaOutfitService = require("../services/iaOutfitService");
 
 // OBTENER PRENDAS DISPONIBLES
 // Esto se va a usar para que React muestre:
@@ -27,7 +27,7 @@ const obtenerPrendasDisponibles = async (req, res) => {
         }
 
         const prendas =
-            await aiOutfitService.obtenerCandidatos({
+            await iaOutfitService.obtenerCandidatos({
                 idUsuario,
                 categorias: categoriasArray,
                 modo:  modo || "mixto",
@@ -67,7 +67,7 @@ const generarOutfit = async ( req, res ) => {
         } = req.body;
 
         const outfit =
-            await aiOutfitService.generarOutfit({
+            await iaOutfitService.generarOutfit({
                 idUsuario,
                 mensaje,
                 temporada,

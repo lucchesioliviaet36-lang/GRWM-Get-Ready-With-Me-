@@ -11,6 +11,7 @@ const Prenda = require("./models/prenda.js");
 const usuarioRoutes = require("./routes/usuarioRoutes");
 const publicacionRoutes = require("./routes/publicacionRoutes");
 const productoRoutes = require("./routes/productoRoutes");
+const iaOutfitRoutes = require("./routes/iaOutfitRoutes");
 const app = express();
 const PORT = 3000;
 
@@ -23,6 +24,7 @@ app.use("/api/prendas", prendaRoutes);
 app.use("/api/publicaciones", publicacionRoutes);
 app.use("/api/productos", productoRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use( "/api/ai", iaOutfitRoutes);
 
 app.get("/", (req, res) => {
     res.json({

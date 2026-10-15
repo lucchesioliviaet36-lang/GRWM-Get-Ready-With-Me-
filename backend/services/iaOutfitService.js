@@ -1,6 +1,6 @@
 const prendaService = require("./prendaService");
 const catalogoService = require("./catalogoService");
-const aiService = require("./aiService");
+const aiService = require("./iaService");
 
 const CATEGORIAS_VALIDAS = [
     "remeras",
@@ -222,7 +222,7 @@ const generarOutfit = async ({
 
     validarCategorias(categorias);
 
-    if (!TEMPORADAS_VALIDAS.includes()) {
+    if (!TEMPORADAS_VALIDAS.includes(temporada)) {
         throw new Error(
             "Temporada inválida"
         );
