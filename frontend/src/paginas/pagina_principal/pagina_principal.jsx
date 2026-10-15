@@ -364,9 +364,7 @@ export default function Feed() {
 
       {/* HEADER */}
 
-      <header className="feed-header">
         <Header />
-      </header>
 
 
 

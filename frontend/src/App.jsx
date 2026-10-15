@@ -12,8 +12,8 @@ import Chat from './paginas/chat/chat'
 import MiArmario from './paginas/miArmario/miArmario'
 import AgregarPrenda from './paginas/agregar_prenda/agregar_prenda'
 import Pago from './paginas/pago/pago'
-import ChatIA from './paginas/inspiracion_chat/inspiracion_chat'
 import PerfilUsuario from './paginas/perfil_usuario/perfil_usuario'
+import AIOutfit from './paginas/iaOutfit/iaOutfit'
 
 function App() {
   return (
@@ -33,7 +33,8 @@ function App() {
         <Route path="/miArmario" element={<MiArmario />} />
         <Route path="/agregar_prenda" element={<AgregarPrenda />} />
         <Route path="/pago" element={<Pago />} />
-        <Route path="/inspiracion_chat" element={<ChatIA />} />
+        <Route path="/iaOutfit" element={<AIOutfit />} />
+        
       </Routes>
     </BrowserRouter>
   );
