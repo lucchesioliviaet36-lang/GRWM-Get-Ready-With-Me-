@@ -56,17 +56,13 @@ const normalizarPrendaCatalogo = (producto, categoriaInterna) => {
 const validarCategorias = (categorias) => {
 
     if (!Array.isArray(categorias)) {
-        throw new Error(
-            "Las categorías deben enviarse como un array"
-        );
+        throw new Error("Las categorías deben enviarse como un array");
     }
 
     const invalidas = categorias.filter((categoria) => !CATEGORIAS_VALIDAS.includes(categoria));
 
     if (invalidas.length > 0) {
-        throw new Error(
-            `Categorías inválidas: ${invalidas.join(", ")}`
-        );
+        throw new Error(`Categorías inválidas: ${invalidas.join(", ")}`);
     }
 };
 
@@ -82,9 +78,7 @@ const obtenerPrendasArmario = async ( idUsuario, categorias) => {
 };
 
 const obtenerPrendasCatalogo = async (categorias) => {
-
     const resultados = [];
-
     for (const categoria of categorias) {
 
         try {
@@ -104,25 +98,18 @@ const obtenerPrendasCatalogo = async (categorias) => {
         }
     }
 
-
     return resultados;
 };
 
 const eliminarDuplicados = (prendas) => {
-
     const vistos = new Set();
 
-
     return prendas.filter((prenda) => {
-
-        const clave =
-            `${prenda.origen}-${prenda.idOriginal}`;
-
+        const clave = `${prenda.origen}-${prenda.idOriginal}`;
 
         if (vistos.has(clave)) {
             return false;
         }
-
 
         vistos.add(clave);
 
@@ -140,11 +127,8 @@ const obtenerCandidatos = async ({
 
     validarCategorias(categorias);
 
-
     if (!MODOS_VALIDOS.includes(modo)) {
-        throw new Error(
-            "Modo inválido. Use armario, catalogo o mixto"
-        );
+        throw new Error("Modo inválido. Use armario, catalogo o mixto");
     }
 
 
@@ -161,37 +145,23 @@ const obtenerCandidatos = async ({
         prendasCatalogo = await obtenerPrendasCatalogo(categorias);
     }
 
-
-    let candidatos =
-        eliminarDuplicados([
-            ...prendasArmario,
-            ...prendasCatalogo
-        ]);
+    let candidatos = eliminarDuplicados([...prendasArmario, ...prendasCatalogo]);
 
      if (busqueda.trim() !== "") {
+        const texto = busqueda.toLowerCase().trim();
 
-        const texto =
-            busqueda
-                .toLowerCase()
-                .trim();
-
-
-        candidatos = candidatos.filter(
-            (prenda) => {
-
-                const contenido = `
-                    ${prenda.nombre || ""}
-                    ${prenda.categoria || ""}
-                    ${prenda.color || ""}
-                    ${prenda.descripcion || ""}
-                `.toLowerCase();
+        candidatos = candidatos.filter((prenda) => {
+            const contenido = `
+                ${prenda.nombre || ""}
+                ${prenda.categoria || ""}
+                ${prenda.color || ""}
+                ${prenda.descripcion || ""}
+            `.toLowerCase();
 
 
-                return contenido.includes(texto);
-            }
-        );
+            return contenido.includes(texto);
+        });
     }
-
 
     return candidatos;
 };
@@ -203,56 +173,38 @@ const generarOutfit = async ({
     temporada,
     categorias,
     modo = "mixto",
-    prendasSeleccionadas = []
+    prendasSeleccionadas = [],
+    prendasEvitar = []
 }) => {
 
     // VALIDACIONES
     if (!mensaje || mensaje.trim() === "") {
-        throw new Error(
-            "Debe escribir qué tipo de outfit está buscando"
-        );
+        throw new Error("Debe escribir qué tipo de outfit está buscando");
     }
 
-
     if (!Array.isArray(categorias) || categorias.length === 0) {
-        throw new Error(
-            "Debe seleccionar al menos una categoría"
-        );
+        throw new Error("Debe seleccionar al menos una categoría");
     }
 
     validarCategorias(categorias);
 
     if (!TEMPORADAS_VALIDAS.includes(temporada)) {
-        throw new Error(
-            "Temporada inválida"
-        );
+        throw new Error("Temporada inválida");
     }
 
-
     if (!MODOS_VALIDOS.includes(modo)) {
-        throw new Error(
-            "Modo inválido"
-        );
+        throw new Error("Modo inválido");
     }
 
     // BUSCAR PRENDAS
-    const candidatos =
-        await obtenerCandidatos({
-            idUsuario,
-            categorias,
-            modo
-        });
-
+    const candidatos = await obtenerCandidatos({idUsuario, categorias, modo});
 
     if (candidatos.length === 0) {
-        throw new Error(
-            "No se encontraron prendas disponibles"
-        );
+        throw new Error("No se encontraron prendas disponibles");
     }
 
     // VERIFICAR PRENDAS SELECCIONADAS
     const seleccionadasValidas = [];
-
 
     for (const seleccionada of prendasSeleccionadas) {
 
@@ -271,8 +223,8 @@ const generarOutfit = async ({
             temporada,
             categorias,
             candidatos,
-            prendasSeleccionadas:
-                seleccionadasValidas
+            prendasSeleccionadas: seleccionadasValidas,
+            prendasEvitar
         });
 
         return outfit;

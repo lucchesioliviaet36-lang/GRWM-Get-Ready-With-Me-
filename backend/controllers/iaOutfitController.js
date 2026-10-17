@@ -47,8 +47,7 @@ const obtenerPrendasDisponibles = async (req, res) => {
         );
         return res.status(400).json({
             success: false,
-            message:
-                error.message
+            message: error.message
         });
     }
 };
@@ -63,7 +62,8 @@ const generarOutfit = async ( req, res ) => {
             temporada,
             categorias,
             modo,
-            prendasSeleccionadas
+            prendasSeleccionadas,
+            prendasEvitar
         } = req.body;
 
         const outfit =
@@ -73,7 +73,8 @@ const generarOutfit = async ( req, res ) => {
                 temporada,
                 categorias,
                 modo:modo || "mixto",
-                prendasSeleccionadas: prendasSeleccionadas || []
+                prendasSeleccionadas: prendasSeleccionadas || [],
+                prendasEvitar: prendasEvitar || []
             });
 
         return res.status(200).json({
@@ -89,8 +90,7 @@ const generarOutfit = async ( req, res ) => {
 
         return res.status(400).json({
             success: false,
-            message:
-                error.message
+            message: error.message
         });
     }
 };

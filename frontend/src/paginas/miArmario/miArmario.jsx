@@ -86,7 +86,7 @@ function MiArmario() {
               <button className="boton-principal-armario" onClick={() => navigate("/agregar_prenda")}>
                 + Agregar mi primera prenda
               </button>
-              <button className="boton-secundario-armario" onClick={() => navigate("/inspiracion_chat")}>
+              <button className="boton-secundario-armario" onClick={() => navigate("/iaOutfit")}>
                 ✧ Solicitar inspiración
               </button>
             </div>
