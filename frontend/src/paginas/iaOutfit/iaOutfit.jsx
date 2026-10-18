@@ -356,6 +356,11 @@ function AIOutfit() {
       <Header/>
 
       <main className="ai-contenido">
+
+        <button className="boton-volver" type="button" onClick={() => navigate("/miArmario")} >
+            ← Volver al armario
+        </button>
+        
         <section className="ai-hero">
           <span className="ai-etiqueta">✧ INTELIGENCIA ARTIFICIAL</span>
           <h1>Armá tu próximo outfit</h1>

@@ -1093,11 +1093,11 @@ body {
   background:
     linear-gradient(
       135deg,
-      #f8bfd4,
+      #f8bfd4e0,
       #ecc8f5
     );
 
-  color: #71385c;
+  color: white;
 
   font-size: 12px;
 
@@ -1413,29 +1413,6 @@ body {
 
 .resultado-boton-secundario:hover {
   background: #fff4f8;
-}
-
-
-/* =========================================================
-   FOOTER
-   ========================================================= */
-
-.footer-armario {
-  min-height: 52px;
-
-  padding: 0 43px;
-
-  display: flex;
-
-  align-items: center;
-
-  color: #a36e87;
-
-  background: white;
-
-  border-top: 1px solid #f1dce5;
-
-  font-size: 10px;
 }
 
 
