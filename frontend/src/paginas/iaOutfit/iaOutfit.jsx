@@ -105,6 +105,19 @@ function AIOutfit() {
     }
   };
 
+  // OBTENER URL DE IMAGEN
+  const obtenerImagen = (imagenUrl) => {
+    if (!imagenUrl) {
+      return "";
+    }
+
+    if (imagenUrl.startsWith("http")) {
+      return imagenUrl;
+    }
+
+    return `${API_URL}${imagenUrl}`;
+  };
+
   // ACTUALIZAR PRENDAS CUANDO CAMBIAN FILTROS
   useEffect(() => {
     if (categorias.length > 0) {
@@ -318,7 +331,7 @@ function AIOutfit() {
         <div className="ai-prenda-imagen">
           {prenda.imagen ? (
             <img
-              src={prenda.imagen}
+              src={obtenerImagen(prenda.imagen)}
               alt={prenda.nombre}
             />
           ) : (
@@ -497,8 +510,8 @@ function AIOutfit() {
                     : ""
                 }
                 onClick={() => setModo("mixto")}
-              >♡ + ✧
-                <span>Armario + Inspiración</span>
+              >  
+                <span> ♡ Armario + ✧ Inspiración</span>
               </button>
 
               <button
@@ -698,7 +711,7 @@ function AIOutfit() {
                     <div className="resultado-imagen">
                       {prenda.imagen ? (
                         <img
-                          src={prenda.imagen}
+                          src={obtenerImagen(prenda.imagen)}
                           alt={prenda.nombre}
                         />
                       ) : (

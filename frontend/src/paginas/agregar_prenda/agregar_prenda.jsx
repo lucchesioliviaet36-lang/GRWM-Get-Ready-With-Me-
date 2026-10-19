@@ -8,14 +8,15 @@ import Footer from "../../componentes/footer/footer";
 
 function AgregarPrenda() {
   const navigate = useNavigate();
-  const inputImagenRef = useRef(null);
 
+  const [imagen, setImagen] = useState(null);
   const [imagenOriginal, setImagenOriginal] = useState("");
   const [previewImagen, setPreviewImagen] = useState("");
   const [mostrarRecorte, setMostrarRecorte] = useState(false);
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [crop, setCrop] = useState({x: 0, y: 0});
   const [zoom, setZoom] = useState(1);
   const [areaRecortada, setAreaRecortada] = useState(null);
+  const inputImagenRef = useRef(null);
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -100,18 +101,29 @@ function AgregarPrenda() {
       imagenCargada.onerror = () =>
         reject(new Error("No se pudo cargar la imagen seleccionada."));
       imagenCargada.src = imagenSrc;
-    });
+  });
 
   const confirmarRecorte = async () => {
     try {
       const blob = await crearImagenRecortada(imagenOriginal, areaRecortada);
+
+      const archivoRecortado = new File(
+        [blob],
+        `prenda-${Date.now()}.jpg`,
+        {type: "image/jpeg"}
+      );
+
       const nuevaPreview = URL.createObjectURL(blob);
+
+      setImagen(archivoRecortado);
 
       setPreviewImagen((anterior) => {
         if (anterior) URL.revokeObjectURL(anterior);
         return nuevaPreview;
       });
+
       cancelarRecorte(false);
+
     } catch (err) {
       console.error("Error al recortar la imagen:", err);
       setError(err.message || "No se pudo recortar la imagen.");
@@ -133,60 +145,72 @@ function AgregarPrenda() {
 
   const quitarImagen = () => {
     if (previewImagen) URL.revokeObjectURL(previewImagen);
+
+    setImagen(null);
     setPreviewImagen("");
-    if (inputImagenRef.current) inputImagenRef.current.value = "";
+
+    if (inputImagenRef.current) {
+      inputImagenRef.current.value = "";
+    }
   };
 
+  // ENVIAR FORMULARIO
   const enviarFormulario = async (e) => {
     e.preventDefault();
     setError("");
 
-    const nombre = formData.nombre.trim();
-    const color = formData.color.trim();
-    const descripcion = formData.descripcion.trim();
-
-    if (!nombre || !formData.categoria || !color || !descripcion) {
-      setError("Completá todos los campos obligatorios.");
-      return;
-    }
-
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setError("No se encontró una sesión activa. Iniciá sesión nuevamente.");
+    if (
+      formData.nombre.trim() === "" ||
+      formData.categoria === "" ||
+      formData.color.trim() === "" ||
+      formData.descripcion.trim() === ""
+    ) {
+      setError("Complete todos los campos obligatorios");
       return;
     }
 
     try {
       setGuardando(true);
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setError("No se encontró una sesión activa");
+        return;
+      }
+
+      const datosPrenda = new FormData();
+
+      datosPrenda.append("nombre", formData.nombre);
+      datosPrenda.append("categoria", formData.categoria);
+      datosPrenda.append("color", formData.color);
+      datosPrenda.append("descripcion", formData.descripcion);
+      datosPrenda.append("origen", "manual");
+
+      if (imagen) {
+        datosPrenda.append("imagen", imagen);
+      }
 
       const response = await fetch("http://localhost:3000/api/prendas", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({
-          nombre,
-          categoria: formData.categoria,
-          color,
-          descripcion,
-          origen: "manual",
-        }),
+        body: datosPrenda
       });
 
-      const data = await response.json().catch(() => ({}));
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message || data.mensaje || "No se pudo guardar la prenda."
-        );
+        throw new Error(data.message || "No se pudo guardar la prenda");
       }
 
       alert("¡Prenda agregada con éxito!");
       navigate("/miArmario");
-    } catch (err) {
-      console.error("Error al agregar la prenda:", err);
-      setError(err.message || "Ocurrió un error al guardar la prenda.");
+
+    } catch (error) {
+      console.error("Error al agregar la prenda:", error);
+      setError(error.message);
+
     } finally {
       setGuardando(false);
     }

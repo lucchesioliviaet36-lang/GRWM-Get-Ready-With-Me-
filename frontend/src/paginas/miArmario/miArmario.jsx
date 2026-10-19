@@ -4,6 +4,8 @@ import "./miArmario.css";
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
 
+const API_URL = "http://localhost:3000";
+
 function MiArmario() {
   const navigate = useNavigate();
   const [prendas, setPrendas] = useState([]);
@@ -23,6 +25,7 @@ function MiArmario() {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
+      console.log("PRENDAS:", data.prendas);
       if (!response.ok) throw new Error(data.message || "No se pudo cargar tu armario");
       setPrendas(data.prendas);
     } catch (error) {
@@ -47,6 +50,19 @@ function MiArmario() {
       console.error(error);
       setError(error.message);
     }
+  };
+
+  // OBTENER URL DE IMAGEN
+  const obtenerImagen = (imagenUrl) => {
+    if (!imagenUrl) {
+      return "";
+    }
+
+    if (imagenUrl.startsWith("http")) {
+      return imagenUrl;
+    }
+
+    return `${API_URL}${imagenUrl}`;
   };
 
   useEffect(() => { obtenerPrendas(); }, []);
@@ -99,15 +115,22 @@ function MiArmario() {
                 <h2>Mis prendas</h2>
                 <p>{prendas.length} {prendas.length === 1 ? "prenda guardada" : "prendas guardadas"}</p>
               </div>
-              <button className="boton-explorar" onClick={() => navigate("/explorar-prendas")}>
-                ✧ Explorar prendas
+              <button className="boton-explorar" onClick={() => navigate("/iaOutfit")}>
+                ✧ Solicitar inspiración
               </button>
             </div>
             <div className="prendas-grid">
               {prendas.map((prenda) => (
                 <article className="prenda-card" key={prenda.id_prenda}>
                   <div className="prenda-imagen">
-                    {prenda.imagen_url ? <img src={prenda.imagen_url} alt={prenda.nombre} /> : <div className="prenda-sin-imagen">♡</div>}
+                    {prenda.imagen_url ? (
+                      <img
+                        src={obtenerImagen(prenda.imagen_url)}
+                        alt={prenda.nombre}
+                      />
+                    ) : (
+                      <div className="prenda-sin-imagen">♡</div>
+                    )}
                   </div>
                   <div className="prenda-contenido">
                     <span className="prenda-categoria">{prenda.categoria}</span>

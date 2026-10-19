@@ -1,13 +1,12 @@
 const prendaDAO = require("../dao/prendaDAO");
 
 const agregarPrenda = async (idUsuario, datos) => {
-
     if (!datos.nombre) {
         throw new Error("El nombre de la prenda es obligatorio");
     }
 
-    if(!datos.categoria) {
-        throw new Error("La categoria es obligatoria");
+    if (!datos.categoria) {
+        throw new Error("La categoría es obligatoria");
     }
 
     return await prendaDAO.crear({
@@ -36,4 +35,4 @@ const eliminarPrenda = async (idPrenda, idUsuario) => {
     return true;
 };
 
-module.exports = {agregarPrenda, obtenerArmario, eliminarPrenda}
+module.exports = {agregarPrenda, obtenerArmario, eliminarPrenda};

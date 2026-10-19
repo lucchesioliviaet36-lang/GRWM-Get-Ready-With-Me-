@@ -972,8 +972,8 @@ body {
   background:
     linear-gradient(
       135deg,
-      #d36d9a,
-      #b278bf
+      #ffe1ec,
+      #eda7d5
     );
 }
 
@@ -996,7 +996,7 @@ body {
 
 
 .ai-burbuja strong {
-  color: #8c476a;
+  color: #b882a5;
 
   font-size: 11px;
 }
@@ -1090,14 +1090,9 @@ body {
 
   padding: 11px 18px;
 
-  background:
-    linear-gradient(
-      135deg,
-      #f8bfd4e0,
-      #ecc8f5
-    );
+  background:#ffe1ec;
 
-  color: white;
+  color: #c387af;
 
   font-size: 12px;
 
@@ -1111,6 +1106,8 @@ body {
 
 .boton-generar-ai:hover:not(:disabled) {
   transform: translateY(-2px);
+  background: #f0a6c5;
+  color: white;
 
   box-shadow:
     0 7px 20px
@@ -1375,7 +1372,8 @@ body {
 .resultado-boton-principal,
 .resultado-boton-secundario {
   padding: 11px 18px;
-
+  width: 165px;
+  height: 40px;
   border-radius: 11px;
 
   font-size: 11px;
@@ -1389,16 +1387,17 @@ body {
 .resultado-boton-principal {
   border: none;
 
-  background: #ffd6e6;
+  background: #ffe1ec;
 
-  color: #70345c;
+  color: #c387af;
 
   font-weight: 600;
 }
 
 
 .resultado-boton-principal:hover {
-  background: #f9bdd4;
+  background: #f0a6c5;
+  color: white;
 }
 
 

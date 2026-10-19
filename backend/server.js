@@ -21,6 +21,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/catalogo", catalogoRoutes);
 app.use("/api/prendas", prendaRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/publicaciones", publicacionRoutes);
 app.use("/api/productos", productoRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
