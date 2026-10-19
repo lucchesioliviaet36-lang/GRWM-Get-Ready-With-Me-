@@ -68,7 +68,7 @@ function Registro() {
 
       alert("¡Registro realizado correctamente!");
 
-      navigate("/pagina_principal");
+      navigate("/paginaPrincipal");
 
     } 
     catch (error) {
