@@ -3,6 +3,17 @@ const Usuario = require("../models/usuarioModels.js");
 
 class UsuarioDao {
 
+    async buscarParaInicioSesion (identificador) {
+        return await Usuario.findOne({
+            where: {
+                [Op.or]: [
+                    {username: identificador},
+                    {mail: identificador}
+                ]
+            }
+        });
+    };
+
     async buscarPorUsername(username) {
         return await Usuario.findOne({
             where: {

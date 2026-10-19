@@ -41,11 +41,11 @@ class authController{
 
     async iniciar_sesion(req, res) {
         try {
-            const { username, contraseña } = req.body;
+            const { identificador, contraseña } = req.body;
 
             const resultado =
                 await authService.iniciar_sesion(
-                    username,
+                    identificador,
                     contraseña
                 );
 

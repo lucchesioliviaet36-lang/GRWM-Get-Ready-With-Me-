@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const usuarioDAO = require("../dao/usuarioDAO.js");
+
 const MAX_INTENTOS = 5;
 const TIEMPO_BLOQUEO_MINUTOS = 30;
 
@@ -41,25 +42,25 @@ class AuthService{
             mail,
             descripcion: null,
             fecha_registro: new Date(),
-            DVH:null
+            DVH: null
         });
 
         return nuevoUsuario;
     }
 
-    async iniciar_sesion(username, contraseña) {
+    async iniciar_sesion(identificador, contraseña) {
 
-        if (!username || !contraseña) {
+        if (!identificador || !contraseña) {
             throw new Error(
-                "Debés ingresar el username y la contraseña"
+                "Debés ingresar el username o mail y la contraseña"
             );
         }
 
-        const usuario = await usuarioDAO.buscarPorUsername(username);
+        const usuario = await usuarioDAO.buscarParaInicioSesion(identificador);
 
         if (!usuario) {
             throw new Error(
-                "Username o contraseña incorrectos"
+                "Usuario, mail o contraseña incorrectos"
             );
         }
 
@@ -117,7 +118,7 @@ class AuthService{
             }
 
             throw new Error(
-                `Username o contraseña incorrectos. Intento ${intentosActuales} de ${MAX_INTENTOS}.`
+                `Usuario, mail o contraseña incorrectos. Intento ${intentosActuales} de ${MAX_INTENTOS}.`
             );
         }
 
