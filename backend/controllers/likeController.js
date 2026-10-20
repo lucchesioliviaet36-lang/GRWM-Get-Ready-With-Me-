@@ -5,8 +5,7 @@ class LikeController {
         try {
             const { id_publicacion } = req.params;
             
-            // Usamos opcional chaining (?.) para que NUNCA rompa si req.body es undefined
-            const id_usuario = req.body?.id_usuario || req.query?.id_usuario;
+            const id_usuario = req.user?.id_usuario;
 
             if (!id_usuario || !id_publicacion) {
                 return res.status(400).json({ 

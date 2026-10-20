@@ -3,37 +3,51 @@ const favoritoService = require("../services/favoritoService.js");
 class FavoritoController {
     async toggleFavorito(req, res) {
         try {
-            // Lee 'id' o 'id_publicacion' para asegurar que nunca sea undefined
-            const id_publicacion = req.params.id || req.params.id_publicacion;
-            const { id_usuario } = req.query;
+            const { id_publicacion } = req.params;
+            const id_usuario = req.user.id_usuario;
 
             if (!id_usuario || !id_publicacion) {
-                return res.status(400).json({ error: "Faltan datos requeridos (id_usuario o id_publicacion)" });
+                return res.status(400).json({
+                    error: "Faltan datos requeridos"
+                });
             }
 
-            const resultado = await favoritoService.toggleFavorito(id_usuario, id_publicacion);
-            res.status(200).json(resultado);
+            const resultado = await favoritoService.toggleFavorito(
+                id_usuario,
+                id_publicacion
+            );
+
+            return res.status(200).json(resultado);
         } catch (error) {
             console.error("Error al procesar favorito:", error);
-            res.status(500).json({ error: "Error al guardar en favoritos" });
+            return res.status(500).json({
+                error: "Error al guardar en favoritos"
+            });
         }
     }
 
     async obtenerEstadoFavorito(req, res) {
         try {
-            // Lee 'id' o 'id_publicacion' para asegurar que nunca sea undefined
-            const id_publicacion = req.params.id || req.params.id_publicacion;
-            const { id_usuario } = req.query;
+            const { id_publicacion } = req.params;
+            const id_usuario = req.user.id_usuario;
 
             if (!id_usuario || !id_publicacion) {
-                return res.status(400).json({ error: "Faltan datos requeridos" });
+                return res.status(400).json({
+                    error: "Faltan datos requeridos"
+                });
             }
 
-            const resultado = await favoritoService.obtenerEstadoFavorito(id_usuario, id_publicacion);
-            res.status(200).json(resultado);
+            const resultado = await favoritoService.obtenerEstadoFavorito(
+                id_usuario,
+                id_publicacion
+            );
+
+            return res.status(200).json(resultado);
         } catch (error) {
             console.error("Error al consultar favorito:", error);
-            res.status(500).json({ error: "Error al consultar estado de favorito" });
+            return res.status(500).json({
+                error: "Error al consultar estado de favorito"
+            });
         }
     }
 

@@ -219,12 +219,17 @@ function Publicacion() {
     }
 
     try {
+      const token = localStorage.getItem("token");
+
       const response = await fetch(
-        `http://localhost:3000/api/publicaciones/${id}/favorito?id_usuario=${idUsuarioActual}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
-        }
+          `http://localhost:3000/api/publicaciones/${id}/favorito`,
+          {
+              method: "POST",
+              headers: {
+                  "Authorization": `Bearer ${token}`,
+                  "Content-Type": "application/json"
+              }
+          }
       );
 
       if (response.ok) {
