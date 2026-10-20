@@ -150,7 +150,16 @@ function Publicacion() {
     const consultarEstadoInicialLike = async () => {
       if (!id || !idUsuarioActual) return;
       try {
-        const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/likes?id_usuario=${idUsuarioActual}`);
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+          `http://localhost:3000/api/publicaciones/${id}/likes?id_usuario=${idUsuarioActual}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
         if (response.ok) {
           const data = await response.json();
           setLiked(data.dioLike);
@@ -169,7 +178,17 @@ function Publicacion() {
     const consultarEstadoInicialFavorito = async () => {
       if (!id || !idUsuarioActual) return;
       try {
-        const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/favorito?id_usuario=${idUsuarioActual}`);
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+          `http://localhost:3000/api/publicaciones/${id}/favorito?id_usuario=${idUsuarioActual}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
         if (response.ok) {
           const data = await response.json();
           setSaved(data.esFavorito);
@@ -190,11 +209,15 @@ function Publicacion() {
     }
 
     try {
+      const token = localStorage.getItem("token");
+
       const response = await fetch(
-        `http://localhost:3000/api/publicaciones/${id}/like?id_usuario=${idUsuarioActual}`,
+        `http://localhost:3000/api/publicaciones/${id}/like`,
         {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
       );
 

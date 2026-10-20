@@ -21,6 +21,29 @@ function PerfilPropio() {
   const bannerImg = usuarioSesion.banner || null;
 
   const [listaPublicaciones, setListaPublicaciones] = useState([]);
+    const obtenerCantidadLikes = async (idPublicacion, token) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/publicaciones/${idPublicacion}/likes`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        console.error("No se pudieron cargar los likes de la publicación", idPublicacion);
+        return 0;
+      }
+
+      const data = await response.json();
+      return Number(data.totalLikes) || 0;
+    } catch (error) {
+      console.error("Error al consultar los likes:", error);
+      return 0;
+    }
+  };
 
   const [publicacionesFavoritas, setPublicacionesFavoritas] = useState([]);
 
@@ -95,18 +118,22 @@ function PerfilPropio() {
 
               const data = await response.json();
 
-              const propias = data
-                  .filter(post => Number(post.id_usuario) === Number(idUsuario))
-                  .map(post => ({
-                      id: post.id_publicacion,
-                      ruta: `/publicacion/${post.id_publicacion}`,
-                      img: post.imagen_url
-                          ? `http://localhost:3000${post.imagen_url}`
-                          : "",
-                      likes: 0,
-                      esFavorito: false,
-                      descripcion: post.descripcion || ""
-                  }));
+              const publicacionesPropias = data.filter(
+                post => Number(post.id_usuario) === Number(idUsuario)
+              );
+
+              const propias = await Promise.all(
+                publicacionesPropias.map(async (post) => ({
+                  id: post.id_publicacion,
+                  ruta: `/publicacion/${post.id_publicacion}`,
+                  img: post.imagen_url
+                    ? `http://localhost:3000${post.imagen_url}`
+                    : "",
+                  likes: await obtenerCantidadLikes(post.id_publicacion, token),
+                  esFavorito: false,
+                  descripcion: post.descripcion || ""
+                }))
+              );
 
               setListaPublicaciones(propias);
           } catch (error) {
