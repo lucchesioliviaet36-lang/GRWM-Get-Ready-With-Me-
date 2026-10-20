@@ -214,7 +214,7 @@ function PerfilPropio() {
         // La fuente definitiva de las publicaciones será MySQL.
         setListaPublicaciones(prev => [nuevoPost, ...prev]);
 
-        alert("¡Tu outfit ha sido publicado con éxito! ✨");
+        alert("¡Tu outfit ha sido publicado con éxito! ");
 
         setImagenArchivo(null);
         setImagenPreview("");

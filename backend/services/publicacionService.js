@@ -1,26 +1,33 @@
 const publicacionDao = require("../dao/publicacionDAO.js");
 
-class PublicacionService {
-    async crearPublicacion(descripcion, id_usuario, id_producto, imagen_url) {
-        if (!id_usuario) {
-            throw new Error("El id_usuario es obligatorio");
-        }
-
-        return await publicacionDao.crearPublicacion(
-            descripcion,
-            id_usuario,
-            id_producto,
-            imagen_url
-        );
+const crearPublicacion = async (
+    descripcion,
+    id_usuario,
+    id_producto,
+    imagen_url
+) => {
+    if (!id_usuario) {
+        throw new Error("El id_usuario es obligatorio");
     }
 
-    async obtenerPublicaciones() {
-        return await publicacionDao.obtenerTodas();
-    }
+    return await publicacionDao.crearPublicacion(
+        descripcion,
+        id_usuario,
+        id_producto,
+        imagen_url
+    );
+};
 
-    async eliminarPublicacion(id_publicacion) {
+const obtenerPublicaciones = async () => {
+    return await publicacionDao.obtenerTodas();
+};
+
+const eliminarPublicacion = async (id_publicacion) => {
     return await publicacionDao.eliminarPublicacion(id_publicacion);
-    }
-}
+};
 
-module.exports = new PublicacionService();
+module.exports = {
+    crearPublicacion,
+    obtenerPublicaciones,
+    eliminarPublicacion
+};
