@@ -3,6 +3,7 @@ const publicacionController = require("../controllers/publicacionController.js")
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
+const authMiddleware = require("../middlewares/authMiddleware.js");
 
 // LIKES, FAVORITOS Y COMENTARIOS
 const likeController = require("../controllers/likeController.js");
@@ -44,33 +45,33 @@ const upload = multer({
 });
 
 // 🚀 CREAR Y OBTENER PUBLICACIONES
-router.post("/", upload.single("imagen"), (req, res) => {
+router.post("/", authMiddleware, upload.single("imagen"), (req, res) => {
     publicacionController.crearPublicacion(req, res);
 });
 
-router.get("/", (req, res) => {
+router.get("/", authMiddleware, (req, res) => {
     publicacionController.obtenerPublicaciones(req, res);
 });
 
-// --- LIKES ---
-router.post("/:id_publicacion/like", (req, res) => {
+ // --- LIKES ---
+router.post("/:id_publicacion/like", authMiddleware, (req, res) => {
     likeController.alternarLike(req, res);
 });
 
-router.get("/:id_publicacion/likes", (req, res) => {
+router.get("/:id_publicacion/likes", authMiddleware, (req, res) => {
     likeController.obtenerLikes(req, res);
 });
 
 // --- FAVORITOS ---
-router.post("/:id_publicacion/favorito", (req, res) => {
+router.post("/:id_publicacion/favorito", authMiddleware, (req, res) => {
     favoritoController.toggleFavorito(req, res);
 });
 
-router.get("/:id_publicacion/favorito", (req, res) => {
+router.get("/:id_publicacion/favorito", authMiddleware, (req, res) => {
     favoritoController.obtenerEstadoFavorito(req, res);
 });
 
-router.get("/favoritos/usuario/:id_usuario", (req, res) => {
+router.get("/favoritos/usuario/:id_usuario", authMiddleware, (req, res) => {
     favoritoController.obtenerFavoritosPorUsuario(req, res);
 });
 
@@ -79,16 +80,16 @@ router.get("/:id_publicacion/comentarios", (req, res) => {
     comentarioController.obtenerComentarios(req, res);
 });
 
-router.post("/:id_publicacion/comentario", (req, res) => {
+router.post("/:id_publicacion/comentario", authMiddleware, (req, res) => {
     comentarioController.crearComentario(req, res);
 });
 
-router.delete("/comentario/:id_comentario", (req, res) => {
+router.delete("/comentario/:id_comentario", authMiddleware, (req, res) => {
     comentarioController.eliminarComentario(req, res);
 });
 
 // --- ELIMINAR PUBLICACIÓN ---
-router.delete("/:id_publicacion", (req, res) => {
+router.delete("/:id_publicacion", authMiddleware, (req, res) => {
     publicacionController.eliminarPublicacion(req, res);
 });
 

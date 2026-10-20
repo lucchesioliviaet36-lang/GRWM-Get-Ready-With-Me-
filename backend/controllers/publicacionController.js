@@ -3,14 +3,19 @@ const publicacionService = require("../services/publicacionService.js");
 class PublicacionController {
     async crearPublicacion(req, res) {
         try {
-            const { descripcion, id_usuario, id_producto } = req.body;
+            const { descripcion, id_producto } = req.body;
+            const id_usuario = req.user.id_usuario;
 
             if (!id_usuario) {
-                return res.status(400).json({ error: "Falta el id_usuario" });
+                return res.status(401).json({
+                    error: "No se pudo identificar al usuario autenticado"
+                });
             }
 
             if (!req.file) {
-                return res.status(400).json({ error: "Falta la imagen de la publicación" });
+                return res.status(400).json({
+                    error: "Falta la imagen de la publicación"
+                });
             }
 
             const imagen_url = `/uploads/publicaciones/${req.file.filename}`;

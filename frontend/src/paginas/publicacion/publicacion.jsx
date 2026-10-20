@@ -95,11 +95,17 @@ function Publicacion() {
     if (!confirmar) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/publicaciones/comentario/${idComentario}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_usuario: idUsuarioActual })
-      });
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `http://localhost:3000/api/publicaciones/comentario/${idComentario}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
 
       if (response.ok) {
         const resComentarios = await fetch(`http://localhost:3000/api/publicaciones/${id}/comentarios`);
@@ -252,14 +258,21 @@ function Publicacion() {
     if (nuevoComentario.trim() === '') return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/comentario`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id_usuario: idUsuarioActual,
-          comentario: nuevoComentario.trim()
-        })
-      });
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+          `http://localhost:3000/api/publicaciones/${id}/comentario`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              comentario: nuevoComentario.trim()
+            })
+          }
+        );
 
       if (response.ok) {
         setNuevoComentario('');
