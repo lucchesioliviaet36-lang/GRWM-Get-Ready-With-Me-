@@ -78,8 +78,15 @@ function PerfilPropio() {
 
       const cargarPublicaciones = async () => {
           try {
+              const token = localStorage.getItem('token');
+
               const response = await fetch(
-                  "http://localhost:3000/api/publicaciones"
+                  "http://localhost:3000/api/publicaciones",
+                  {
+                      headers: {
+                          "Authorization": `Bearer ${token}`
+                      }
+                  }
               );
 
               if (!response.ok) {
@@ -151,8 +158,13 @@ function PerfilPropio() {
         formData.append("id_usuario", String(idUsuario));
         formData.append("descripcion", descripcion);
 
+        const token = localStorage.getItem('token');
+
         const response = await fetch("http://localhost:3000/api/publicaciones", {
             method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            },
             body: formData
         });
 

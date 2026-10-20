@@ -19,7 +19,13 @@ function Publicacion() {
           setCargandoPublicacion(true);
 
           try {
-              const response = await fetch("http://localhost:3000/api/publicaciones");
+              const token = localStorage.getItem("token");
+
+              const response = await fetch("http://localhost:3000/api/publicaciones", {
+                  headers: {
+                      Authorization: `Bearer ${token}`
+                  }
+              });
 
               if (!response.ok) {
                   throw new Error("No se pudo consultar la publicación");
