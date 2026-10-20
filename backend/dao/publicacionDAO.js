@@ -18,7 +18,12 @@ const crearPublicacion = async (
 
 // Obtener todas las publicaciones
 const obtenerTodas = async () => {
-    return await Publicacion.findAll();
+    return await Publicacion.findAll({
+        order: [
+            ["fecha_publicacion", "DESC"],
+            ["id_publicacion", "DESC"]
+        ]
+    });
 };
 
 // Eliminar una publicación

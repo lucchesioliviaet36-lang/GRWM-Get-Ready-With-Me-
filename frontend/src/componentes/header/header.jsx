@@ -43,7 +43,7 @@ function Header() {
     localStorage.removeItem("grwm_favoritos");
 
     setMenuAbierto(false);
-    navigate("/");
+    navigate("/IniciarSesion");
   };
 
   // FUNCIÓN ELIMINAR CUENTA
