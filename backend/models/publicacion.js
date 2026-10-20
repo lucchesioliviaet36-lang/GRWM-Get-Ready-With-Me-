@@ -27,6 +27,10 @@ const Publicacion = sequelize.define("Publicacion", {
     id_producto: {
         type: DataTypes.INTEGER,
         allowNull: true
+    },
+    imagen_url: {
+        type: DataTypes.STRING(255),
+        allowNull: true
     }
 }, {
     tableName: "Publicacion",

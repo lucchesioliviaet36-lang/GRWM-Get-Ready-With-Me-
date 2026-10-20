@@ -2,12 +2,13 @@ const Publicacion = require("../models/publicacion.js");
 
 class PublicacionDao {
     // Inserta la publicación en la tabla Publicacion de MySQL
-    async crearPublicacion(descripcion, id_usuario, id_producto = null) {
+    async crearPublicacion(descripcion, id_usuario, id_producto = null, imagen_url = null) {
         return await Publicacion.create({
-            descripcion: descripcion,
+            descripcion,
             fecha_publicacion: new Date(),
-            id_usuario: id_usuario,
-            id_producto: id_producto
+            id_usuario,
+            id_producto,
+            imagen_url
         });
     }
 

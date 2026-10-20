@@ -1,14 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg'
-import fotoPropia1 from '../../assets/imagenes/fotoPropia1.jpg'
-import fotoPropia2 from '../../assets/imagenes/fotoPropia2.jpg'
-import fotoPropia3 from '../../assets/imagenes/fotoPropia3.jpg'
-import fotoPropia4 from '../../assets/imagenes/fotoPropia4.jpg'
 import Header from "../../componentes/header/header"
 import './publicacion.css'
 
-const mapaFotos = { 1: fotoPropia1, 2: fotoPropia2, 3: fotoPropia3, 4: fotoPropia4 };
 
 function Publicacion() {
   const navigate = useNavigate();
@@ -17,12 +11,52 @@ function Publicacion() {
 
   const [menuOpciones, setMenuOpciones] = useState(false);
 
-  // Cargar publicación de localStorage
-  const publicacionesGuardadas = JSON.parse(localStorage.getItem('grwm_publicaciones')) || [];
-  const postEncontrado = publicacionesGuardadas.find(p => String(p.id) === String(id));
+  const [postEncontrado, setPostEncontrado] = useState(null);
+  const [cargandoPublicacion, setCargandoPublicacion] = useState(true);
 
-  const fotoAMostrar = postEncontrado?.img || mapaFotos[idPublicacion] || fotoPropia1;
-  const descripcionMostrar = postEncontrado?.descripcion || "Un look casual pero con un toque, perfecto para salir y sentirte increíble. ✨";
+  useEffect(() => {
+      const cargarPublicacion = async () => {
+          setCargandoPublicacion(true);
+
+          try {
+              const response = await fetch("http://localhost:3000/api/publicaciones");
+
+              if (!response.ok) {
+                  throw new Error("No se pudo consultar la publicación");
+              }
+
+              const publicaciones = await response.json();
+
+              const encontrada = publicaciones.find(
+                  p => String(p.id_publicacion) === String(id)
+              );
+
+              if (encontrada) {
+                  setPostEncontrado({
+                      ...encontrada,
+                      img: encontrada.imagen_url
+                          ? `http://localhost:3000${encontrada.imagen_url}`
+                          : ""
+                  });
+              } else {
+                  setPostEncontrado(null);
+              }
+          } catch (error) {
+              console.error("Error al cargar publicación:", error);
+              setPostEncontrado(null);
+          } finally {
+              setCargandoPublicacion(false);
+          }
+      };
+
+      cargarPublicacion();
+  }, [id]);
+
+  const fotoAMostrar = postEncontrado?.img || "";
+  const descripcionMostrar = postEncontrado?.descripcion || "";
+  const publicacionesGuardadas = JSON.parse(
+      localStorage.getItem("grwm_publicaciones") || "[]"
+  );
 
   // Obtenemos los datos del usuario dinámicamente desde localStorage
   const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
@@ -271,6 +305,7 @@ function Publicacion() {
       <Header />
 
       <main className="contenido-publicacion">
+        
         <button className="volver" type="button" onClick={() => navigate('/perfil_propio')}>
           ← Volver a mi perfil
         </button>

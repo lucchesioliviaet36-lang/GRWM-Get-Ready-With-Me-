@@ -20,10 +20,7 @@ function PerfilPropio() {
   const fotoPerfil = usuarioSesion.foto_perfil || null;
   const bannerImg = usuarioSesion.banner || null;
 
-  const [listaPublicaciones, setListaPublicaciones] = useState(() => {
-    const guardadas = localStorage.getItem('grwm_publicaciones');
-    return guardadas ? JSON.parse(guardadas) : [];
-  });
+  const [listaPublicaciones, setListaPublicaciones] = useState([]);
 
   const [publicacionesFavoritas, setPublicacionesFavoritas] = useState([]);
 
@@ -75,11 +72,43 @@ function PerfilPropio() {
 
   // 3️⃣ Cargar publicaciones locales del feed
   useEffect(() => {
-    const guardadas = localStorage.getItem('grwm_publicaciones');
-    if (guardadas) {
-      setListaPublicaciones(JSON.parse(guardadas));
-    }
-  }, [pestanaActiva]);
+      const idUsuario = usuarioSesion?.id_usuario || usuarioSesion?.id;
+
+      if (!idUsuario) return;
+
+      const cargarPublicaciones = async () => {
+          try {
+              const response = await fetch(
+                  "http://localhost:3000/api/publicaciones"
+              );
+
+              if (!response.ok) {
+                  throw new Error("No se pudieron cargar las publicaciones");
+              }
+
+              const data = await response.json();
+
+              const propias = data
+                  .filter(post => Number(post.id_usuario) === Number(idUsuario))
+                  .map(post => ({
+                      id: post.id_publicacion,
+                      ruta: `/publicacion/${post.id_publicacion}`,
+                      img: post.imagen_url
+                          ? `http://localhost:3000${post.imagen_url}`
+                          : "",
+                      likes: 0,
+                      esFavorito: false,
+                      descripcion: post.descripcion || ""
+                  }));
+
+              setListaPublicaciones(propias);
+          } catch (error) {
+              console.error("Error al cargar publicaciones:", error);
+          }
+      };
+
+      cargarPublicaciones();
+  }, [usuarioSesion?.id_usuario, usuarioSesion?.id]);
 
   const handleFileChange = (e) => {
     const files = e.target.files;
@@ -104,49 +133,63 @@ function PerfilPropio() {
     }
 
     if (tipoPublicacion === 'feed') {
-      try {
+    try {
+        const idUsuario = usuarioSesion?.id_usuario || usuarioSesion?.id;
+
+        if (!idUsuario) {
+            alert("No se encontró el usuario de la sesión. Volvé a iniciar sesión.");
+            return;
+        }
+
+        if (!imagenArchivo) {
+            alert("Volvé a seleccionar la imagen.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("imagen", imagenArchivo);
+        formData.append("id_usuario", String(idUsuario));
+        formData.append("descripcion", descripcion);
+
         const response = await fetch("http://localhost:3000/api/publicaciones", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id_usuario: usuarioSesion?.id_usuario || usuarioSesion?.id,
-            descripcion: descripcion
-          })
+            method: "POST",
+            body: formData
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          const idReal = data.id_publicacion || data.id;
+        const data = await response.json();
 
-          const nuevoPost = {
-            id: idReal,
-            ruta: `/publicacion/${idReal}`,
-            img: imagenPreview,
+        if (!response.ok) {
+            throw new Error(data.detalle || data.error || "No se pudo crear la publicación");
+        }
+
+        const nuevoPost = {
+            id: data.id_publicacion,
+            ruta: `/publicacion/${data.id_publicacion}`,
+            img: `http://localhost:3000${data.imagen_url}`,
             likes: 0,
             esFavorito: false,
-            descripcion: descripcion
-          };
+            descripcion: data.descripcion || ""
+        };
 
-          const nuevasPublicaciones = [nuevoPost, ...listaPublicaciones];
-          setListaPublicaciones(nuevasPublicaciones);
-          localStorage.setItem('grwm_publicaciones', JSON.stringify(nuevasPublicaciones));
+        // Actualización temporal de la pantalla.
+        // La fuente definitiva de las publicaciones será MySQL.
+        setListaPublicaciones(prev => [nuevoPost, ...prev]);
 
-          alert("¡Tu outfit ha sido publicado con éxito! ✨");
-          setImagenArchivo(null);
-          setImagenPreview('');
-          setTipoPublicacion('feed');
-          setPrecioPrenda('');
-          setNombrePrenda('');
-          setTallePrenda('M');
-          setDescripcion('');
-          setMostrarModal(false);
-        } else {
-          alert("Ocurrió un error al guardar la publicación en el servidor.");
-        }
-      } catch (error) {
-        console.error("Error al conectar con el servidor:", error);
-        alert("Error de conexión al intentar publicar.");
-      }
+        alert("¡Tu outfit ha sido publicado con éxito! ✨");
+
+        setImagenArchivo(null);
+        setImagenPreview("");
+        setTipoPublicacion("feed");
+        setPrecioPrenda("");
+        setNombrePrenda("");
+        setTallePrenda("M");
+        setDescripcion("");
+        setMostrarModal(false);
+
+    } catch (error) {
+        console.error("Error al crear publicación:", error);
+        alert(`No se pudo publicar: ${error.message}`);
+    }
     } else {
       const nuevoProducto = {
         id: Date.now(),

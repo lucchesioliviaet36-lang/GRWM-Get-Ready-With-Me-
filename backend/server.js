@@ -24,7 +24,6 @@ app.use("/api/prendas", prendaRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/publicaciones", publicacionRoutes);
 app.use("/api/productos", productoRoutes);
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use( "/api/ai", iaOutfitRoutes);
 
 app.get("/", (req, res) => {

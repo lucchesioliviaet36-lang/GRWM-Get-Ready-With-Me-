@@ -1,5 +1,8 @@
 const express = require("express");
 const publicacionController = require("../controllers/publicacionController.js");
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
 
 // LIKES, FAVORITOS Y COMENTARIOS
 const likeController = require("../controllers/likeController.js");
@@ -8,8 +11,40 @@ const comentarioController = require("../controllers/comentarioController.js");
 
 const router = express.Router();
 
+const carpetaPublicaciones = path.join(
+    __dirname,
+    "../uploads/publicaciones"
+);
+
+fs.mkdirSync(carpetaPublicaciones, { recursive: true });
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, carpetaPublicaciones);
+    },
+    filename: (req, file, cb) => {
+        const extension = path.extname(file.originalname).toLowerCase();
+        const nombreArchivo = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extension}`;
+        cb(null, nombreArchivo);
+    }
+});
+
+const upload = multer({
+    storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024
+    },
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith("image/")) {
+            cb(null, true);
+        } else {
+            cb(new Error("El archivo debe ser una imagen"));
+        }
+    }
+});
+
 // 🚀 CREAR Y OBTENER PUBLICACIONES
-router.post("/", (req, res) => {
+router.post("/", upload.single("imagen"), (req, res) => {
     publicacionController.crearPublicacion(req, res);
 });
 

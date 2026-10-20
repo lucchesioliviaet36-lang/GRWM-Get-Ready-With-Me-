@@ -9,17 +9,26 @@ class PublicacionController {
                 return res.status(400).json({ error: "Falta el id_usuario" });
             }
 
+            if (!req.file) {
+                return res.status(400).json({ error: "Falta la imagen de la publicación" });
+            }
+
+            const imagen_url = `/uploads/publicaciones/${req.file.filename}`;
+
             const nuevaPublicacion = await publicacionService.crearPublicacion(
                 descripcion,
-                id_usuario,
-                id_producto || null
+                Number(id_usuario),
+                id_producto ? Number(id_producto) : null,
+                imagen_url
             );
 
-            // Devuelve la publicación recién creada con su id_publicacion de MySQL
-            res.status(201).json(nuevaPublicacion);
+            return res.status(201).json(nuevaPublicacion);
         } catch (error) {
             console.error("Error al crear publicación:", error);
-            res.status(500).json({ error: "Error al guardar la publicación en MySQL" });
+            return res.status(500).json({
+                error: "Error al guardar la publicación",
+                detalle: error.message
+            });
         }
     }
 
