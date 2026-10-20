@@ -86,6 +86,25 @@ class UsuarioDao {
         return await Usuario.create(usuario);
     }
 
+    // 🟢 NUEVO: Función para guardar los cambios de perfil en MySQL mediante Sequelize
+    async actualizarUsuario(id_usuario, datos) {
+        return await Usuario.update(
+            {
+                nombre: datos.nombre,
+                apellido: datos.apellido,
+                username: datos.username,
+                descripcion: datos.descripcion,
+                mail: datos.email || datos.mail,
+                telefono: datos.telefono,
+                foto_perfil: datos.foto_perfil,
+                banner: datos.banner
+            },
+            {
+                where: { id_usuario }
+            }
+        );
+    }
+
     async actualizarIntentos(id_usuario, cantidad, bloqueadoHasta = null){
         await Usuario.update(
             {

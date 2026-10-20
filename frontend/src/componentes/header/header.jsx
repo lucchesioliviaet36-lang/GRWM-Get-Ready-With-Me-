@@ -30,6 +30,22 @@ function Header() {
   const usuarioTagHeader = usuarioGuardado.username ? `@${usuarioGuardado.username}` : '@usuario';
   const fotoPerfilHeader = usuarioGuardado.foto_perfil || localStorage.getItem('grwm_foto_perfil') || null;
 
+
+  // FUNCIÓN CERRAR SESIÓN
+  const handleCerrarSesion = () => {
+    // Eliminar los datos de la sesión anterior
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("grwm_publicaciones");
+    localStorage.removeItem("grwm_banner");
+    localStorage.removeItem("grwm_foto_perfil");
+    localStorage.removeItem("grwm_user_profile");
+    localStorage.removeItem("grwm_favoritos");
+
+    setMenuAbierto(false);
+    navigate("/");
+  };
+
   // FUNCIÓN ELIMINAR CUENTA
   const handleEliminarCuenta = async () => {
     const token = localStorage.getItem("token");
@@ -141,8 +157,11 @@ function Header() {
               
               <div className="menu-divisor"></div>
               
-              <button className="menu-btn-logout" onClick={() => navigate('/')}>
-                 Cerrar Sesión
+              <button
+                className="menu-btn-logout"
+                onClick={handleCerrarSesion}
+              >
+                Cerrar Sesión
               </button>
 
               <button 

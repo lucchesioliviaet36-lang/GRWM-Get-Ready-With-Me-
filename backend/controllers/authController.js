@@ -1,43 +1,60 @@
 const authService = require("../services/authService");
+const jwt = require("jsonwebtoken");
 
 class authController{
 
-    async registrar(req, res){
-        try{
-            const nuevoUsuario = await authService.registrar(req.body);
+async registrar(req, res) {
+    try {
+        const nuevoUsuario = await authService.registrar(req.body);
 
-            res.status(201).json({mensaje: "Usuario registrado correctamente",
-                usuario: {
-                    id_usuario: nuevoUsuario.id_usuario,
-                    nombre: nuevoUsuario.nombre,
-                    apellido: nuevoUsuario.apellido,
-                    username: nuevoUsuario.username,
-                    mail: nuevoUsuario.mail,
-                    rol: nuevoUsuario.rol
-                }
-            });
-
+        if (!process.env.JWT_SECRET) {
+            throw new Error("Falta configurar JWT_SECRET en el archivo .env");
         }
 
-        catch (error) {
-            console.error("❌ ERROR COMPLETO:");
-            console.error(error);
-            console.error("NAME:", error.name);
-            console.error("MESSAGE:", error.message);
-            console.error("ERRORS:", error.errors);
+        const token = jwt.sign(
+            {
+                id_usuario: nuevoUsuario.id_usuario,
+                username: nuevoUsuario.username,
+                rol: nuevoUsuario.rol
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "2h"
+            }
+        );
 
-            res.status(400).json({
-                mensaje: error.message,
-                errores: error.errors
-                    ? error.errors.map(e => ({
-                        campo: e.path,
-                        mensaje: e.message,
-                        valor: e.value
-                    }))
-                    : []
-            });
-        }
+        return res.status(201).json({
+            success: true,
+            mensaje: "Usuario registrado correctamente",
+            token,
+            usuario: {
+                id_usuario: nuevoUsuario.id_usuario,
+                nombre: nuevoUsuario.nombre,
+                apellido: nuevoUsuario.apellido,
+                username: nuevoUsuario.username,
+                mail: nuevoUsuario.mail,
+                rol: nuevoUsuario.rol
+            }
+        });
+    } catch (error) {
+        console.error("❌ ERROR COMPLETO:");
+        console.error(error);
+        console.error("NAME:", error.name);
+        console.error("MESSAGE:", error.message);
+        console.error("ERRORS:", error.errors);
+
+        return res.status(400).json({
+            mensaje: error.message,
+            errores: error.errors
+                ? error.errors.map(e => ({
+                    campo: e.path,
+                    mensaje: e.message,
+                    valor: e.value
+                }))
+                : []
+        });
     }
+}
 
     async iniciar_sesion(req, res) {
         try {

@@ -4,15 +4,6 @@ import "./editar_perfil.css";
 import Header from "../../componentes/header/header"; 
 import Footer from "../../componentes/footer/footer";
 
-// 🛠️ Función auxiliar para validar imágenes almacenadas en localStorage
-const obtenerImagenValida = (key) => {
-  const val = localStorage.getItem(key);
-  if (!val || val === 'null' || val === 'undefined' || val.trim() === '') {
-    return null;
-  }
-  return val;
-};
-
 function EditarPerfil() { 
   const navigate = useNavigate(); 
   const [error, setError] = useState(""); 
@@ -20,66 +11,25 @@ function EditarPerfil() {
   const [isLoading, setIsLoading] = useState(false); 
   const [camposConError, setCamposConError] = useState({});
 
-  // 👤 Cargar datos del usuario en sesión
+  // 👤 Cargar usuario en sesión
   const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
 
-  // Estado para Banner y Avatar con filtrado seguro
-  const [bannerImg, setBannerImg] = useState(() => obtenerImagenValida('grwm_banner')); 
-  const [avatarImg, setAvatarImg] = useState(() => {
-    return obtenerImagenValida('grwm_foto_perfil') || usuarioSesion.foto_perfil || null;
+  // Estado de imágenes directamente desde el usuario
+  const [bannerImg, setBannerImg] = useState(usuarioSesion.banner || null); 
+  const [avatarImg, setAvatarImg] = useState(usuarioSesion.foto_perfil || null);
+
+  // 📝 Formulario directamente mapeado con los mismos nombres que MySQL
+  const [formData, setFormData] = useState({
+    nombre: usuarioSesion.nombre || '',
+    apellido: usuarioSesion.apellido || '',
+    username: usuarioSesion.username ? usuarioSesion.username.replace('@', '') : '',
+    descripcion: usuarioSesion.descripcion || '',
+    email: usuarioSesion.email || usuarioSesion.mail || '',
+    telefono: usuarioSesion.telefono || '',
+    instagram: usuarioSesion.instagram || '',
+    tiktok: usuarioSesion.tiktok || '',
+    website: usuarioSesion.website || ''
   });
-
-  // Inicialización dinámica con los datos reales del usuario
-  const [formData, setFormData] = useState(() => {
-    const savedData = localStorage.getItem('grwm_user_profile');
-    if (savedData) {
-      try {
-        const parsed = JSON.parse(savedData);
-        if (parsed.fullName && !parsed.fullName.toLowerCase().includes("taylor")) {
-          // Limpiamos comas y palabras repetidas del perfil guardado en localStorage
-          const textoLimpio = parsed.fullName.replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
-          const palabras = [];
-          textoLimpio.split(' ').forEach(p => {
-            if (p && (palabras.length === 0 || palabras[palabras.length - 1].toLowerCase() !== p.toLowerCase())) {
-              palabras.push(p);
-            }
-          });
-          return {
-            ...parsed,
-            fullName: palabras.join(' ')
-          };
-        }
-      } catch (e) {
-        console.error("Error al leer perfil:", e);
-      }
-    }
-
-    // Si no había nada en grwm_user_profile, usa los datos de la sesión
-    const nomRaw = Array.isArray(usuarioSesion.nombre) ? usuarioSesion.nombre.join(' ') : String(usuarioSesion.nombre || '');
-    const apeRaw = Array.isArray(usuarioSesion.apellido) ? usuarioSesion.apellido.join(' ') : String(usuarioSesion.apellido || '');
-    
-    const textoUnificado = `${nomRaw} ${apeRaw}`.replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
-    const palabrasUnicas = [];
-    textoUnificado.split(' ').forEach(palabra => {
-      if (palabra && (palabrasUnicas.length === 0 || palabrasUnicas[palabrasUnicas.length - 1].toLowerCase() !== palabra.toLowerCase())) {
-        palabrasUnicas.push(palabra);
-      }
-    });
-
-    const nombreCompleto = palabrasUnicas.join(' ') || usuarioSesion.username || '';
-
-    return { 
-      fullName: nombreCompleto, 
-      username: usuarioSesion.username ? `@${usuarioSesion.username.replace('@', '')}` : '', 
-      bio: usuarioSesion.descripcion || '', 
-      email: usuarioSesion.mail || usuarioSesion.email || '', 
-      phone: usuarioSesion.telefono || '', 
-      instagram: usuarioSesion.instagram || '', 
-      tiktok: usuarioSesion.tiktok || '', 
-      website: usuarioSesion.website || '', 
-    }; 
-  });
-
 
   const availableStyles = [ 
     { id: "vintage", label: "Vintage", active: true }, 
@@ -106,7 +56,6 @@ function EditarPerfil() {
     } 
   };
 
-  // 🖼️ Cambiar Banner extrayendo el archivo mediante .item(0)
   const handleBannerChange = (e) => { 
     const files = e.target.files;
     if (files && files.length > 0) { 
@@ -114,16 +63,13 @@ function EditarPerfil() {
       if (file) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          const res = reader.result;
-          setBannerImg(res);
-          localStorage.setItem('grwm_banner', res);
+          setBannerImg(reader.result);
         };
         reader.readAsDataURL(file);
       }
     } 
   };
 
-  // 📸 Cambiar Avatar extrayendo el archivo mediante .item(0)
   const handleAvatarChange = (e) => { 
     const files = e.target.files;
     if (files && files.length > 0) { 
@@ -131,9 +77,7 @@ function EditarPerfil() {
       if (file) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          const res = reader.result;
-          setAvatarImg(res);
-          localStorage.setItem('grwm_foto_perfil', res);
+          setAvatarImg(reader.result);
         };
         reader.readAsDataURL(file);
       }
@@ -145,8 +89,10 @@ function EditarPerfil() {
     setError("");
     let erroresTemp = {};
 
-    if (!formData.fullName || !formData.fullName.trim()) erroresTemp.fullName = true;
-    if (!formData.email || !formData.email.trim()) erroresTemp.email = true;
+    console.log("1. Se ejecutó handleSubmit");
+
+    if (!formData.nombre.trim()) erroresTemp.nombre = true;
+    if (!formData.email.trim()) erroresTemp.email = true;
 
     if (Object.keys(erroresTemp).length > 0) {
       setCamposConError(erroresTemp);
@@ -156,62 +102,75 @@ function EditarPerfil() {
 
     setIsLoading(true);
 
-    try {
-      // 1. Limpiamos comas y palabras repetidas del texto ingresado
-      const textoLimpio = (formData.fullName || '').replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
-      const palabras = [];
-      textoLimpio.split(' ').forEach(p => {
-        if (p && (palabras.length === 0 || palabras[palabras.length - 1].toLowerCase() !== p.toLowerCase())) {
-          palabras.push(p);
+    // 📦 Objeto unificado listo para MySQL y localStorage
+    const usuarioActualizado = {
+      ...usuarioSesion,
+      nombre: formData.nombre.trim(),
+      apellido: formData.apellido.trim(),
+      username: formData.username.trim(),
+      descripcion: formData.descripcion.trim(),
+      email: formData.email.trim(),
+      telefono: formData.telefono.trim(),
+      instagram: formData.instagram.trim(),
+      tiktok: formData.tiktok.trim(),
+      website: formData.website.trim(),
+      foto_perfil: avatarImg,
+      banner: bannerImg
+    };
+
+    const token = localStorage.getItem("token");
+
+    console.log("¿Hay token guardado?:", !!token);
+
+    console.log("2. Voy a comprobar el token");
+
+    console.log("3. Voy a enviar la petición");
+    // 🚀 Petición PUT al Servidor Node.js
+    if (token) {
+      fetch("http://localhost:3000/api/usuarios/perfil", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(usuarioActualizado)
+      })
+      .then(async (res) => {
+        const texto = await res.text();
+
+        console.log("Estado HTTP:", res.status);
+        console.log("Respuesta del servidor:", texto);
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${texto}`);
         }
-      });
 
-      // 2. Extraemos el primer nombre con  e índice seguro
-      const primerNombre = palabras || "";
-      const nuevoApellido = palabras.slice(1).join(" ") || "";
-      const nuevoUsername = (formData.username || "").replace('@', '').trim();
-      const fullNameLimpio = palabras.join(' ');
+        if (!texto) return {};
 
-      // 3. Guardamos los datos del usuario en la sesión
-      const usuarioActualizado = {
-        ...usuarioSesion,
-        nombre: primerNombre,
-        apellido: nuevoApellido,
-        username: nuevoUsername,
-        mail: formData.email,
-        descripcion: formData.bio || '',
-        foto_perfil: avatarImg
-      };
-
+        try {
+          return JSON.parse(texto);
+        } catch {
+          throw new Error("El servidor no devolvió JSON válido.");
+        }
+      })
+        .then((datosServidor) => {
+          const finalUser = datosServidor?.usuario || usuarioActualizado;
+          console.log("4. Respuesta del servidor:", datosServidor);
+          localStorage.setItem('usuario', JSON.stringify(finalUser));
+          setIsLoading(false);
+          setToastMessage("¡Cambios guardados en la base de datos ✨!");
+          setTimeout(() => navigate("/perfil_propio"), 1000);
+        })
+        .catch((err) => {
+          console.error("Error al guardar en BD:", err);
+          setIsLoading(false);
+          setError("No se pudieron guardar los cambios en el servidor.");
+        });
+    } else {
       localStorage.setItem('usuario', JSON.stringify(usuarioActualizado));
-      localStorage.setItem('grwm_user_profile', JSON.stringify({
-        ...formData,
-        fullName: fullNameLimpio,
-        username: `@${nuevoUsername}`
-      }));
-
-      // 4. Guardado seguro de imágenes evitando que la cuota de localStorage rompa la ejecución
-      if (bannerImg) {
-        try { localStorage.setItem('grwm_banner', bannerImg); } catch (e) { console.warn("Banner excede tamaño en localStorage"); }
-      }
-      if (avatarImg) {
-        try { localStorage.setItem('grwm_foto_perfil', avatarImg); } catch (e) { console.warn("Avatar excede tamaño en localStorage"); }
-      }
-
-      // 5. Finalización exitosa
-      setTimeout(() => {
-        setIsLoading(false);
-        setToastMessage("¡Cambios guardados con éxito ✨!");
-        
-        setTimeout(() => {
-          navigate("/perfil_propio");
-        }, 1000);
-      }, 1000);
-
-    } catch (err) {
-      console.error("Error al guardar el perfil:", err);
       setIsLoading(false);
-      setError("Ocurrió un problema al guardar los cambios. Inténtalo nuevamente.");
+      setToastMessage("¡Cambios guardados con éxito ✨!");
+      setTimeout(() => navigate("/perfil_propio"), 1000);
     }
   };
 
@@ -273,7 +232,6 @@ function EditarPerfil() {
           <div className="EditarPerfil-Header">
             <div className="editar-avatar-wrapper">
               
-              {/* AVATAR VECTORIAL O FOTO */}
               <div 
                 className="editar-avatar-img" 
                 style={{ 
@@ -317,32 +275,62 @@ function EditarPerfil() {
               <h2>Información Básica</h2>
               <div className="form-fila">
                 <div className="form-group-perfil">
-                  <label htmlFor="fullName">Nombre completo *</label>
+                  <label htmlFor="nombre">Nombre *</label>
                   <input 
-                    id="fullName" 
-                    name="fullName" 
+                    id="nombre" 
+                    name="nombre" 
                     type="text" 
-                    value={formData.fullName} 
+                    value={formData.nombre} 
                     onChange={handleChange} 
-                    className={camposConError.fullName ? "input-error" : ""}
+                    className={camposConError.nombre ? "input-error" : ""}
                   />
                 </div>
                 <div className="form-group-perfil">
-                  <label htmlFor="username">Nombre de usuario</label>
-                  <input id="username" name="username" type="text" value={formData.username} onChange={handleChange} />
+                  <label htmlFor="apellido">Apellido</label>
+                  <input 
+                    id="apellido" 
+                    name="apellido" 
+                    type="text" 
+                    value={formData.apellido} 
+                    onChange={handleChange} 
+                  />
                 </div>
               </div>
+
+              <div className="form-fila">
+                <div className="form-group-perfil">
+                  <label htmlFor="username">Nombre de usuario</label>
+                  <input 
+                    id="username" 
+                    name="username" 
+                    type="text" 
+                    value={formData.username} 
+                    onChange={handleChange} 
+                  />
+                </div>
+                <div className="form-group-perfil">
+                  <label htmlFor="telefono">Teléfono</label>
+                  <input 
+                    id="telefono" 
+                    name="telefono" 
+                    type="text" 
+                    value={formData.telefono} 
+                    onChange={handleChange} 
+                  />
+                </div>
+              </div>
+
               <div className="form-group-perfil">
                 <div className="label-con-contador">
-                  <label htmlFor="bio">Biografía</label>
-                  <span className="contador-caracteres">{formData.bio.length}/160</span>
+                  <label htmlFor="descripcion">Biografía</label>
+                  <span className="contador-caracteres">{formData.descripcion.length}/160</span>
                 </div>
                 <textarea 
-                  id="bio" 
-                  name="bio" 
+                  id="descripcion" 
+                  name="descripcion" 
                   rows="3" 
                   maxLength="160"
-                  value={formData.bio} 
+                  value={formData.descripcion} 
                   onChange={handleChange} 
                 />
               </div>
@@ -363,10 +351,6 @@ function EditarPerfil() {
                     onChange={handleChange} 
                     className={camposConError.email ? "input-error" : ""}
                   />
-                </div>
-                <div className="form-group-perfil">
-                  <label htmlFor="phone">Teléfono</label>
-                  <input id="phone" name="phone" type="text" value={formData.phone} onChange={handleChange} />
                 </div>
               </div>
             </section>

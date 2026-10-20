@@ -4,40 +4,21 @@ import './perfil_propio.css'
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
 
-// 🛠️ Función auxiliar para validar imágenes almacenadas en localStorage
-const obtenerImagenValida = (key) => {
-  const val = localStorage.getItem(key);
-  if (!val || val === 'null' || val === 'undefined' || val.trim() === '') {
-    return null;
-  }
-  return val;
-};
-
 function PerfilPropio() {
   const navigate = useNavigate();
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
 
-  const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
-
-  // 🧹 LIMPIEZA SEGURA DEL NOMBRE (Toma la primera palabra si viene como arreglo y quita comas)
-  const nomStr = Array.isArray(usuarioSesion.nombre) ? usuarioSesion.nombre : String(usuarioSesion.nombre || '');
-  const apeStr = Array.isArray(usuarioSesion.apellido) ? usuarioSesion.apellido.join(' ') : String(usuarioSesion.apellido || '');
-  const textoNombre = `${nomStr} ${apeStr}`.replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
-
-  const palabrasNombre = [];
-  textoNombre.split(' ').forEach(p => {
-    if (p && (palabrasNombre.length === 0 || palabrasNombre[palabrasNombre.length - 1].toLowerCase() !== p.toLowerCase())) {
-      palabrasNombre.push(p);
-    }
+  // 👤 Datos unificados del usuario logueado
+  const [usuarioSesion, setUsuarioSesion] = useState(() => {
+    return JSON.parse(localStorage.getItem('usuario')) || {};
   });
 
-  const nombreMostrar = palabrasNombre.join(' ') || usuarioSesion.username || 'Mi Usuario';
-  const usuarioTag = usuarioSesion.username ? `@${usuarioSesion.username}` : '@usuario';
+  // 🧹 Nombres de campos unificados y limpios
+  const nombreMostrar = `${usuarioSesion.nombre || ''} ${usuarioSesion.apellido || ''}`.trim() || usuarioSesion.username || 'Mi Usuario';
+  const usuarioTag = usuarioSesion.username ? `@${usuarioSesion.username.replace('@', '')}` : '@usuario';
   const descripcionMostrar = usuarioSesion.descripcion || '';
-
-  // 🖼️ Obtención segura del Banner y Avatar
-  const bannerImg = obtenerImagenValida('grwm_banner');
-  const fotoPerfil = obtenerImagenValida('grwm_foto_perfil') || usuarioSesion.foto_perfil || null;
+  const fotoPerfil = usuarioSesion.foto_perfil || null;
+  const bannerImg = usuarioSesion.banner || null;
 
   const [listaPublicaciones, setListaPublicaciones] = useState(() => {
     const guardadas = localStorage.getItem('grwm_publicaciones');
@@ -55,29 +36,44 @@ function PerfilPropio() {
   const [tallePrenda, setTallePrenda] = useState('M');
   const [descripcion, setDescripcion] = useState('');
 
+  // 1️⃣ Cargar datos del perfil actualizados desde el Backend con Token JWT (Sin async)
   useEffect(() => {
-    const cargarFavoritosBD = async () => {
-      const idUsuarioActual = usuarioSesion?.id_usuario;
-      if (!idUsuarioActual) return;
+    const token = localStorage.getItem('token');
+    if (!token) return;
 
-      try {
-        const response = await fetch(
-          `http://localhost:3000/api/publicaciones/favoritos/usuario/${idUsuarioActual}`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setPublicacionesFavoritas(data);
-        }
-      } catch (error) {
-        console.error("Error al cargar publicaciones favoritas:", error);
+    fetch("http://localhost:3000/api/usuarios/perfil", {
+      headers: {
+        "Authorization": `Bearer ${token}`
       }
-    };
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((datos) => {
+        const usuarioReal = datos?.usuario || datos;
+        if (usuarioReal && (usuarioReal.id_usuario || usuarioReal.id)) {
+          setUsuarioSesion(usuarioReal);
+          localStorage.setItem('usuario', JSON.stringify(usuarioReal));
+        }
+      })
+      .catch((err) => console.error("Error al obtener perfil del servidor:", err));
+  }, []);
 
-    if (pestanaActiva === 'favoritos') {
-      cargarFavoritosBD();
+  // 2️⃣ Cargar publicaciones favoritas de la BD (Sin async)
+  useEffect(() => {
+    const idUsuarioActual = usuarioSesion?.id_usuario || usuarioSesion?.id;
+
+    if (pestanaActiva === 'favoritos' && idUsuarioActual) {
+      fetch(`http://localhost:3000/api/publicaciones/favoritos/usuario/${idUsuarioActual}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data) {
+            setPublicacionesFavoritas(data);
+          }
+        })
+        .catch((err) => console.error("Error al cargar favoritos:", err));
     }
-  }, [pestanaActiva, usuarioSesion?.id_usuario]);
+  }, [pestanaActiva, usuarioSesion?.id_usuario, usuarioSesion?.id]);
 
+  // 3️⃣ Cargar publicaciones locales del feed
   useEffect(() => {
     const guardadas = localStorage.getItem('grwm_publicaciones');
     if (guardadas) {
@@ -109,19 +105,17 @@ function PerfilPropio() {
 
     if (tipoPublicacion === 'feed') {
       try {
-        // 1. Llamamos a tu backend enviando solo id_usuario y descripcion (como lo requiere publicacionController.js)
         const response = await fetch("http://localhost:3000/api/publicaciones", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            id_usuario: usuarioSesion?.id_usuario,
+            id_usuario: usuarioSesion?.id_usuario || usuarioSesion?.id,
             descripcion: descripcion
           })
         });
 
         if (response.ok) {
           const data = await response.json();
-          // MySQL devuelve el id_publicacion real generado en la base de datos
           const idReal = data.id_publicacion || data.id;
 
           const nuevoPost = {
@@ -154,7 +148,6 @@ function PerfilPropio() {
         alert("Error de conexión al intentar publicar.");
       }
     } else {
-      // Guardado de prenda para la tienda...
       const nuevoProducto = {
         id: Date.now(),
         nombre: nombrePrenda || 'Prenda de Tienda',
@@ -265,7 +258,7 @@ function PerfilPropio() {
           </div>
         </section>
 
-        {/* PESTAÑAS (SOLO PUBLICACIONES Y FAVORITOS) */}
+        {/* PESTAÑAS */}
         <div className="pestanas">
           <button className={pestanaActiva === 'publicaciones' ? 'activa' : ''} onClick={() => setPestanaActiva('publicaciones')}>
             Publicaciones

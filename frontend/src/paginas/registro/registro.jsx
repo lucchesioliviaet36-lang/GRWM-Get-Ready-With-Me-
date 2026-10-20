@@ -58,13 +58,26 @@ function Registro() {
       );
 
       const datos = await respuesta.json();
+      console.log(datos);
 
       if (!respuesta.ok) {
         setError(datos.mensaje || "Error al registrar el usuario");
         return;
       }
 
-      console.log("Usuario creado:", datos.usuario);
+
+      const usuarioCreado = datos.usuario;
+
+      console.log("Usuario creado:", usuarioCreado);
+      console.log("¿El registro devuelve token?:", !!datos.token);
+
+      
+      // Guardar los datos de la cuenta recién creada
+      localStorage.setItem("usuario", JSON.stringify(usuarioCreado));
+
+      if (datos.token) {
+        localStorage.setItem("token", datos.token);
+      }
 
       alert("¡Registro realizado correctamente!");
 
