@@ -14,12 +14,16 @@ function Publicacion() {
   const [postEncontrado, setPostEncontrado] = useState(null);
   const [cargandoPublicacion, setCargandoPublicacion] = useState(true);
 
+  // Obtenemos los datos del usuario dinámicamente desde localStorage
+  const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
+  const idUsuarioActual = usuarioSesion?.id_usuario;
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
       const cargarPublicacion = async () => {
           setCargandoPublicacion(true);
 
           try {
-              const token = localStorage.getItem("token");
 
               const response = await fetch("http://localhost:3000/api/publicaciones", {
                   headers: {
@@ -64,10 +68,6 @@ function Publicacion() {
       localStorage.getItem("grwm_publicaciones") || "[]"
   );
 
-  // Obtenemos los datos del usuario dinámicamente desde localStorage
-  const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
-  const idUsuarioActual = usuarioSesion?.id_usuario;
-
   // 🧹 LIMPIEZA SEGURA DEL NOMBRE
   const nomStr = Array.isArray(usuarioSesion.nombre) ? usuarioSesion.nombre : String(usuarioSesion.nombre || '');
   const apeStr = Array.isArray(usuarioSesion.apellido) ? usuarioSesion.apellido.join(' ') : String(usuarioSesion.apellido || '');
@@ -101,7 +101,6 @@ function Publicacion() {
     if (!confirmar) return;
 
     try {
-      const token = localStorage.getItem("token");
 
       const response = await fetch(
         `http://localhost:3000/api/publicaciones/comentario/${idComentario}`,
@@ -150,7 +149,6 @@ function Publicacion() {
     const consultarEstadoInicialLike = async () => {
       if (!id || !idUsuarioActual) return;
       try {
-        const token = localStorage.getItem("token");
 
         const response = await fetch(
           `http://localhost:3000/api/publicaciones/${id}/likes?id_usuario=${idUsuarioActual}`,
@@ -178,7 +176,6 @@ function Publicacion() {
     const consultarEstadoInicialFavorito = async () => {
       if (!id || !idUsuarioActual) return;
       try {
-        const token = localStorage.getItem("token");
 
         const response = await fetch(
           `http://localhost:3000/api/publicaciones/${id}/favorito?id_usuario=${idUsuarioActual}`,
@@ -209,7 +206,6 @@ function Publicacion() {
     }
 
     try {
-      const token = localStorage.getItem("token");
 
       const response = await fetch(
         `http://localhost:3000/api/publicaciones/${id}/like`,
@@ -248,7 +244,6 @@ function Publicacion() {
     }
 
     try {
-      const token = localStorage.getItem("token");
 
       const response = await fetch(
           `http://localhost:3000/api/publicaciones/${id}/favorito`,
@@ -292,7 +287,6 @@ function Publicacion() {
     if (nuevoComentario.trim() === '') return;
 
     try {
-        const token = localStorage.getItem("token");
 
         const response = await fetch(
           `http://localhost:3000/api/publicaciones/${id}/comentario`,
