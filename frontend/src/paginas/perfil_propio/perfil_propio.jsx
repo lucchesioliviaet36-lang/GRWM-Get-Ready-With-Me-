@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import './perfil_propio.css'
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './perfil_propio.css';
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
 
@@ -8,20 +8,38 @@ function PerfilPropio() {
   const navigate = useNavigate();
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
 
-  // 👤 Datos unificados del usuario logueado
   const [usuarioSesion, setUsuarioSesion] = useState(() => {
-    return JSON.parse(localStorage.getItem('usuario')) || {};
+    try {
+      return JSON.parse(localStorage.getItem('usuario')) || {};
+    } catch {
+      return {};
+    }
   });
 
-  // 🧹 Nombres de campos unificados y limpios
-  const nombreMostrar = `${usuarioSesion.nombre || ''} ${usuarioSesion.apellido || ''}`.trim() || usuarioSesion.username || 'Mi Usuario';
-  const usuarioTag = usuarioSesion.username ? `@${usuarioSesion.username.replace('@', '')}` : '@usuario';
+  const nombreMostrar =
+    `${usuarioSesion.nombre || ''} ${usuarioSesion.apellido || ''}`.trim()
+    || usuarioSesion.username
+    || 'Mi Usuario';
+
+  const usuarioTag = usuarioSesion.username
+    ? `@${usuarioSesion.username.replace('@', '')}`
+    : '@usuario';
+
   const descripcionMostrar = usuarioSesion.descripcion || '';
   const fotoPerfil = usuarioSesion.foto_perfil || null;
   const bannerImg = usuarioSesion.banner || null;
 
   const [listaPublicaciones, setListaPublicaciones] = useState([]);
-    const obtenerCantidadLikes = async (idPublicacion, token) => {
+  const [publicacionesFavoritas, setPublicacionesFavoritas] = useState([]);
+
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [imagenArchivo, setImagenArchivo] = useState(null);
+  const [imagenPreview, setImagenPreview] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [publicando, setPublicando] = useState(false);
+
+  // Obtener la cantidad de likes de una publicación
+  const obtenerCantidadLikes = async (idPublicacion, token) => {
     try {
       const response = await fetch(
         `http://localhost:3000/api/publicaciones/${idPublicacion}/likes`,
@@ -33,242 +51,300 @@ function PerfilPropio() {
       );
 
       if (!response.ok) {
-        console.error("No se pudieron cargar los likes de la publicación", idPublicacion);
         return 0;
       }
 
       const data = await response.json();
       return Number(data.totalLikes) || 0;
     } catch (error) {
-      console.error("Error al consultar los likes:", error);
+      console.error('Error al consultar los likes:', error);
       return 0;
     }
   };
 
-  const [publicacionesFavoritas, setPublicacionesFavoritas] = useState([]);
-
-  const [mostrarModal, setMostrarModal] = useState(false);
-  const [imagenArchivo, setImagenArchivo] = useState(null);
-  const [imagenPreview, setImagenPreview] = useState('');
-  const [tipoPublicacion, setTipoPublicacion] = useState('feed');
-  const [precioPrenda, setPrecioPrenda] = useState('');
-  const [nombrePrenda, setNombrePrenda] = useState('');
-  const [tallePrenda, setTallePrenda] = useState('M');
-  const [descripcion, setDescripcion] = useState('');
-
-  // 1️⃣ Cargar datos del perfil actualizados desde el Backend con Token JWT (Sin async)
+  // Cargar los datos actualizados del perfil
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    fetch("http://localhost:3000/api/usuarios/perfil", {
+    fetch('http://localhost:3000/api/usuarios/perfil', {
       headers: {
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`
       }
     })
-      .then((res) => (res.ok ? res.json() : null))
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('No se pudo obtener el perfil');
+        }
+        return res.json();
+      })
       .then((datos) => {
         const usuarioReal = datos?.usuario || datos;
+
         if (usuarioReal && (usuarioReal.id_usuario || usuarioReal.id)) {
           setUsuarioSesion(usuarioReal);
           localStorage.setItem('usuario', JSON.stringify(usuarioReal));
         }
       })
-      .catch((err) => console.error("Error al obtener perfil del servidor:", err));
+      .catch((error) => {
+        console.error('Error al obtener el perfil:', error);
+      });
   }, []);
 
-  // 2️⃣ Cargar publicaciones favoritas de la BD (Sin async)
+  // Cargar publicaciones favoritas
   useEffect(() => {
-    const idUsuarioActual = usuarioSesion?.id_usuario || usuarioSesion?.id;
+    const idUsuarioActual =
+      usuarioSesion?.id_usuario || usuarioSesion?.id;
 
-    if (pestanaActiva === 'favoritos' && idUsuarioActual) {
-      fetch(`http://localhost:3000/api/publicaciones/favoritos/usuario/${idUsuarioActual}`)
-        .then((res) => (res.ok ? res.json() : null))
-        .then((data) => {
-          if (data) {
-            setPublicacionesFavoritas(data);
-          }
-        })
-        .catch((err) => console.error("Error al cargar favoritos:", err));
-    }
-  }, [pestanaActiva, usuarioSesion?.id_usuario, usuarioSesion?.id]);
+    if (pestanaActiva !== 'favoritos' || !idUsuarioActual) return;
 
-  // 3️⃣ Cargar publicaciones locales del feed
-  useEffect(() => {
-      const idUsuario = usuarioSesion?.id_usuario || usuarioSesion?.id;
-
-      if (!idUsuario) return;
-
-      const cargarPublicaciones = async () => {
-          try {
-              const token = localStorage.getItem('token');
-
-              const response = await fetch(
-                  "http://localhost:3000/api/publicaciones",
-                  {
-                      headers: {
-                          "Authorization": `Bearer ${token}`
-                      }
-                  }
-              );
-
-              if (!response.ok) {
-                  throw new Error("No se pudieron cargar las publicaciones");
-              }
-
-              const data = await response.json();
-
-              const publicacionesPropias = data.filter(
-                post => Number(post.id_usuario) === Number(idUsuario)
-              );
-
-              const propias = await Promise.all(
-                publicacionesPropias.map(async (post) => ({
-                  id: post.id_publicacion,
-                  ruta: `/publicacion/${post.id_publicacion}`,
-                  img: post.imagen_url
-                    ? `http://localhost:3000${post.imagen_url}`
-                    : "",
-                  likes: await obtenerCantidadLikes(post.id_publicacion, token),
-                  esFavorito: false,
-                  descripcion: post.descripcion || ""
-                }))
-              );
-
-              setListaPublicaciones(propias);
-          } catch (error) {
-              console.error("Error al cargar publicaciones:", error);
-          }
-      };
-
-      cargarPublicaciones();
-  }, [usuarioSesion?.id_usuario, usuarioSesion?.id]);
-
-  const handleFileChange = (e) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      const file = files.item(0);
-      if (file) {
-        setImagenArchivo(file);
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImagenPreview(reader.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-  };
-
-  const handleCrearPublicacion = async (e) => {
-    e.preventDefault();
-    if (!imagenPreview) {
-      alert("Por favor selecciona una foto.");
-      return;
-    }
-
-    if (tipoPublicacion === 'feed') {
-    try {
-        const idUsuario = usuarioSesion?.id_usuario || usuarioSesion?.id;
-
-        if (!idUsuario) {
-            alert("No se encontró el usuario de la sesión. Volvé a iniciar sesión.");
-            return;
-        }
-
-        if (!imagenArchivo) {
-            alert("Volvé a seleccionar la imagen.");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append("imagen", imagenArchivo);
-        formData.append("id_usuario", String(idUsuario));
-        formData.append("descripcion", descripcion);
-
+    const cargarFavoritos = async () => {
+      try {
         const token = localStorage.getItem('token');
 
-        const response = await fetch("http://localhost:3000/api/publicaciones", {
-            method: "POST",
+        const response = await fetch(
+          `http://localhost:3000/api/publicaciones/favoritos/usuario/${idUsuarioActual}`,
+          {
             headers: {
-                "Authorization": `Bearer ${token}`
-            },
-            body: formData
-        });
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('No se pudieron cargar los favoritos');
+        }
 
         const data = await response.json();
 
+        // Aceptar tanto una lista directa como una respuesta con propiedad favoritos
+        const favoritos = Array.isArray(data)
+          ? data
+          : data.favoritos || data.publicaciones || [];
+
+        setPublicacionesFavoritas(favoritos);
+      } catch (error) {
+        console.error('Error al cargar favoritos:', error);
+      }
+    };
+
+    cargarFavoritos();
+  }, [
+    pestanaActiva,
+    usuarioSesion?.id_usuario,
+    usuarioSesion?.id
+  ]);
+
+  // Cargar las publicaciones propias desde el backend
+  useEffect(() => {
+    const idUsuario = usuarioSesion?.id_usuario || usuarioSesion?.id;
+
+    if (!idUsuario) return;
+
+    const cargarPublicaciones = async () => {
+      try {
+        const token = localStorage.getItem('token');
+
+        const response = await fetch(
+          'http://localhost:3000/api/publicaciones',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
         if (!response.ok) {
-            throw new Error(data.detalle || data.error || "No se pudo crear la publicación");
+          throw new Error('No se pudieron cargar las publicaciones');
         }
 
-        const nuevoPost = {
+        const data = await response.json();
+
+        const publicacionesPropias = data.filter(
+          (post) => Number(post.id_usuario) === Number(idUsuario)
+        );
+
+        const propias = await Promise.all(
+          publicacionesPropias.map(async (post) => ({
+            id: post.id_publicacion,
+            ruta: `/publicacion/${post.id_publicacion}`,
+            img: post.imagen_url
+              ? `http://localhost:3000${post.imagen_url}`
+              : '',
+            likes: await obtenerCantidadLikes(post.id_publicacion, token),
+            esFavorito: false,
+            descripcion: post.descripcion || ''
+          }))
+        );
+
+        setListaPublicaciones(propias);
+      } catch (error) {
+        console.error('Error al cargar publicaciones:', error);
+      }
+    };
+
+    cargarPublicaciones();
+  }, [usuarioSesion?.id_usuario, usuarioSesion?.id]);
+
+  // Seleccionar una sola imagen
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Seleccioná un archivo de imagen válido.');
+      e.target.value = '';
+      return;
+    }
+
+    setImagenArchivo(file);
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setImagenPreview(reader.result);
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  // Crear una publicación para el feed
+  const handleCrearPublicacion = async (e) => {
+    e.preventDefault();
+
+    if (publicando) return;
+
+    if (!imagenArchivo || !imagenPreview) {
+      alert('Por favor seleccioná una foto.');
+      return;
+    }
+
+    const idUsuario = usuarioSesion?.id_usuario || usuarioSesion?.id;
+    const token = localStorage.getItem('token');
+
+    if (!idUsuario) {
+      alert('No se encontró el usuario de la sesión. Volvé a iniciar sesión.');
+      return;
+    }
+
+    if (!token) {
+      alert('Tu sesión expiró. Volvé a iniciar sesión.');
+      return;
+    }
+
+    try {
+      setPublicando(true);
+
+      const formData = new FormData();
+      formData.append('imagen', imagenArchivo);
+      formData.append('id_usuario', String(idUsuario));
+      formData.append('descripcion', descripcion);
+
+      const response = await fetch(
+        'http://localhost:3000/api/publicaciones',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          body: formData
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.detalle ||
+          data.error ||
+          data.mensaje ||
+          'No se pudo crear la publicación'
+        );
+      }
+
+      // Recargar las publicaciones desde la base de datos
+      const respuestaPublicaciones = await fetch(
+        'http://localhost:3000/api/publicaciones',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (respuestaPublicaciones.ok) {
+        const publicaciones = await respuestaPublicaciones.json();
+
+        const propias = publicaciones.filter(
+          (post) => Number(post.id_usuario) === Number(idUsuario)
+        );
+
+        const postsFormateados = await Promise.all(
+          propias.map(async (post) => ({
+            id: post.id_publicacion,
+            ruta: `/publicacion/${post.id_publicacion}`,
+            img: post.imagen_url
+              ? `http://localhost:3000${post.imagen_url}`
+              : '',
+            likes: await obtenerCantidadLikes(post.id_publicacion, token),
+            esFavorito: false,
+            descripcion: post.descripcion || ''
+          }))
+        );
+
+        setListaPublicaciones(postsFormateados);
+      } else if (data.id_publicacion) {
+        setListaPublicaciones((prev) => [
+          {
             id: data.id_publicacion,
             ruta: `/publicacion/${data.id_publicacion}`,
-            img: `http://localhost:3000${data.imagen_url}`,
+            img: data.imagen_url
+              ? `http://localhost:3000${data.imagen_url}`
+              : '',
             likes: 0,
             esFavorito: false,
-            descripcion: data.descripcion || ""
-        };
+            descripcion: data.descripcion || descripcion
+          },
+          ...prev
+        ]);
+      }
 
-        // Actualización temporal de la pantalla.
-        // La fuente definitiva de las publicaciones será MySQL.
-        setListaPublicaciones(prev => [nuevoPost, ...prev]);
-
-        alert("¡Tu outfit ha sido publicado con éxito! ");
-
-        setImagenArchivo(null);
-        setImagenPreview("");
-        setTipoPublicacion("feed");
-        setPrecioPrenda("");
-        setNombrePrenda("");
-        setTallePrenda("M");
-        setDescripcion("");
-        setMostrarModal(false);
-
-    } catch (error) {
-        console.error("Error al crear publicación:", error);
-        alert(`No se pudo publicar: ${error.message}`);
-    }
-    } else {
-      const nuevoProducto = {
-        id: Date.now(),
-        nombre: nombrePrenda || 'Prenda de Tienda',
-        precio: Number(precioPrenda) || 0,
-        descripcion: descripcion,
-        img: imagenPreview,
-        talle: tallePrenda,
-        disponible: true
-      };
-
-      const tiendaActual = JSON.parse(localStorage.getItem('grwm_tienda_productos')) || [];
-      const nuevaTienda = [nuevoProducto, ...tiendaActual];
-      localStorage.setItem('grwm_tienda_productos', JSON.stringify(nuevaTienda));
-
-      alert("¡Prenda cargada con éxito! Ya se encuentra disponible en 'Mi Tienda'.");
       setImagenArchivo(null);
       setImagenPreview('');
-      setTipoPublicacion('feed');
-      setPrecioPrenda('');
-      setNombrePrenda('');
-      setTallePrenda('M');
       setDescripcion('');
       setMostrarModal(false);
+
+      alert('¡Tu publicación se creó con éxito!');
+    } catch (error) {
+      console.error('Error al crear publicación:', error);
+      alert(`No se pudo publicar: ${error.message}`);
+    } finally {
+      setPublicando(false);
     }
+  };
+
+  const cerrarModal = () => {
+    if (publicando) return;
+
+    setMostrarModal(false);
+    setImagenArchivo(null);
+    setImagenPreview('');
+    setDescripcion('');
   };
 
   return (
     <div className="pagina-perfil">
-      <Header/>
+      <Header />
 
       <main className="contenido">
-
         <section className="tarjeta-perfil">
-          
-          {/* BANNER CENTRADO */}
-          <div 
-            className="portada" 
-            style={{ 
-              backgroundImage: bannerImg ? `url("${bannerImg}")` : 'linear-gradient(135deg, #ebdcd3 0%, #d8c2af 100%)',
+          <div
+            className="portada"
+            style={{
+              backgroundImage: bannerImg
+                ? `url("${bannerImg}")`
+                : 'linear-gradient(135deg, #ebdcd3 0%, #d8c2af 100%)',
               backgroundSize: 'cover',
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat',
@@ -278,32 +354,43 @@ function PerfilPropio() {
             }}
           >
             {!bannerImg && (
-              <svg 
-                width="64" 
-                height="64" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="#8b5274" 
-                strokeWidth="1.5" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#8b5274"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 style={{ opacity: 0.35 }}
               >
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
               </svg>
             )}
           </div>
-          
+
           <div className="datos-perfil">
-            
             <div className="avatar" style={{ backgroundColor: '#f3e8ee' }}>
               {fotoPerfil ? (
-                <img src={fotoPerfil} alt={`Avatar de ${nombreMostrar}`} />
+                <img
+                  src={fotoPerfil}
+                  alt={`Avatar de ${nombreMostrar}`}
+                />
               ) : (
-                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#8b5274" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
+                <svg
+                  width="42"
+                  height="42"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#8b5274"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
                 </svg>
               )}
             </div>
@@ -311,7 +398,9 @@ function PerfilPropio() {
             <div className="nombre-y-descripcion">
               <h1>{nombreMostrar}</h1>
               <p className="usuario">{usuarioTag}</p>
-              {descripcionMostrar && <p className="descripcion">{descripcionMostrar}</p>}
+              {descripcionMostrar && (
+                <p className="descripcion">{descripcionMostrar}</p>
+              )}
             </div>
 
             <div className="estadisticas">
@@ -319,20 +408,36 @@ function PerfilPropio() {
                 <strong>{listaPublicaciones.length}</strong>
                 <span>Publicaciones</span>
               </div>
+
               <div>
                 <strong>0</strong>
                 <span>Seguidores</span>
               </div>
+
               <div>
                 <strong>0</strong>
                 <span>Siguiendo</span>
               </div>
+
               <div className="botones">
-                <button className="btn-editar" onClick={() => navigate('/editar_perfil')}>Editar Perfil</button>
-                <button className="btn-tienda" onClick={() => navigate('/miTienda')}>
+                <button
+                  className="btn-editar"
+                  onClick={() => navigate('/editar_perfil')}
+                >
+                  Editar Perfil
+                </button>
+
+                <button
+                  className="btn-tienda"
+                  onClick={() => navigate('/miTienda')}
+                >
                   Mi Tienda
                 </button>
-                <button className="btn-cargar" onClick={() => setMostrarModal(true)}>
+
+                <button
+                  className="btn-cargar"
+                  onClick={() => setMostrarModal(true)}
+                >
                   + Publicar
                 </button>
               </div>
@@ -340,32 +445,44 @@ function PerfilPropio() {
           </div>
         </section>
 
-        {/* PESTAÑAS */}
         <div className="pestanas">
-          <button className={pestanaActiva === 'publicaciones' ? 'activa' : ''} onClick={() => setPestanaActiva('publicaciones')}>
+          <button
+            className={pestanaActiva === 'publicaciones' ? 'activa' : ''}
+            onClick={() => setPestanaActiva('publicaciones')}
+          >
             Publicaciones
           </button>
-          <button className={pestanaActiva === 'favoritos' ? 'activa' : ''} onClick={() => setPestanaActiva('favoritos')}>
+
+          <button
+            className={pestanaActiva === 'favoritos' ? 'activa' : ''}
+            onClick={() => setPestanaActiva('favoritos')}
+          >
             Favoritos
           </button>
         </div>
 
         <section className="grid-publicaciones">
-          
           {pestanaActiva === 'publicaciones' && (
             listaPublicaciones.length === 0 ? (
-              <p className="sin-contenido">No tenés publicaciones cargadas aún. ¡Hacé clic en '+ Publicar' para subir tu primer outfit! ✨</p>
+              <p className="sin-contenido">
+                No tenés publicaciones cargadas aún. ¡Hacé clic en '+ Publicar'
+                para subir tu primer outfit! ✨
+              </p>
             ) : (
               listaPublicaciones.map((post) => (
-                <button 
-                  key={post.id} 
-                  className="post" 
-                  type="button" 
+                <button
+                  key={post.id}
+                  className="post"
+                  type="button"
                   onClick={() => navigate(`/publicacion/${post.id}`)}
                 >
                   <div className="foto-post">
-                    <img src={post.img} alt={`Publicación ${post.id}`} />
+                    <img
+                      src={post.img}
+                      alt={`Publicación ${post.id}`}
+                    />
                   </div>
+
                   <div className="pie-post">
                     <span>♡ {post.likes}</span>
                   </div>
@@ -376,24 +493,39 @@ function PerfilPropio() {
 
           {pestanaActiva === 'favoritos' && (
             publicacionesFavoritas.length === 0 ? (
-              <p className="sin-contenido">No tenés publicaciones guardadas en favoritos todavía.</p>
+              <p className="sin-contenido">
+                No tenés publicaciones guardadas en favoritos todavía.
+              </p>
             ) : (
               publicacionesFavoritas.map((fav) => {
                 const idPost = fav.id_publicacion || fav.id;
-                const postOriginal = listaPublicaciones.find(p => String(p.id) === String(idPost));
-                const imgAMostrar = postOriginal?.img || '';
+
+                const postOriginal = listaPublicaciones.find(
+                  (post) => String(post.id) === String(idPost)
+                );
+
+                const imgAMostrar =
+                  postOriginal?.img ||
+                  (fav.imagen_url
+                    ? `http://localhost:3000${fav.imagen_url}`
+                    : '');
+
                 const likesAMostrar = postOriginal?.likes || 0;
 
                 return (
-                  <button 
-                    key={fav.id_favorito || idPost} 
-                    className="post" 
-                    type="button" 
+                  <button
+                    key={fav.id_favorito || idPost}
+                    className="post"
+                    type="button"
                     onClick={() => navigate(`/publicacion/${idPost}`)}
                   >
                     <div className="foto-post">
-                      <img src={imgAMostrar} alt={`Publicación ${idPost}`} />
+                      <img
+                        src={imgAMostrar}
+                        alt={`Publicación ${idPost}`}
+                      />
                     </div>
+
                     <div className="pie-post">
                       <span>♡ {likesAMostrar}</span>
                     </div>
@@ -402,30 +534,30 @@ function PerfilPropio() {
               })
             )
           )}
-
         </section>
-
       </main>
 
       {mostrarModal && (
         <div className="modal-overlay">
           <div className="modal-contenido">
-            <h2>Cargar prenda o look</h2>
-            
+            <h2>Crear publicación</h2>
+
             <form onSubmit={handleCrearPublicacion}>
-              
               <div className="form-grupo">
-                <label>Sube una foto de tu prenda:</label>
+                <label>Subí una foto de tu look:</label>
+
                 <div className="upload-container">
                   <label className="btn-upload">
                     <span>🗁 Seleccionar archivo</span>
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={handleFileChange} 
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
                       style={{ display: 'none' }}
                     />
                   </label>
+
                   {imagenPreview && (
                     <div className="preview-container">
                       <img src={imagenPreview} alt="Vista previa" />
@@ -435,64 +567,10 @@ function PerfilPropio() {
               </div>
 
               <div className="form-grupo">
-                <label>¿Qué tipo de publicación es?</label>
-                <select 
-                  value={tipoPublicacion} 
-                  onChange={(e) => setTipoPublicacion(e.target.value)}
-                  className="modal-select"
-                >
-                  <option value="feed">Publicación para el feed </option>
-                  <option value="tienda">Prenda para vender </option>
-                </select>
-              </div>
-
-              {tipoPublicacion === 'tienda' && (
-                <>
-                  <div className="form-grupo">
-                    <label>Nombre de la prenda:</label>
-                    <input 
-                      type="text" 
-                      value={nombrePrenda} 
-                      onChange={(e) => setNombrePrenda(e.target.value)}
-                      placeholder="Ej: Campera de Jean Vintage"
-                      required
-                      className="modal-input"
-                    />
-                  </div>
-
-                  <div className="form-grupo-fila">
-                    <div className="form-grupo-medio">
-                      <label>Precio (ARS):</label>
-                      <input 
-                        type="number" 
-                        value={precioPrenda} 
-                        onChange={(e) => setPrecioPrenda(e.target.value)}
-                        placeholder="Ej: 45000"
-                        required
-                        className="modal-input"
-                      />
-                    </div>
-                    <div className="form-grupo-medio">
-                      <label>Talle:</label>
-                      <select 
-                        value={tallePrenda} 
-                        onChange={(e) => setTallePrenda(e.target.value)}
-                        className="modal-select"
-                      >
-                        <option value="S">S</option>
-                        <option value="M">M</option>
-                        <option value="L">L</option>
-                        <option value="XL">XL</option>
-                      </select>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              <div className="form-grupo">
                 <label>Descripción:</label>
+
                 <textarea
-                  placeholder="Contanos más sobre esta prenda o look..."
+                  placeholder="Contanos más sobre tu look..."
                   value={descripcion}
                   onChange={(e) => setDescripcion(e.target.value)}
                   required
@@ -502,15 +580,21 @@ function PerfilPropio() {
               </div>
 
               <div className="modal-acciones">
-                <button 
-                  type="button" 
-                  className="btn-cancelar-modal" 
-                  onClick={() => setMostrarModal(false)}
+                <button
+                  type="button"
+                  className="btn-cancelar-modal"
+                  onClick={cerrarModal}
+                  disabled={publicando}
                 >
                   Cancelar
                 </button>
-                <button type="submit" className="btn-publicar-modal">
-                  Publicar
+
+                <button
+                  type="submit"
+                  className="btn-publicar-modal"
+                  disabled={publicando}
+                >
+                  {publicando ? 'Publicando...' : 'Publicar'}
                 </button>
               </div>
             </form>
@@ -518,8 +602,7 @@ function PerfilPropio() {
         </div>
       )}
 
-      <Footer/>
-
+      <Footer />
     </div>
   );
 }
