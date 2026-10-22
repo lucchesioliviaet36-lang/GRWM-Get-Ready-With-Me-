@@ -122,7 +122,14 @@ function PerfilPropio() {
           ? data
           : data.favoritos || data.publicaciones || [];
 
-        setPublicacionesFavoritas(favoritos);
+        const favoritosOrdenados = [...favoritos].sort(
+          (a, b) =>
+            new Date(b.fecha_guardado).getTime() -
+            new Date(a.fecha_guardado).getTime()
+        );
+
+        setPublicacionesFavoritas(favoritosOrdenados);
+        
       } catch (error) {
         console.error('Error al cargar favoritos:', error);
       }
