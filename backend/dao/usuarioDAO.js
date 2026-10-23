@@ -103,6 +103,7 @@ class UsuarioDao {
                 where: { id_usuario }
             }
         );
+
     }
 
     async actualizarIntentos(id_usuario, cantidad, bloqueadoHasta = null){

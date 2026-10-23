@@ -14,9 +14,26 @@ function EditarPerfil() {
   // 👤 Cargar usuario en sesión
   const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
 
-  // Estado de imágenes directamente desde el usuario
-  const [bannerImg, setBannerImg] = useState(usuarioSesion.banner || null); 
+  const API_URL = "http://localhost:3000";
+
+  const [bannerImg, setBannerImg] = useState(usuarioSesion.banner || null);
   const [avatarImg, setAvatarImg] = useState(usuarioSesion.foto_perfil || null);
+
+  const [bannerArchivo, setBannerArchivo] = useState(null);
+  const [avatarArchivo, setAvatarArchivo] = useState(null);
+
+  // OBTENER URL DE IMAGEN
+  const obtenerImagen = (imagen) => {
+    if (!imagen) {
+      return "";
+    }
+
+    if (imagen.startsWith("blob:") || imagen.startsWith("http")) {
+      return imagen;
+    }
+
+    return `${API_URL}${imagen}`;
+  };
 
   // 📝 Formulario directamente mapeado con los mismos nombres que MySQL
   const [formData, setFormData] = useState({
@@ -56,40 +73,45 @@ function EditarPerfil() {
     } 
   };
 
-  const handleBannerChange = (e) => { 
-    const files = e.target.files;
-    if (files && files.length > 0) { 
-      const file = files.item(0); 
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setBannerImg(reader.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    } 
+  const handleBannerChange = (e) => {
+    const archivo = e.target.files?.[0];
+
+    if (!archivo) {
+      return;
+    }
+
+    if (!archivo.type.startsWith("image/")) {
+      setError("Seleccioná un archivo de imagen válido.");
+      return;
+    }
+
+    setError("");
+    setBannerArchivo(archivo);
+    setBannerImg(URL.createObjectURL(archivo));
   };
 
-  const handleAvatarChange = (e) => { 
-    const files = e.target.files;
-    if (files && files.length > 0) { 
-      const file = files.item(0); 
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setAvatarImg(reader.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    } 
+  const handleAvatarChange = (e) => {
+    const archivo = e.target.files?.[0];
+
+    if (!archivo) {
+      return;
+    }
+
+    if (!archivo.type.startsWith("image/")) {
+      setError("Seleccioná un archivo de imagen válido.");
+      return;
+    }
+
+    setError("");
+    setAvatarArchivo(archivo);
+    setAvatarImg(URL.createObjectURL(archivo));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    let erroresTemp = {};
 
-    console.log("1. Se ejecutó handleSubmit");
+    let erroresTemp = {};
 
     if (!formData.nombre.trim()) erroresTemp.nombre = true;
     if (!formData.email.trim()) erroresTemp.email = true;
@@ -100,77 +122,78 @@ function EditarPerfil() {
       return;
     }
 
-    setIsLoading(true);
+    try {
+      setIsLoading(true);
 
-    // 📦 Objeto unificado listo para MySQL y localStorage
-    const usuarioActualizado = {
-      ...usuarioSesion,
-      nombre: formData.nombre.trim(),
-      apellido: formData.apellido.trim(),
-      username: formData.username.trim(),
-      descripcion: formData.descripcion.trim(),
-      email: formData.email.trim(),
-      telefono: formData.telefono.trim(),
-      instagram: formData.instagram.trim(),
-      tiktok: formData.tiktok.trim(),
-      website: formData.website.trim(),
-      foto_perfil: avatarImg,
-      banner: bannerImg
-    };
+      const token = localStorage.getItem("token");
 
-    const token = localStorage.getItem("token");
+      if (!token) {
+        setError("No se encontró una sesión activa.");
+        setIsLoading(false);
+        return;
+      }
 
-    console.log("¿Hay token guardado?:", !!token);
+      const datosPerfil = new FormData();
 
-    console.log("2. Voy a comprobar el token");
+      datosPerfil.append("nombre", formData.nombre.trim());
+      datosPerfil.append("apellido", formData.apellido.trim());
+      datosPerfil.append("username", formData.username.trim());
+      datosPerfil.append("descripcion", formData.descripcion.trim());
+      datosPerfil.append("email", formData.email.trim());
+      datosPerfil.append("telefono", formData.telefono.trim());
+      datosPerfil.append("instagram", formData.instagram.trim());
+      datosPerfil.append("tiktok", formData.tiktok.trim());
+      datosPerfil.append("website", formData.website.trim());
 
-    console.log("3. Voy a enviar la petición");
-    // 🚀 Petición PUT al Servidor Node.js
-    if (token) {
-      fetch("http://localhost:3000/api/usuarios/perfil", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(usuarioActualizado)
-      })
-      .then(async (res) => {
-        const texto = await res.text();
+      if (avatarArchivo) {
+        datosPerfil.append("foto_perfil", avatarArchivo);
+      }
 
-        console.log("Estado HTTP:", res.status);
-        console.log("Respuesta del servidor:", texto);
+      if (bannerArchivo) {
+        datosPerfil.append("banner", bannerArchivo);
+      }
 
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}: ${texto}`);
+      const response = await fetch(
+        "http://localhost:3000/api/usuarios/perfil",
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          body: datosPerfil
         }
+      );
 
-        if (!texto) return {};
+      const data = await response.json();
 
-        try {
-          return JSON.parse(texto);
-        } catch {
-          throw new Error("El servidor no devolvió JSON válido.");
-        }
-      })
-        .then((datosServidor) => {
-          const finalUser = datosServidor?.usuario || usuarioActualizado;
-          console.log("4. Respuesta del servidor:", datosServidor);
-          localStorage.setItem('usuario', JSON.stringify(finalUser));
-          setIsLoading(false);
-          setToastMessage("¡Cambios guardados en la base de datos ✨!");
-          setTimeout(() => navigate("/perfil_propio"), 1000);
-        })
-        .catch((err) => {
-          console.error("Error al guardar en BD:", err);
-          setIsLoading(false);
-          setError("No se pudieron guardar los cambios en el servidor.");
-        });
-    } else {
-      localStorage.setItem('usuario', JSON.stringify(usuarioActualizado));
+      if (!response.ok) {
+        throw new Error(
+          data.message || "No se pudieron guardar los cambios"
+        );
+      }
+
+      const usuarioActualizado = data.usuario || {
+        ...usuarioSesion,
+        ...formData
+      };
+
+      localStorage.setItem(
+        "usuario",
+        JSON.stringify(usuarioActualizado)
+      );
+
+      setToastMessage("¡Cambios guardados en la base de datos ✨!");
+
+      setTimeout(() => {
+        navigate("/perfil_propio");
+      }, 1000);
+
+    } catch (error) {
+      console.error("Error al guardar en BD:", error);
+      setError(error.message || "No se pudieron guardar los cambios en el servidor.");
+
+    } finally {
       setIsLoading(false);
-      setToastMessage("¡Cambios guardados con éxito ✨!");
-      setTimeout(() => navigate("/perfil_propio"), 1000);
     }
   };
 
@@ -191,7 +214,7 @@ function EditarPerfil() {
           <div 
             className="editar-portada" 
             style={{ 
-              backgroundImage: bannerImg ? `url("${bannerImg}")` : 'linear-gradient(135deg, #ebdcd3 0%, #d8c2af 100%)',
+              backgroundImage: bannerImg ? `url("${obtenerImagen(bannerImg)}")` : 'linear-gradient(135deg, #ebdcd3 0%, #d8c2af 100%)',
               backgroundSize: 'cover',
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat',
@@ -243,7 +266,7 @@ function EditarPerfil() {
                 }}
               >
                 {avatarImg ? (
-                  <img src={avatarImg} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                 <img src={obtenerImagen(avatarImg)}  alt="Avatar" style={{ width: "100%", height: "100%", objectFit: "cover"}}/>
                 ) : (
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8b5274" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>

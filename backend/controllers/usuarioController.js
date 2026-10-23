@@ -25,25 +25,50 @@ const obtenerPerfil = async (req, res) => {
 // 2. Actualizar perfil
 const actualizarPerfil = async (req, res) => {
     try {
-        const id_usuario = req.user.id_usuario || req.user.id;
-        const datosNuevos = req.body;
+        const idUsuario = req.user.id_usuario;
 
-        await usuarioServicio.actualizarPerfil(
-            id_usuario,
-            datosNuevos
-        );
+        const datos = {
+            ...req.body
+        };
+
+        if (
+            req.files &&
+            req.files.foto_perfil &&
+            req.files.foto_perfil.length > 0
+        ) {
+            datos.foto_perfil =
+                `/uploads/perfiles/${req.files.foto_perfil[0].filename}`;
+        }
+
+        if (
+            req.files &&
+            req.files.banner &&
+            req.files.banner.length > 0
+        ) {
+            datos.banner =
+                `/uploads/perfiles/${req.files.banner[0].filename}`;
+        }
+
+        const usuario =
+            await usuarioServicio.actualizarPerfil(
+                idUsuario,
+                datos
+            );
 
         return res.status(200).json({
             success: true,
-            mensaje: "Perfil actualizado correctamente en la base de datos"
+            usuario
         });
 
     } catch (error) {
-        console.error("Error al actualizar perfil:", error);
+        console.error(
+            "Error actualizando perfil:",
+            error
+        );
 
-        return res.status(500).json({
+        return res.status(400).json({
             success: false,
-            mensaje: "Error al actualizar perfil"
+            message: error.message
         });
     }
 };

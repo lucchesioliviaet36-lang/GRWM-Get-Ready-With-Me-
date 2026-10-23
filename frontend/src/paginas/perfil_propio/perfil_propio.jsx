@@ -3,10 +3,28 @@ import { useNavigate } from 'react-router-dom';
 import './perfil_propio.css';
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
+const API_URL = "http://localhost:3000";
 
 function PerfilPropio() {
   const navigate = useNavigate();
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
+
+    // OBTENER URL DE IMAGEN
+  const obtenerImagen = (imagen) => {
+    if (!imagen) {
+      return "";
+    }
+
+    if (
+      imagen.startsWith("http") ||
+      imagen.startsWith("blob:") ||
+      imagen.startsWith("data:")
+    ) {
+      return imagen;
+    }
+
+    return `${API_URL}${imagen}`;
+  };
 
   const [usuarioSesion, setUsuarioSesion] = useState(() => {
     try {
@@ -350,7 +368,7 @@ function PerfilPropio() {
             className="portada"
             style={{
               backgroundImage: bannerImg
-                ? `url("${bannerImg}")`
+                ? `url("${obtenerImagen(bannerImg)}")`
                 : 'linear-gradient(135deg, #ebdcd3 0%, #d8c2af 100%)',
               backgroundSize: 'cover',
               backgroundPosition: 'center center',
@@ -380,11 +398,10 @@ function PerfilPropio() {
 
           <div className="datos-perfil">
             <div className="avatar" style={{ backgroundColor: '#f3e8ee' }}>
-              {fotoPerfil ? (
-                <img
-                  src={fotoPerfil}
-                  alt={`Avatar de ${nombreMostrar}`}
-                />
+              {fotoPerfil ? (<img
+                src={obtenerImagen(fotoPerfil)}
+                alt={`Avatar de ${nombreMostrar}`}
+              />
               ) : (
                 <svg
                   width="42"

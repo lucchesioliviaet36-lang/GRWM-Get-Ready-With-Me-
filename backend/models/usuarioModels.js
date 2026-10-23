@@ -37,6 +37,16 @@ const Usuario = sequelize.define(
             unique: true
         },
 
+        foto_perfil: {
+            type: DataTypes.STRING(500),
+            allowNull: true
+        },
+
+        banner: {
+            type: DataTypes.STRING(500),
+            allowNull: true
+        },
+
         descripcion: {
             type: DataTypes.STRING(50),
             allowNull: true
