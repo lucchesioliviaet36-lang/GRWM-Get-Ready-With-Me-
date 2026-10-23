@@ -142,7 +142,7 @@ class AuthService{
             },
             process.env.JWT_SECRET,
             {
-                expiresIn: "2h"
+                expiresIn: "30d"
             }
         );
 
