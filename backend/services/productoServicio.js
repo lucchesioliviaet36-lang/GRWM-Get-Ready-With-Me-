@@ -42,6 +42,10 @@ class ProductoService {
     return await productoDAO.buscarPorUsuario(idUsuario);
   }
 
+  async obtenerProductosGenerales() {
+    return await productoDAO.buscarTodosActivos();
+  }
+
   async eliminarProducto(idProducto, idUsuario) {
 
     const producto = await productoDAO.buscarPorId(idProducto);

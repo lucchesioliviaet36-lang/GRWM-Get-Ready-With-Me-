@@ -32,6 +32,15 @@ class ProductoDao {
     });
   }
 
+  async buscarTodosActivos() {
+    return await Producto.findAll({
+      where: {
+        estado_producto: true
+      },
+      order: [["fecha", "DESC"]]
+    });
+  }
+
   async crear(producto) {
     return await Producto.create(producto);
   }

@@ -30,26 +30,41 @@ const agregar = async (req, res) => {
 
 const obtenerProductos = async (req, res) => {
   try {
-
     const idUsuario = req.user.id_usuario;
 
+    console.log("Usuario que consulta MiTienda:", idUsuario);
+
     const productos =
-      await productoService.obtenerProductosUsuario(
-        idUsuario
-      );
+      await productoService.obtenerProductosUsuario(idUsuario);
+
+    console.log("Productos encontrados:", productos.length);
 
     return res.status(200).json({
       success: true,
       productos
     });
-
   } catch (error) {
-
     return res.status(500).json({
       success: false,
       message: error.message
     });
+  }
+};
 
+const obtenerProductosGenerales = async (req, res) => {
+  try {
+    const productos =
+      await productoService.obtenerProductosGenerales();
+
+    return res.status(200).json({
+      success: true,
+      productos
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
   }
 };
 
@@ -82,4 +97,4 @@ const eliminar = async (req, res) => {
 };
 
 
-module.exports = { agregar, obtenerProductos, eliminar };
+module.exports = { agregar, obtenerProductos, eliminar, obtenerProductosGenerales };

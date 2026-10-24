@@ -9,6 +9,8 @@ router.get("/buscar", authMiddleware, (req, res) => {
     }
 );
 
+router.get("/:id", authMiddleware, usuarioController.obtenerPorId);
+
 // 🟢 Obtener perfil de la cuenta activa
 router.put( "/perfil", authMiddleware,
     uploadPerfil.fields([
