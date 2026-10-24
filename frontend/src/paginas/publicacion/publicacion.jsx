@@ -3,6 +3,20 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Header from "../../componentes/header/header"
 import './publicacion.css'
 
+const obtenerImagenPerfil = (imagen) => {
+  if (!imagen) return null;
+
+  if (
+    imagen.startsWith("http://") ||
+    imagen.startsWith("https://") ||
+    imagen.startsWith("data:") ||
+    imagen.startsWith("blob:")
+  ) {
+    return imagen;
+  }
+
+  return `http://localhost:3000${imagen.startsWith("/") ? "" : "/"}${imagen}`;
+};
 
 function Publicacion() {
   const navigate = useNavigate();
@@ -82,10 +96,18 @@ function Publicacion() {
 
   const nombreUsuarioHeader = palabrasNombre.join(' ') || usuarioSesion.username || 'Mi Usuario';
   const usuarioTagHeader = usuarioSesion.username ? `@${usuarioSesion.username}` : '@usuario';
-  const fotoGuardada = localStorage.getItem('grwm_foto_perfil');
-  const fotoPerfilHeader = (fotoGuardada && fotoGuardada !== 'null' && fotoGuardada !== 'undefined' && fotoGuardada.trim() !== '')
-    ? fotoGuardada
-    : (usuarioSesion.foto_perfil && !usuarioSesion.foto_perfil.includes('fotoDePerfilPropio') ? usuarioSesion.foto_perfil : null);
+  
+  const fotoGuardada = localStorage.getItem("grwm_foto_perfil");
+
+  const fotoPerfilOriginal =
+    fotoGuardada &&
+    fotoGuardada !== "null" &&
+    fotoGuardada !== "undefined" &&
+    fotoGuardada.trim() !== ""
+      ? fotoGuardada
+      : usuarioSesion.foto_perfil;
+
+  const fotoPerfilHeader = obtenerImagenPerfil(fotoPerfilOriginal);
 
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);

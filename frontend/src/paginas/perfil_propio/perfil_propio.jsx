@@ -97,7 +97,11 @@ function PerfilPropio() {
         return res.json();
       })
       .then((datos) => {
+        console.log("Datos recibidos del perfil:", datos);
+
         const usuarioReal = datos?.usuario || datos;
+        console.log("Foto recibida:", usuarioReal.foto_perfil);
+        console.log("Usuario completo:", usuarioReal);
 
         if (usuarioReal && (usuarioReal.id_usuario || usuarioReal.id)) {
           setUsuarioSesion(usuarioReal);
@@ -490,7 +494,7 @@ function PerfilPropio() {
             listaPublicaciones.length === 0 ? (
               <p className="sin-contenido">
                 No tenés publicaciones cargadas aún. ¡Hacé clic en '+ Publicar'
-                para subir tu primer outfit! ✨
+                para subir tu primer outfit! 
               </p>
             ) : (
               listaPublicaciones.map((post) => (
