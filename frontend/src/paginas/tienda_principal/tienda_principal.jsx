@@ -1,252 +1,178 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import "./tienda_principal.css"
+
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./tienda_principal.css";
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
 
+const API_URL = "http://localhost:3000";
+
+function obtenerUrlImagen(ruta) {
+  if (!ruta) return "";
+  if (ruta.startsWith("http://") || ruta.startsWith("https://")) {
+    return ruta;
+  }
+  return `${API_URL}${ruta.startsWith("/") ? "" : "/"}${ruta}`;
+}
+
 function TiendaPrincipal() {
+  const navigate = useNavigate();
 
-  const navigate = useNavigate()
+  const [productos, setProductos] = useState([]);
+  const [publicaciones, setPublicaciones] = useState([]);
+  const [categoriaActiva, setCategoriaActiva] = useState("Todos");
+  const [busqueda, setBusqueda] = useState("");
+  const [orden, setOrden] = useState("Destacados");
+  const [cargandoProductos, setCargandoProductos] = useState(true);
+  const [cargandoPublicaciones, setCargandoPublicaciones] = useState(true);
+  const [errorProductos, setErrorProductos] = useState("");
+  const [errorPublicaciones, setErrorPublicaciones] = useState("");
 
-  const [categoriaActiva, setCategoriaActiva] = useState('Todos')
-  const [busqueda, setBusqueda] = useState('')
-  const [orden, setOrden] = useState('Destacados')
-  const [estadosSeleccionados, setEstadosSeleccionados] = useState([])
+  useEffect(() => {
+    const obtenerProductos = async () => {
+      try {
+        const respuesta = await fetch(`${API_URL}/api/productos/general`);
 
-  const productos = [
-    {
-      id: 1,
-      nombre: 'Blazer Oversize Vintage',
-      categoria: 'Ropa',
-      estado: 'Excelente',
-      precio: 85,
-      usuario: '@taylor_swift13',
-      imagen: '[https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&auto=format&fit=crop)'
-    },
-    {
-      id: 2,
-      nombre: 'Bolso de Cuero Vintage',
-      categoria: 'Bolsos',
-      estado: 'Como nuevo',
-      precio: 120,
-      usuario: '@mora_closet',
-      imagen: '[https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&auto=format&fit=crop)'
-    },
-    {
-      id: 3,
-      nombre: 'Cadena Plateada',
-      categoria: 'Joyería',
-      estado: 'Nuevo con etiqueta',
-      precio: 45,
-      usuario: '@fashion_style',
-      imagen: '[https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500&auto=format&fit=crop)'
-    },
-    {
-      id: 4,
-      nombre: 'Zapatillas Retro Pastel',
-      categoria: 'Calzado',
-      estado: 'Buen estado',
-      precio: 95,
-      usuario: '@hugo_out',
-      imagen: '[https://images.unsplash.com/photo-1552346154-21d32810aba3?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1552346154-21d32810aba3?w=500&auto=format&fit=crop)'
-    },
-    {
-      id: 5,
-      nombre: 'Cárdigan Marrón Suave',
-      categoria: 'Ropa',
-      estado: 'Excelente',
-      precio: 55,
-      usuario: '@clogan_style',
-      imagen: '[https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500&auto=format&fit=crop)'
-    },
-    {
-      id: 6,
-      nombre: 'Gafas de Sol Retro',
-      categoria: 'Accesorios',
-      estado: 'Como nuevo',
-      precio: 35,
-      usuario: '@luciatrends',
-      imagen: '[https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&auto=format&fit=crop)'
-    },
-    {
-      id: 7,
-      nombre: 'Campera Floral Vintage',
-      categoria: 'Ropa',
-      estado: 'Excelente',
-      precio: 90,
-      usuario: '@vintage_closet',
-      imagen: '[https://images.unsplash.com/photo-1544441893-675973e31985?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1544441893-675973e31985?w=500&auto=format&fit=crop)'
-    },
-    {
-      id: 8,
-      nombre: 'Vestido Negro Clásico',
-      categoria: 'Ropa',
-      estado: 'Nuevo con etiqueta',
-      precio: 75,
-      usuario: '@sofia.aria',
-      imagen: '[https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=500&auto=format&fit=crop)'
-    }
-  ]
+        if (!respuesta.ok) {
+          throw new Error("No se pudieron cargar los productos.");
+        }
+
+        const datos = await respuesta.json();
+        setProductos(Array.isArray(datos) ? datos : datos.productos || []);
+      } catch (error) {
+        setErrorProductos(error.message);
+      } finally {
+        setCargandoProductos(false);
+      }
+    };
+
+    const obtenerPublicaciones = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          setErrorPublicaciones("Iniciá sesión para ver las publicaciones.");
+          return;
+        }
+
+        const respuesta = await fetch(`${API_URL}/api/publicaciones`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!respuesta.ok) {
+          throw new Error("No se pudieron cargar las publicaciones.");
+        }
+
+        const datos = await respuesta.json();
+        setPublicaciones(Array.isArray(datos) ? datos : []);
+      } catch (error) {
+        setErrorPublicaciones(error.message);
+      } finally {
+        setCargandoPublicaciones(false);
+      }
+    };
+
+    obtenerProductos();
+    obtenerPublicaciones();
+  }, []);
 
   const categorias = [
-    { nombre: 'Todos', cantidad: '12.4k' },
-    { nombre: 'Ropa', cantidad: '5.2k' },
-    { nombre: 'Accesorios', cantidad: '2.1k' },
-    { nombre: 'Calzado', cantidad: '1.8k' },
-    { nombre: 'Bolsos', cantidad: '1.5k' },
-    { nombre: 'Joyería', cantidad: '1.8k' }
-  ]
-
-  const manejarCambioEstado = (estado) => {
-    if (estadosSeleccionados.includes(estado)) {
-      setEstadosSeleccionados(estadosSeleccionados.filter((e) => e !== estado))
-    } else {
-      setEstadosSeleccionados([...estadosSeleccionados, estado])
-    }
-  }
+    "Todos",
+    ...new Set(
+      productos
+        .map((producto) => producto.categoria)
+        .filter(Boolean)
+    ),
+  ];
 
   const productosFiltrados = productos
     .filter((producto) => {
+      const nombre = producto.nombre || "";
+      const categoria = producto.categoria || "";
       const coincideCategoria =
-        categoriaActiva === 'Todos' ||
-        producto.categoria === categoriaActiva
+        categoriaActiva === "Todos" || categoria === categoriaActiva;
 
-      const coincideBusqueda =
-        producto.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-        producto.usuario.toLowerCase().includes(busqueda.toLowerCase())
+      const coincideBusqueda = `${nombre} ${categoria} ${producto.id_usuario || ""}`
+        .toLowerCase()
+        .includes(busqueda.toLowerCase());
 
-      const coincideEstado =
-        estadosSeleccionados.length === 0 ||
-        estadosSeleccionados.includes(producto.estado)
-
-      return coincideCategoria && coincideBusqueda && coincideEstado
+      return coincideCategoria && coincideBusqueda;
     })
     .sort((a, b) => {
-      if (orden === 'Precio menor') {
-        return a.precio - b.precio
+      if (orden === "Precio menor") {
+        return Number(a.precio) - Number(b.precio);
       }
 
-      if (orden === 'Precio mayor') {
-        return b.precio - a.precio
+      if (orden === "Precio mayor") {
+        return Number(b.precio) - Number(a.precio);
       }
 
-      return a.id - b.id
-    })
+      return Number(b.id_producto) - Number(a.id_producto);
+    });
 
   return (
     <div className="pagina-tienda-principal">
-
       <Header />
 
       <section className="hero-tienda">
-
         <div className="hero-texto">
-
           <h1>
             Renueva tu clóset con
             <br />
             estilo consciente
           </h1>
-
           <p>
             Compra prendas únicas de la comunidad y vende lo que ya no usas.
             Moda circular, cuidada e inspirada en tus looks favoritos.
           </p>
-
         </div>
-
       </section>
 
-
-      {/* CONTENIDO */}
-
       <main className="contenido-tienda-principal">
-
-        {/* SIDEBAR */}
-
         <aside className="sidebar-tienda">
-
-          <h3>Estado de la prenda</h3>
-
-          <label>
-            <input
-              type="checkbox"
-              checked={estadosSeleccionados.includes('Nuevo con etiqueta')}
-              onChange={() => manejarCambioEstado('Nuevo con etiqueta')}
-            />
-            Nuevo con etiqueta
-          </label>
-
-          <label>
-            <input
-              type="checkbox"
-              checked={estadosSeleccionados.includes('Como nuevo')}
-              onChange={() => manejarCambioEstado('Como nuevo')}
-            />
-            Como nuevo
-          </label>
-
-          <label>
-            <input
-              type="checkbox"
-              checked={estadosSeleccionados.includes('Excelente')}
-              onChange={() => manejarCambioEstado('Excelente')}
-            />
-            Excelente
-          </label>
-
-          <label>
-            <input
-              type="checkbox"
-              checked={estadosSeleccionados.includes('Buen estado')}
-              onChange={() => manejarCambioEstado('Buen estado')}
-            />
-            Buen estado
-          </label>
-
+          <h3>Categorías</h3>
 
           <div className="categorias">
-
-            <h3>Categorías</h3>
-
             {categorias.map((categoria) => (
-
               <button
-                key={categoria.nombre}
+                key={categoria}
                 className={
-                  categoriaActiva === categoria.nombre
-                    ? 'categoria-activa'
-                    : ''
+                  categoriaActiva === categoria ? "categoria-activa" : ""
                 }
-                onClick={() => setCategoriaActiva(categoria.nombre)}
+                onClick={() => setCategoriaActiva(categoria)}
               >
-
-                <span>{categoria.nombre}</span>
-                <small>{categoria.cantidad}</small>
-
+                <span>{categoria}</span>
+                <small>
+                  {categoria === "Todos"
+                    ? productos.length
+                    : productos.filter(
+                        (producto) => producto.categoria === categoria
+                      ).length}
+                </small>
               </button>
-
             ))}
-
           </div>
-
         </aside>
 
-
-        {/* PRODUCTOS */}
-
         <section className="productos-principales">
+          <div className="busqueda-tienda">
+            <input
+              type="search"
+              placeholder="Buscar productos o categorías..."
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+            />
+          </div>
 
           <div className="barra-productos">
-
             <span>
               Mostrando <strong>{productosFiltrados.length}</strong> productos
             </span>
 
             <div className="ordenar">
-
               <span>Ordenar por:</span>
-
               <select
                 value={orden}
                 onChange={(e) => setOrden(e.target.value)}
@@ -255,77 +181,108 @@ function TiendaPrincipal() {
                 <option>Precio menor</option>
                 <option>Precio mayor</option>
               </select>
-
             </div>
-
           </div>
 
+          {cargandoProductos && <p>Cargando productos...</p>}
+          {errorProductos && <p role="alert">{errorProductos}</p>}
+
+          {!cargandoProductos &&
+            !errorProductos &&
+            productosFiltrados.length === 0 && (
+              <p>No hay productos disponibles en esta categoría.</p>
+            )}
 
           <div className="grid-productos-principal">
-
             {productosFiltrados.map((producto) => (
-
               <article
                 className="producto-card-principal"
-                key={producto.id}
+                key={producto.id_producto}
               >
-
                 <div className="imagen-producto">
-
-                  <img
-                    src={producto.imagen}
-                    alt={producto.nombre}
-                  />
+                  {producto.imagen ? (
+                    <img
+                      src={obtenerUrlImagen(producto.imagen)}
+                      alt={producto.nombre}
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <span className="sin-imagen">Sin imagen disponible</span>
+                  )}
 
                   <span className="estado-producto">
-                    {producto.estado}
+                    {producto.estado_producto ? "Disponible" : "No disponible"}
                   </span>
 
                   <strong className="precio-producto">
-                    ${producto.precio}
+                    ${Number(producto.precio || 0).toLocaleString("es-AR")}
                   </strong>
-
                 </div>
 
-
                 <div className="datos-producto">
-
                   <h3>{producto.nombre}</h3>
-
-                  <p>
-                    {producto.usuario}
-                  </p>
+                  <p>{producto.categoria || "Sin categoría"}</p>
 
                   <div className="footer-producto">
-
-                    <span>
-                      ♡ {producto.id * 42}
-                    </span>
-
+                    <span>Vendedor #{producto.id_usuario}</span>
                     <button
-                      onClick={() => navigate('/pago')}
+                      disabled={!producto.estado_producto}
+                      onClick={() => navigate("/pago")}
                     >
                       Comprar
                     </button>
-
                   </div>
-
                 </div>
-
               </article>
-
             ))}
-
           </div>
-
         </section>
-
       </main>
 
-      <Footer />
+      <section className="seccion-publicaciones">
+        <h2>Publicaciones de la comunidad</h2>
+        <p>Publicaciones guardadas en la base de datos de GRWM.</p>
 
+        {cargandoPublicaciones && <p>Cargando publicaciones...</p>}
+        {errorPublicaciones && <p role="status">{errorPublicaciones}</p>}
+
+        {!cargandoPublicaciones &&
+          !errorPublicaciones &&
+          publicaciones.length === 0 && (
+            <p>Todavía no hay publicaciones para mostrar.</p>
+          )}
+
+        <div className="grid-publicaciones-tienda">
+          {publicaciones.map((publicacion) => (
+            <article
+              className="publicacion-tienda-card"
+              key={publicacion.id_publicacion}
+            >
+              {publicacion.imagen_url && (
+                <img
+                  src={obtenerUrlImagen(publicacion.imagen_url)}
+                  alt={publicacion.descripcion || "Publicación de la comunidad"}
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              )}
+              <div>
+                <p>{publicacion.descripcion || "Publicación sin descripción"}</p>
+                <small>
+                  Publicación #{publicacion.id_publicacion}
+                </small>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <Footer />
     </div>
-  )
+  );
 }
 
-export default TiendaPrincipal
+export default TiendaPrincipal;
