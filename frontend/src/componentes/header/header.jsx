@@ -190,17 +190,31 @@ function Header() {
 
         <div className="mini-avatar-contenedor">
 
-          <div
-            className={`mini-avatar ${menuAbierto ? "activo" : ""}`}
-            onClick={() => setMenuAbierto(!menuAbierto)}
-          >
-            {fotoPerfilHeader && (
-              <img
-                src={fotoPerfilHeader}
-                alt="Foto de perfil"
-              />
-            )}
-          </div>
+        <div
+          className={`mini-avatar ${menuAbierto ? "activo" : ""}`}
+          onClick={() => setMenuAbierto(!menuAbierto)}
+        >
+          {fotoPerfilHeader ? (
+            <img
+              src={fotoPerfilHeader}
+              alt="Foto de perfil"
+            />
+          ) : (
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#8b5274"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          )}
+        </div>
 
           {menuAbierto && (
             <div className="menu-desplegable-perfil">

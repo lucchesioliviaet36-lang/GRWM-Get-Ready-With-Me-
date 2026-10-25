@@ -4,7 +4,11 @@ const crearPublicacion = async (
     descripcion,
     id_usuario,
     id_producto,
-    imagen_url
+    imagen_url,
+    musica_url,
+    musica_titulo,
+    musica_artista,
+    musica_imagen
 ) => {
     if (!id_usuario) {
         throw new Error("El id_usuario es obligatorio");
@@ -14,7 +18,11 @@ const crearPublicacion = async (
         descripcion,
         id_usuario,
         id_producto,
-        imagen_url
+        imagen_url,
+        musica_url,
+        musica_titulo,
+        musica_artista,
+        musica_imagen
     );
 };
 

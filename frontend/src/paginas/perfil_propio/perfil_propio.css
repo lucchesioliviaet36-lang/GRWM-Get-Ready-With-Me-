@@ -535,3 +535,147 @@ body {
   .estadisticas { width: 100%; margin-top: 15px; justify-content: center; }
   .grid-publicaciones { grid-template-columns: 1fr; }
 }
+
+
+/* Buscador de música */
+.buscador-musica {
+  position: relative;
+  width: 100%;
+  margin-top: 18px;
+}
+
+.buscador-musica > label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.buscador-musica > input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #e5c9d5;
+  border-radius: 12px;
+  background: #fff;
+  color: #333;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.buscador-musica > input:focus {
+  border-color: #d879a4;
+  box-shadow: 0 0 0 3px rgba(216, 121, 164, 0.15);
+}
+
+.buscador-musica > p {
+  margin: 10px 0;
+  color: #888;
+  font-size: 13px;
+}
+
+/* Lista de canciones encontradas */
+.resultados-musica {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 260px;
+  overflow-y: auto;
+  margin-top: 10px;
+  padding: 7px;
+  border: 1px solid #f0dce5;
+  border-radius: 14px;
+  background: #fffafd;
+}
+
+.resultado-cancion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 9px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.resultado-cancion:hover {
+  background: #f9eaf1;
+}
+
+.resultado-cancion img {
+  width: 80px;
+  height: 55px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 7px;
+}
+
+.resultado-cancion span {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.resultado-cancion strong {
+  color: #333;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.resultado-cancion small {
+  color: #888;
+  font-size: 12px;
+}
+
+/* Canción seleccionada */
+.cancion-seleccionada {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #edc9da;
+  border-radius: 12px;
+  background: #fff4f8;
+}
+
+.cancion-seleccionada p {
+  margin: 0;
+  color: #555;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.cancion-seleccionada button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: #d879a4;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cancion-seleccionada button:hover {
+  background: #c45e8c;
+}
+
+@media (max-width: 480px) {
+  .resultado-cancion img {
+    width: 68px;
+    height: 48px;
+  }
+
+  .cancion-seleccionada {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

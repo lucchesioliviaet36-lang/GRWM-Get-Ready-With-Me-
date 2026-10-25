@@ -12,6 +12,10 @@ const comentarioController = require("../controllers/comentarioController.js");
 
 const router = express.Router();
 
+router.get("/buscar-canciones", (req, res) => {
+    publicacionController.buscarCanciones(req, res);
+});
+
 const carpetaPublicaciones = path.join(
     __dirname,
     "../uploads/publicaciones"

@@ -442,3 +442,101 @@ NUEVO COMENTARIO
   font-style: italic;             /* Letra derecha (sin cursiva) para que se lea perfecto */
   letter-spacing: 0.5px;
 }
+
+.musica-publicacion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 12px;
+  border: 1px solid #efd5e0;
+  border-radius: 14px;
+  background: #fff8fb;
+}
+
+.musica-portada {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #f4dfeb;
+  color: #a34d7b;
+  font-size: 30px;
+}
+
+.musica-portada img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.musica-textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.musica-textos strong {
+  color: #633b53;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.musica-textos span {
+  color: #96758a;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.boton-reproducir-musica {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  background: #b45d88;
+  color: white;
+  font-size: 17px;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.boton-reproducir-musica:hover {
+  background: #98476f;
+  transform: scale(1.05);
+}
+
+@media (max-width: 480px) {
+  .musica-publicacion {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .musica-portada {
+    width: 54px;
+    height: 54px;
+  }
+}
+
+.reproductor-youtube-integrado {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  border: 0;
+}
+
+.estado-musica {
+  font-size: 11px;
+  color: #a34d7b;
+}

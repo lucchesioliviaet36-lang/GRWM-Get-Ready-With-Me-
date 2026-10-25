@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Header from "../../componentes/header/header"
 import './publicacion.css'
@@ -22,6 +22,9 @@ function Publicacion() {
   const navigate = useNavigate();
   const { id } = useParams();
   const idPublicacion = Number(id);
+
+  const reproductorRef = useRef(null);
+  const [reproduciendo, setReproduciendo] = useState(false);
 
   const [menuOpciones, setMenuOpciones] = useState(false);
 
@@ -78,6 +81,70 @@ function Publicacion() {
 
   const fotoAMostrar = postEncontrado?.img || "";
   const descripcionMostrar = postEncontrado?.descripcion || "";
+
+  const musicaUrl = postEncontrado?.musica_url || '';
+  const musicaTitulo = postEncontrado?.musica_titulo || '';
+  const musicaArtista = postEncontrado?.musica_artista || '';
+  const musicaImagen = postEncontrado?.musica_imagen || '';
+
+  // Obtener el ID del video de YouTube a partir de su enlace
+  const obtenerIdVideoYouTube = (url) => {
+    if (!url) return null;
+
+    try {
+      const enlace = new URL(url);
+
+      if (
+        enlace.hostname === 'www.youtube.com' ||
+        enlace.hostname === 'youtube.com' ||
+        enlace.hostname === 'm.youtube.com'
+      ) {
+        return enlace.searchParams.get('v');
+      }
+
+      if (enlace.hostname === 'youtu.be') {
+        return enlace.pathname.slice(1);
+      }
+
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
+  const idVideoYouTube = obtenerIdVideoYouTube(musicaUrl);
+
+  const reproducirPausarMusica = () => {
+  const reproductor = reproductorRef.current;
+
+  if (!reproductor) return;
+
+  if (reproduciendo) {
+    reproductor.contentWindow.postMessage(
+      JSON.stringify({
+        event: 'command',
+        func: 'pauseVideo',
+        args: []
+      }),
+      'https://www.youtube-nocookie.com'
+    );
+
+    setReproduciendo(false);
+  } else {
+    reproductor.contentWindow.postMessage(
+      JSON.stringify({
+        event: 'command',
+        func: 'playVideo',
+        args: []
+      }),
+      'https://www.youtube-nocookie.com'
+    );
+
+    setReproduciendo(true);
+    }
+  };
+
+
   const publicacionesGuardadas = JSON.parse(
       localStorage.getItem("grwm_publicaciones") || "[]"
   );
@@ -341,25 +408,54 @@ function Publicacion() {
 
   // 8. Eliminar publicación en MySQL y localStorage
   const handleEliminarPublicacion = async () => {
-    const confirmar = window.confirm("¿Estás seguro de que querés eliminar esta publicación?");
+    const confirmar = window.confirm(
+      "¿Estás seguro de que querés eliminar esta publicación?"
+    );
+
     if (!confirmar) return;
 
+    if (!token) {
+      alert("Tu sesión expiró. Volvé a iniciar sesión.");
+      return;
+    }
+
     try {
-      const response = await fetch(`http://localhost:3000/api/publicaciones/${id}`, {
-        method: 'DELETE'
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/publicaciones/${id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
 
       if (response.ok) {
-        const publicacionesFiltradas = publicacionesGuardadas.filter(p => String(p.id) !== String(id));
-        localStorage.setItem('grwm_publicaciones', JSON.stringify(publicacionesFiltradas));
+        const publicacionesFiltradas = publicacionesGuardadas.filter(
+          p => String(p.id) !== String(id)
+        );
+
+        localStorage.setItem(
+          'grwm_publicaciones',
+          JSON.stringify(publicacionesFiltradas)
+        );
 
         alert("Publicación eliminada correctamente.");
         navigate('/perfil_propio');
       } else {
-        alert("Ocurrió un error al intentar eliminar la publicación.");
+        const data = await response.json().catch(() => ({}));
+
+        console.error("Error del servidor al eliminar:", response.status, data);
+
+        alert(
+          data.detalle ||
+          data.error ||
+          `No se pudo eliminar la publicación. Error ${response.status}.`
+        );
       }
     } catch (error) {
       console.error("Error al eliminar la publicación:", error);
+      alert("No se pudo conectar con el servidor.");
     }
   };
 
@@ -473,6 +569,48 @@ function Publicacion() {
                 {new Date().toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })}
               </span>
             </div>
+
+            {/* Tarjeta de música con reproductor integrado */}
+            {idVideoYouTube && (
+              <div className="musica-publicacion">
+                <div className="musica-portada">
+                  {musicaImagen ? (
+                    <img
+                      src={musicaImagen}
+                      alt={`Portada de ${musicaTitulo || 'la canción'}`}
+                    />
+                  ) : (
+                    <span>♫</span>
+                  )}
+                </div>
+
+                <div className="musica-textos">
+                  <strong>{musicaTitulo || 'Canción de YouTube'}</strong>
+                  <span>{musicaArtista || 'Artista desconocido'}</span>
+                  <span className="estado-musica">
+                    {reproduciendo ? 'Reproduciendo' : 'Pausada'}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  className="boton-reproducir-musica"
+                  onClick={reproducirPausarMusica}
+                  aria-label={reproduciendo ? 'Pausar canción' : 'Reproducir canción'}
+                >
+                  {reproduciendo ? '❚❚' : '▶'}
+                </button>
+
+                <iframe
+                  ref={reproductorRef}
+                  className="reproductor-youtube-integrado"
+                  src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(idVideoYouTube)}?enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}&playsinline=1`}
+                  title={`Reproductor de ${musicaTitulo || 'YouTube'}`}
+                  allow="autoplay; encrypted-media; picture-in-picture"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                />
+              </div>
+            )}
 
             {/* Botones de interacción (Like, Guardar, Compartir) */}
             <div className="interacciones">

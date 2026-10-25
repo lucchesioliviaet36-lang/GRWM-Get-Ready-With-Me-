@@ -5,14 +5,22 @@ const crearPublicacion = async (
     descripcion,
     id_usuario,
     id_producto = null,
-    imagen_url = null
+    imagen_url = null,
+    musica_url = null,
+    musica_titulo = null,
+    musica_artista = null,
+    musica_imagen = null
 ) => {
     return await Publicacion.create({
         descripcion,
         fecha_publicacion: new Date(),
         id_usuario,
         id_producto,
-        imagen_url
+        imagen_url,
+        musica_url,
+        musica_titulo,
+        musica_artista,
+        musica_imagen
     });
 };
 

@@ -56,6 +56,53 @@ function PerfilPropio() {
   const [descripcion, setDescripcion] = useState('');
   const [publicando, setPublicando] = useState(false);
 
+  const [busquedaMusica, setBusquedaMusica] = useState('');
+  const [resultadosMusica, setResultadosMusica] = useState([]);
+  const [musicaSeleccionada, setMusicaSeleccionada] = useState(null);
+  const [buscandoMusica, setBuscandoMusica] = useState(false);
+
+  const buscarMusica = async (texto) => {
+    setBusquedaMusica(texto);
+    setMusicaSeleccionada(null);
+    setResultadosMusica([]);
+
+    if (!texto.trim()) {
+      setBuscandoMusica(false);
+      return;
+    }
+
+    try {
+      setBuscandoMusica(true);
+
+      const token = localStorage.getItem('token');
+
+      const response = await fetch(
+        `${API_URL}/api/publicaciones/buscar-canciones?q=${encodeURIComponent(texto.trim())}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'No se pudo buscar música');
+      }
+
+      // Evita mostrar resultados de una búsqueda anterior
+      if (texto === busquedaMusica || texto.trim()) {
+        setResultadosMusica(data);
+      }
+    } catch (error) {
+      console.error('Error al buscar canciones:', error);
+      setResultadosMusica([]);
+    } finally {
+      setBuscandoMusica(false);
+    }
+  };
+
   // Obtener la cantidad de likes de una publicación
   const obtenerCantidadLikes = async (idPublicacion, token) => {
     try {
@@ -269,6 +316,10 @@ function PerfilPropio() {
       formData.append('imagen', imagenArchivo);
       formData.append('id_usuario', String(idUsuario));
       formData.append('descripcion', descripcion);
+      formData.append('musica_url', musicaSeleccionada?.url || '');
+      formData.append('musica_titulo', musicaSeleccionada?.titulo || '');
+      formData.append('musica_artista', musicaSeleccionada?.artista || '');
+      formData.append('musica_imagen', musicaSeleccionada?.imagen || '');
 
       const response = await fetch(
         'http://localhost:3000/api/publicaciones',
@@ -343,6 +394,9 @@ function PerfilPropio() {
       setImagenPreview('');
       setDescripcion('');
       setMostrarModal(false);
+      setBusquedaMusica('');
+      setResultadosMusica([]);
+      setMusicaSeleccionada(null);
 
       alert('¡Tu publicación se creó con éxito!');
     } catch (error) {
@@ -360,6 +414,9 @@ function PerfilPropio() {
     setImagenArchivo(null);
     setImagenPreview('');
     setDescripcion('');
+    setBusquedaMusica('');
+    setResultadosMusica([]);
+    setMusicaSeleccionada(null);
   };
 
   return (
@@ -605,6 +662,70 @@ function PerfilPropio() {
                   rows="3"
                   className="modal-textarea"
                 />
+              </div>
+
+              <div className="form-grupo buscador-musica">
+                <label> Agregar una canción (opcional)</label>
+
+                <input
+                  type="text"
+                  placeholder="Buscá por título o artista..."
+                  value={busquedaMusica}
+                  onChange={(e) => buscarMusica(e.target.value)}
+                />
+
+                {buscandoMusica && (
+                  <p>Buscando canciones...</p>
+                )}
+
+                {resultadosMusica.length > 0 && !musicaSeleccionada && (
+                  <div className="resultados-musica">
+                    {resultadosMusica.map((cancion) => (
+                      <button
+                        key={cancion.videoId}
+                        type="button"
+                        className="resultado-cancion"
+                        onClick={() => {
+                          setMusicaSeleccionada(cancion);
+                          setBusquedaMusica(cancion.titulo);
+                          setResultadosMusica([]);
+                        }}
+                      >
+                        {cancion.imagen && (
+                          <img
+                            src={cancion.imagen}
+                            alt=""
+                            width="80"
+                          />
+                        )}
+
+                        <span>
+                          <strong>{cancion.titulo}</strong>
+                          <small>{cancion.artista}</small>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {musicaSeleccionada && (
+                  <div className="cancion-seleccionada">
+                    <p>
+                      Canción elegida: <strong>{musicaSeleccionada.titulo}</strong>
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMusicaSeleccionada(null);
+                        setBusquedaMusica('');
+                        setResultadosMusica([]);
+                      }}
+                    >
+                      Cambiar canción
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="modal-acciones">

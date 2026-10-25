@@ -31,6 +31,22 @@ const Publicacion = sequelize.define("Publicacion", {
     imagen_url: {
         type: DataTypes.STRING(255),
         allowNull: true
+    },
+    musica_url: {
+        type: DataTypes.STRING(500),
+        allowNull: true
+    },
+    musica_titulo: {
+        type: DataTypes.STRING(150),
+        allowNull: true
+    },
+    musica_artista: {
+        type: DataTypes.STRING(150),
+        allowNull: true
+    },
+    musica_imagen: {
+        type: DataTypes.STRING(500),
+        allowNull: true
     }
 }, {
     tableName: "Publicacion",
