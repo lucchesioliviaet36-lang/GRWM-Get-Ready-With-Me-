@@ -142,6 +142,47 @@ class UsuarioDao {
         );
     }
 
+    async guardarTokenRecuperacion(idUsuario, tokenHash, fechaExpiracion) {
+        return await Usuario.update(
+            {
+                reset_password: tokenHash,
+                reset_password_expira: fechaExpiracion
+            },
+            {
+                where: {
+                    id_usuario: idUsuario
+                }
+            }
+        );
+    }
+
+    async buscarPorTokenRecuperacion(tokenHash) {
+        return await Usuario.findOne({
+            where: {
+                reset_password: tokenHash,
+
+                reset_password_expira: {
+                    [Op.gt]: new Date()
+                }
+            }
+        });
+    }
+
+    async actualizarContrasenaRecuperada(idUsuario, contraseñaHash) {
+        return await Usuario.update(
+            {
+                contraseña: contraseñaHash,
+                reset_password: null,
+                reset_password_expira: null
+            },
+            {
+                where: {
+                    id_usuario: idUsuario
+                }
+            }
+        );
+    }
+
     async eliminarUsuario(id_usuario) {
         // Obtenemos los modelos registrados en Sequelize
         const models = Usuario.sequelize ? Usuario.sequelize.models : {};

@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const usuarioDAO = require("../dao/usuarioDAO.js");
+const crypto = require("crypto");
+const emailService = require("./emailService.js");
 
 const MAX_INTENTOS = 5;
 const TIEMPO_BLOQUEO_MINUTOS = 30;
@@ -157,6 +159,66 @@ class AuthService{
                 mail: usuario.mail,
                 rol: usuario.rol
             }
+        };
+    }
+
+    async solicitarRecuperacion(mail) {
+        if (!mail) {
+            throw new Error("Debés ingresar tu mail");
+        }
+
+        const usuario = await usuarioDAO.buscarPorMail(mail.trim());
+
+        if (!usuario) {
+            return {
+                mensaje: "Si existe una cuenta con ese mail, recibirás un enlace para recuperar tu contraseña."
+            };
+        }
+
+        const token = crypto.randomBytes(32).toString("hex");
+
+        const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+
+        const fechaExpiracion = new Date(Date.now() + 15 * 60 * 1000);
+
+        await usuarioDAO.guardarTokenRecuperacion(usuario.id_usuario, tokenHash, fechaExpiracion);
+
+        try {
+            await emailService.enviarRecuperacionContrasena(usuario.mail, token);
+        } 
+        catch (error) {
+            console.error("Error enviando mail de recuperación:", error);
+
+            throw new Error("No se pudo enviar el correo de recuperación");
+        }
+
+        return { mensaje:"Si existe una cuenta con ese mail, recibirás un enlace para recuperar tu contraseña."
+        };
+    }
+
+    async restablecerContrasena(token, nuevaContraseña) {
+        if (!token || !nuevaContraseña) {
+            throw new Error("Faltan datos para restablecer la contraseña");
+        }
+
+        if (nuevaContraseña.length < 8) {
+            throw new Error("La contraseña debe tener al menos 8 caracteres");
+        }
+
+        const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+
+        const usuario = await usuarioDAO.buscarPorTokenRecuperacion(tokenHash);
+
+        if (!usuario) {
+            throw new Error("El enlace es inválido o ya venció");
+        }
+
+        const contraseñaHash = await bcrypt.hash(nuevaContraseña, 10);
+
+        await usuarioDAO.actualizarContrasenaRecuperada(usuario.id_usuario,contraseñaHash);
+
+        return {
+            mensaje:"Contraseña actualizada correctamente"
         };
     }
 

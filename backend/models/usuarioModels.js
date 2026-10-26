@@ -68,6 +68,16 @@ const Usuario = sequelize.define(
             defaultValue: null
         },
 
+        reset_password: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+
+        reset_password_expira: {
+            type: DataTypes.DATE,
+            allowNull: true
+        },
+
         DVH: {
             type: DataTypes.INTEGER,
             allowNull: true
