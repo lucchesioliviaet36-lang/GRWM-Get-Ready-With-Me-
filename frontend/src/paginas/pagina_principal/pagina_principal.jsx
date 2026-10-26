@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
 
-
 export default function Feed() {
 
   // ==========================================
@@ -18,6 +17,8 @@ export default function Feed() {
   const [historiaActiva, setHistoriaActiva] = useState(null);
   const [comentario, setComentario] = useState('');//nuevo
   const [liked, setLiked] = useState(false);
+  const [publicaciones, setPublicaciones] = useState([]); // Estado para almacenar las publicaciones
+  const [cargando, setCargando] = useState(true); 
 
   // ==========================================
   // FUNCIONES DE HISTORIAS (CON VERIFICACIÓN SEGURA)
@@ -202,65 +203,21 @@ export default function Feed() {
   // PUBLICACIONES
   // ==========================================
 
-  const publicaciones = [
 
-    {
-      id: 1,
-      usuario: 'clara.v',
-      avatar:
-        'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop',
-      imagen:
-        'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&auto=format&fit=crop',
-      precio: '€85',
-      descripcion:
-        'Enamorada de este trench coat que conseguí en una tienda vintage de Berlín. Combina con todo ☕✨',
-      likesCount: 340,
-      comentarios: 42
-    },
+  useEffect(() => {
+    fetch('http://localhost:3000/api/publicaciones')
+      .then((res) => res.json())
+      .then((data) => {
+        setPublicaciones(data);
+        setCargando(false);
+      })
+      .catch((err) => {
+        console.error('Error al cargar publicaciones:', err);
+        setCargando(false);
+      });
+  }, []); // <-- Gwiriwch fod y cromfachau wedi'u cau'n gywir yma!
 
-    {
-      id: 2,
-      usuario: 'hugo_st',
-      avatar:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop',
-      imagen:
-        'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=800&auto=format&fit=crop',
-      precio: null,
-      descripcion:
-        'Paleta de grises y neutros para una tarde fresca en la ciudad. ¿Qué opinan de esta campera?',
-      likesCount: 512,
-      comentarios: 19
-    },
-
-    {
-      id: 3,
-      usuario: 'mora_closet',
-      avatar:
-        'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&auto=format&fit=crop',
-      imagen:
-        'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&auto=format&fit=crop',
-      precio: '€120',
-      descripcion:
-        'Bolso estructurado de piel vacuno. Un clásico que nunca pasa de moda.',
-      likesCount: 289,
-      comentarios: 15
-    },
-
-    {
-      id: 4,
-      usuario: 'sofia.art',
-      avatar:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop',
-      imagen:
-        'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&auto=format&fit=crop',
-      precio: '€45',
-      descripcion:
-        'Remera polo tejida de rayas pastel. Ideal para días soleados.',
-      likesCount: 410,
-      comentarios: 28
-    }
-
-  ];
+}
 
 
   // ==========================================
@@ -370,8 +327,24 @@ export default function Feed() {
 
       {/* CUERPO */}
 
-      <div className="feed-body">
+        <div className="feed-body">
 
+
+      {/* PUBLICACIONES */}
+        <div className="feed-container">
+        {cargando ? (
+          <p>Cargando publicaciones...</p>
+        ) : publicaciones.length === 0 ? (
+          <p>Aún no hay publicaciones.</p>
+        ) : (
+          publicaciones.map((pub) => (
+            <article key={pub.id_publicacion} className="tarjeta-publicacion">
+              <img src={pub.imagen_url} alt={pub.descripcion} />
+              <p>{pub.descripcion}</p>
+            </article>
+          )) 
+        )}
+      </div>
 
         {/* ==================================
             SIDEBAR
