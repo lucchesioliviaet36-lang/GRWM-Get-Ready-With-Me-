@@ -1,7 +1,38 @@
 const authService = require("../services/authService");
 const jwt = require("jsonwebtoken");
+const usuarioServicio = require("../services/usuarioServicio");
 
 class authController{
+
+async cambiarContraseña(req, res) {
+    try {
+        const id_usuario = req.user.id_usuario || req.user.id;
+        const { contraseñaActual, contraseñaNueva, confirmarContraseña } = req.body;
+
+        if (contraseñaNueva !== confirmarContraseña) {
+            return res.status(400).json({
+                success: false,
+                mensaje: "La nueva contraseña y su confirmación no coinciden"
+            });
+        }
+
+        await usuarioServicio.cambiarContraseña(
+            id_usuario,
+            contraseñaActual,
+            contraseñaNueva
+        );
+
+        return res.status(200).json({
+            success: true,
+            mensaje: "Contraseña actualizada correctamente"
+        });
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            mensaje: error.message || "No se pudo cambiar la contraseña"
+        });
+    }
+}
 
 async registrar(req, res) {
     try {

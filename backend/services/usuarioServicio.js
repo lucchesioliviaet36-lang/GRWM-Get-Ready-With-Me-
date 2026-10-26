@@ -1,13 +1,15 @@
 const usuarioDao = require("../dao/usuarioDAO");
 
+const bcrypt = require("bcrypt");
+
 class UsuarioServicio {
 
-    // 🟢 1. Obtener datos del usuario por ID
+    // 1. Obtener datos del usuario por ID
     async obtenerPorId(id_usuario) {
         return await usuarioDao.buscarPorId(id_usuario);
     }
 
-    // 🟢 2. Actualizar el perfil en la base de datos
+    // 2. Actualizar el perfil en la base de datos
     async actualizarPerfil(id_usuario, datos) {
         const usuario = await usuarioDao.buscarPorId(id_usuario);
 
@@ -43,7 +45,7 @@ class UsuarioServicio {
         return await usuarioDao.buscarPorId(id_usuario);
     }
 
-    // 🟢 3. Buscar usuarios (Ya lo tenías)
+    // 3. Buscar usuarios (Ya lo tenías)
     async buscarUsuarios(texto, idUsuarioActual) {
         const busqueda = texto.trim();
 
@@ -57,7 +59,7 @@ class UsuarioServicio {
         );
     }
 
-    // 🟢 4. Eliminar cuenta (Ya lo tenías)
+    // 4. Eliminar cuenta (Ya lo tenías)
     async eliminarCuenta(id_usuario) {
         const usuario = await usuarioDao.buscarPorId(id_usuario);
         
@@ -66,6 +68,37 @@ class UsuarioServicio {
         }
 
         return await usuarioDao.eliminarUsuario(id_usuario);
+    }
+
+    // Cambiar la contraseña del usuario autenticado
+    async cambiarContraseña(id_usuario, contraseñaActual, contraseñaNueva) {
+        if (!contraseñaActual || !contraseñaNueva) {
+            throw new Error("Completá todos los campos de contraseña");
+        }
+
+        const usuario = await usuarioDao.buscarPorId(id_usuario);
+
+        if (!usuario) {
+            throw new Error("Usuario no encontrado");
+        }
+
+        const contraseñaCorrecta = await bcrypt.compare(
+            contraseñaActual,
+            usuario.contraseña
+        );
+
+        if (!contraseñaCorrecta) {
+            throw new Error("La contraseña actual es incorrecta");
+        }
+
+        const contraseñaHash = await bcrypt.hash(contraseñaNueva, 10);
+
+        await usuarioDao.actualizarContraseña(
+            id_usuario,
+            contraseñaHash
+        );
+
+        return true;
     }
 
 }

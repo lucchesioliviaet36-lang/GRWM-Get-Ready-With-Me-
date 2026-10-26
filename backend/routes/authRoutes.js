@@ -1,5 +1,6 @@
 const express = require("express");
 const authController = require("../controllers/authController");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
@@ -13,6 +14,11 @@ router.post("/iniciarSesion", (req, res) => {
 
 router.post("/cerrar_sesion", (req, res) => {
     authController.cerrar_sesion(req, res);
+});
+
+// Cambiar contraseña del usuario autenticado
+router.put("/cambiar-contrasena", authMiddleware, (req, res) => {
+    authController.cambiarContraseña(req, res);
 });
 
 module.exports = router;

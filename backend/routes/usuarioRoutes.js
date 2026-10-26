@@ -9,16 +9,14 @@ router.get("/buscar", authMiddleware, (req, res) => {
     }
 );
 
-// Obtener perfil de la cuenta activa
-router.get("/perfil", authMiddleware, (req, res) => {
-    usuarioController.obtenerPerfil(req, res);
-});
 
 // Obtener perfil del usuario logueado
 router.get("/perfil", authMiddleware, usuarioController.obtenerPerfil);
 
 router.get("/:id", authMiddleware, usuarioController.obtenerPorId);
 
+
+// Editar perfil en la base de datos
 router.put( "/perfil", authMiddleware,
     uploadPerfil.fields([
         {
@@ -33,10 +31,6 @@ router.put( "/perfil", authMiddleware,
     usuarioController.actualizarPerfil
 );
 
-// 🟢 Editar perfil en la base de datos
-router.put("/perfil", authMiddleware, (req, res) => {
-    usuarioController.actualizarPerfil(req, res);
-});
 
 router.delete( "/:id", authMiddleware, (req, res) => {
         usuarioController.eliminarCuenta(req,res);
