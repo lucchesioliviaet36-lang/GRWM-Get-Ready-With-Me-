@@ -19,14 +19,31 @@ export default function Feed() {
   const [liked, setLiked] = useState(false);
   const [publicaciones, setPublicaciones] = useState([]);
   const [cargando, setCargando] = useState(true);
-  
 
-useEffect(() => {
-    fetch('http://localhost:3000/api/publicaciones')
+  useEffect(() => {
+    // 1. Recuperamos el token guardado en el navegador al hacer login
+    const token = localStorage.getItem('token'); 
+
+    // 2. Hacemos el fetch mandando el token en los headers
+    fetch('http://localhost:3000/api/publicaciones', {
+      method: 'GET', 
+      headers: {
+        'Content-Type': 'application/json', 
+        'Authorization': `Bearer ${token}` // Mandamos el token en la cabecera
+      }
+    })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Datos que llegaron del backend:", data); // Esto lo veremos en la consola del navegador (F12)
-        setPublicaciones(data);
+        console.log(JSON.stringify(data, null, 2));        
+        // Verificamos si llegó un array directo o dentro de una propiedad
+        if (Array.isArray(data)) { 
+          setPublicaciones(data);
+        } else if (data.publicaciones && Array.isArray(data.publicaciones)) {
+          setPublicaciones(data.publicaciones);
+        } else {
+          setPublicaciones([]);
+        }
+        
         setCargando(false);
       })
       .catch((err) => {
@@ -34,7 +51,6 @@ useEffect(() => {
         setCargando(false);
       });
   }, []);
-
   // ==========================================
   // FUNCIONES DE HISTORIAS (CON VERIFICACIÓN SEGURA)
   // ==========================================
@@ -84,8 +100,8 @@ useEffect(() => {
     if (!comentario.trim()) return;
     alert(`Mensaje enviado a ${historiaActiva.usuario}`);
     setComentario('');
-  };//nuevo
-  // // 1. AGREGAR: Estados para la barra de progreso y el índice de la historia
+  };
+  // AGREGAR: Estados para la barra de progreso y el índice de la historia
   const [pausado, setPausado] = useState(false);// Estado para pausar la historia al hacer clic
   const [progreso, setProgreso] = useState(0);       // Porcentaje de la barra (0 a 100)
   const [indiceActual, setIndiceActual] = useState(0); // Posición de la historia visible
@@ -539,154 +555,92 @@ useEffect(() => {
             =================================== */}
 
             <section className="posts-grid">
+              {publicaciones.map((post) => {
+                // Definimos un ID seguro para usar en todo el post (ya que tu BD usa id_publicacion)
+                const postId = post.id_publicacion || post.id;
 
-              {publicaciones.map((post) => (
-
-                <article
-                  className="post-card"
-                  key={post.id}
-                >
-
-
-                  {/* Imagen */}
-
-                  <div
-                    className="image-container"
-
-                    onDoubleClick={() =>
-                      handleDobleClic(post.id)
-                    }
+                return (
+                  <article
+                    className="post-card"
+                    key={postId} /* <-- Soluciona el warning de la key */
                   >
-
-                    <img
-                      src={post.imagen}
-                      alt={`Outfit de ${post.usuario}`}
-                    />
-
-
-                    {post.precio && (
-
-                      <span className="price-tag">
-                        {post.precio}
-                      </span>
-
-                    )}
-
-
-                    {corazonGrande === post.id && (
-
-                      <div className="corazon-overlay">
-                        ♥
-                      </div>
-
-                    )}
-
-                  </div>
-
-
-
-                  {/* Usuario */}
-
-                  <div className="post-header">
-
-                    <div className="user-info">
-
+                    {/* Imagen */}
+                    <div
+                      className="image-container"
+                      onDoubleClick={() => handleDobleClic(postId)}
+                    >
                       <img
-                        className="user-avatar"
-                        src={post.avatar}
-                        alt={post.usuario}
+                        src={`http://localhost:3000${post.imagen_url}`} /* <-- Une el servidor con la ruta de la BD */
+                        alt={post.descripcion || "Publicación"}
                       />
 
-                      <strong>
-                        {post.usuario}
-                      </strong>
+                      {post.precio && (
+                        <span className="price-tag">
+                          {post.precio}
+                        </span>
+                      )}
 
+                      {corazonGrande === postId && (
+                        <div className="corazon-overlay">
+                          ♥
+                        </div>
+                      )}
                     </div>
 
-                  </div>
+                    {/* Usuario (Si no viene el usuario en texto, ponemos un genérico o el ID) */}
+                    <div className="post-header">
+                      <div className="user-info">
+                        <img
+                          className="user-avatar"
+                          src={post.avatar || "http://localhost:3000/uploads/default-avatar.png"} 
+                          alt="Avatar"
+                        />
+                        <strong>
+                          {post.usuario || `Usuario #${post.id_usuario}`}
+                        </strong>
+                      </div>
+                    </div>
 
+                    {/* Descripción */}
+                    <p className="post-description">
+                      {post.descripcion}
+                    </p>
 
+                    {/* Footer */}
+                    <div className="post-footer">
+                      <div className="stats">
+                        <button
+                          className={`btn-icon ${likes[postId] ? 'liked' : ''}`}
+                          onClick={() => toggleLike(postId)}
+                        >
+                          {likes[postId] ? '♥' : '♡'}
+                        </button>
 
-                  {/* Descripción */}
+                        {/* Protegido para que no devuelva NaN */}
+                        <span>
+                          {(Number(post.likesCount) || 0) + (likes[postId] ? 1 : 0)}
+                        </span>
 
-                  <p className="post-description">
-                    {post.descripcion}
-                  </p>
+                        <button className="comment-button">
+                          ♡
+                        </button>
 
-
-
-                  {/* Footer */}
-
-                  <div className="post-footer">
-
-                    <div className="stats">
+                        {/* Protegido contra NaN */}
+                        <span>
+                          {Number(post.comentarios) || 0}
+                        </span>
+                      </div>
 
                       <button
-                        className={
-                          `btn-icon ${
-                            likes[post.id]
-                              ? 'liked'
-                              : ''
-                          }`
-                        }
-
-                        onClick={() =>
-                          toggleLike(post.id)
-                        }
+                        className={`btn-save ${guardados[postId] ? 'guardado' : ''}`}
+                        onClick={() => toggleGuardar(postId)}
                       >
-                        {likes[post.id]
-                          ? '♥'
-                          : '♡'}
+                        {guardados[postId] ? '🔖' : '♧'}
                       </button>
-
-
-                      <span>
-                        {post.likesCount +
-                          (likes[post.id]
-                            ? 1
-                            : 0)}
-                      </span>
-
-
-                      <button className="comment-button">
-                        ♡
-                      </button>
-
-
-                      <span>
-                        {post.comentarios}
-                      </span>
-
                     </div>
-
-
-                    <button
-                      className={
-                        `btn-save ${
-                          guardados[post.id]
-                            ? 'guardado'
-                            : ''
-                        }`
-                      }
-
-                      onClick={() =>
-                        toggleGuardar(post.id)
-                      }
-                    >
-
-                      {guardados[post.id]
-                        ? '🔖'
-                        : '♧'}
-
-                    </button>
-
-                  </div>
-
-
-                </article>
-
-              ))}
-
+                  </article>
+                );
+              })}
             </section>
 
 
