@@ -138,7 +138,7 @@ function InicioSesion() {
             </div>
 
             <div className="Olvidar-Password">
-              <button type="button" onClick={() => navigate("/RecuperarContrasena")}>
+              <button type="button" onClick={() => navigate("/recuperar-contrasena")}>
                 ¿Olvidaste tu contraseña?
               </button>
             </div>
