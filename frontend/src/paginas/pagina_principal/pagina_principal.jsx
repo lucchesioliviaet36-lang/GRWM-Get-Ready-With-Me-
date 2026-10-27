@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
 
+const API_URL = "http://localhost:3000"; 
+
 export default function Feed() {
 
   // ==========================================
@@ -20,7 +22,27 @@ export default function Feed() {
   const [publicaciones, setPublicaciones] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [historias, setHistorias] = useState([]);
+  const [usuario, setUsuario] = useState(null);
+  const usuarioGuardado = JSON.parse(localStorage.getItem("usuario")) || {};
 
+  const obtenerFotoPerfil = () => {
+    const foto = usuario?.foto_perfil || usuarioGuardado.foto_perfil;
+
+    if (!foto) {
+      return null;
+    }
+
+    if (foto.startsWith("http")) {
+      return foto;
+    }
+
+    return `${API_URL}${foto}`;
+  };
+
+  const fotoPerfilHeader = obtenerFotoPerfil();
+
+
+  //historias
   useEffect(() => {
     const token = localStorage.getItem('token'); 
 
@@ -175,32 +197,34 @@ export default function Feed() {
               </div>
             </div>
 
-            {/* Cabecera (Se oculta si querés al estar pausado) */}
+            {/* Cabecera */}
             <div className={`historias-header ${pausado ? 'oculto' : ''}`}>
               <img 
-                src={historiaActiva?.avatar || historiaActiva?.img} 
+                src={historiaActiva?.avatar || "http://localhost:3000/uploads/default-avatar.png"} 
                 alt={historiaActiva?.usuario || 'Usuario'} 
                 className="historia-avatar" 
               />
-              <span className="historia-usuario">{historiaActiva?.usuario}</span>
+              <span className="historia-usuario">
+                {historiaActiva?.usuario || `Usuario #${historiaActiva?.id_usuario}`}
+              </span>
               <button className="btn-cerrar-historia" onClick={cerrarHistoria}>✕</button>
             </div>
 
             {/* Imagen principal con eventos de mantener presionado */}
             <div 
               className="historia-contenido"
-              onMouseDown={() => setPausado(true)}  // En PC: Al presionar click
-              onMouseUp={() => setPausado(false)}    // En PC: Al soltar click
-              onTouchStart={() => setPausado(true)} // En celular: Al tocar pantalla
-              onTouchEnd={() => setPausado(false)}   // En celular: Al levantar el dedo
+              onMouseDown={() => setPausado(true)}  
+              onMouseUp={() => setPausado(false)}    
+              onTouchStart={() => setPausado(true)} 
+              onTouchEnd={() => setPausado(false)}   
             >
               <img 
-                src={historiaActiva?.imagen || historiaActiva?.img} 
+                src={`http://localhost:3000${historiaActiva?.imagen_url}`} /* <-- Apunta a la BD y al puerto 3000 */
                 alt="Historia" 
                 className="historia-img" 
               />
 
-              {/* Zonas de toque lateral para avanzar/retroceder al hacer clic simple */}
+              {/* Zonas de toque lateral */}
               <div 
                 className="touch-zone izq" 
                 onClick={(e) => {
@@ -220,9 +244,7 @@ export default function Feed() {
           </div>
         </div>
       )}
-
-
-
+      
   // ==========================================
   // SUGERENCIAS
   // ==========================================
@@ -540,97 +562,53 @@ export default function Feed() {
                 </div>
               </div>
             )}
-            {/* ==================================
-                PUBLICACIONES
-            =================================== */}
 
-            <section className="posts-grid">
-              {publicaciones.map((post) => {
-                // Definimos un ID seguro para usar en todo el post (ya que tu BD usa id_publicacion)
-                const postId = post.id_publicacion || post.id;
+            <section className="stories-bar">
+
+              {/* 1. Círculo FIJO de "Tu historia" (siempre visible primero) */}
+              <div
+                className="story-item"
+                onClick={() => {
+                  // Acá ponés la función para abrir tu modal de subir historia o ver la tuya
+                  console.log("Crear o ver mi historia");
+                }} 
+              >
+                <div className="avatar-ring user-story">
+
+                  {fotoPerfilHeader && (
+                  <img
+                    src={fotoPerfilHeader}
+                    alt="Tu historia"
+                  />
+                )}
+                  
+                </div>
+                <span>Tu historia</span>
+              </div>
+
+              {/* 2. Mapeo de las historias que vienen de la base de datos */}
+              {historias.map((historia) => {
+                const historiaId = historia.id_historia || historia.id;
 
                 return (
-                  <article
-                    className="post-card"
-                    key={postId} /* <-- Soluciona el warning de la key */
+                  <div
+                    className="story-item"
+                    key={historiaId}
+                    onClick={() => setHistoriaActiva(historia)} 
                   >
-                    {/* Imagen */}
-                    <div
-                      className="image-container"
-                      onDoubleClick={() => handleDobleClic(postId)}
-                    >
+                    <div className="avatar-ring">
                       <img
-                        src={`http://localhost:3000${post.imagen_url}`} /* <-- Une el servidor con la ruta de la BD */
-                        alt={post.descripcion || "Publicación"}
+                        src={`http://localhost:3000${historia.imagen_url}`} 
+                        alt={historia.usuario || "Historia"}
                       />
-
-                      {post.precio && (
-                        <span className="price-tag">
-                          {post.precio}
-                        </span>
-                      )}
-
-                      {corazonGrande === postId && (
-                        <div className="corazon-overlay">
-                          ♥
-                        </div>
-                      )}
                     </div>
-
-                    {/* Usuario (Si no viene el usuario en texto, ponemos un genérico o el ID) */}
-                    <div className="post-header">
-                      <div className="user-info">
-                        <img
-                          className="user-avatar"
-                          src={post.avatar || "http://localhost:3000/uploads/default-avatar.png"} 
-                          alt="Avatar"
-                        />
-                        <strong>
-                          {post.usuario || `Usuario #${post.id_usuario}`}
-                        </strong>
-                      </div>
-                    </div>
-
-                    {/* Descripción */}
-                    <p className="post-description">
-                      {post.descripcion}
-                    </p>
-
-                    {/* Footer */}
-                    <div className="post-footer">
-                      <div className="stats">
-                        <button
-                          className={`btn-icon ${likes[postId] ? 'liked' : ''}`}
-                          onClick={() => toggleLike(postId)}
-                        >
-                          {likes[postId] ? '♥' : '♡'}
-                        </button>
-
-                        {/* Protegido para que no devuelva NaN */}
-                        <span>
-                          {(Number(post.likesCount) || 0) + (likes[postId] ? 1 : 0)}
-                        </span>
-
-                        <button className="comment-button">
-                          ♡
-                        </button>
-
-                        {/* Protegido contra NaN */}
-                        <span>
-                          {Number(post.comentarios) || 0}
-                        </span>
-                      </div>
-
-                      <button
-                        className={`btn-save ${guardados[postId] ? 'guardado' : ''}`}
-                        onClick={() => toggleGuardar(postId)}
-                      >
-                        {guardados[postId] ? '🔖' : '♧'}
-                      </button>
-                    </div>
-                  </article>
+                    <span>
+                      {historia.usuario || `Usuario #${historia.id_usuario}`}
+                    </span>
+                  </div>
                 );
               })}
+
             </section>
 
 
