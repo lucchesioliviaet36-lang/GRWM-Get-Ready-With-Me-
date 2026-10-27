@@ -21,4 +21,8 @@ router.put("/cambiar-contrasena", authMiddleware, (req, res) => {
     authController.cambiarContraseña(req, res);
 });
 
+router.post("/recuperar-contrasena", authController.solicitarRecuperacion);
+
+router.post("/restablecer-contrasena/:token", authController.restablecerContrasena);
+
 module.exports = router;

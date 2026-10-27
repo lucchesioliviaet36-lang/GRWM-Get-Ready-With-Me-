@@ -215,10 +215,7 @@ const restablecerContrasena = async (token, nuevaContraseña) => {
         );
     }
 
-    const tokenHash = crypto
-        .createHash("sha256")
-        .update(token)
-        .digest("hex");
+    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
 
     const usuario = await usuarioDAO.buscarPorTokenRecuperacion(tokenHash);
 
@@ -228,19 +225,11 @@ const restablecerContrasena = async (token, nuevaContraseña) => {
 
     const contraseñaHash = await bcrypt.hash(nuevaContraseña, 10);
 
-    await usuarioDAO.actualizarContrasenaRecuperada(
-        usuario.id_usuario,
-        contraseñaHash
-    );
+    await usuarioDAO.actualizarContrasenaRecuperada(usuario.id_usuario, contraseñaHash);
 
     return {
         mensaje: "Contraseña actualizada correctamente"
     };
 };
 
-module.exports = {
-    registrar,
-    iniciar_sesion,
-    solicitarRecuperacion,
-    restablecerContrasena
-};
+module.exports = {registrar, iniciar_sesion,solicitarRecuperacion, restablecerContrasena};

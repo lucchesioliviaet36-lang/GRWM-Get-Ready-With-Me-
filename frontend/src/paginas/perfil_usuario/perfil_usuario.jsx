@@ -1,15 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import './perfil_usuario.css';
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
 
 export default function PerfilUsuario() {
+  const navigate = useNavigate();
+  const { id } = useParams();
   const [siguiendo, setSiguiendo] = useState(false);
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
   const [fotoAgrando, setFotoAgrando] = useState(false);
 
   // Datos mockeados del usuario visitado
-  const usuario = {
+  const [usuario, setUsuario] = useState({
     nombre: 'Sofia Rossi',
     handle: '@sofia_rossi',
     biografia: 'Fashion enthusiast 💫 Amante del estilo minimalista y accesorios vintage.',
@@ -24,7 +27,28 @@ export default function PerfilUsuario() {
       { id: 3, img: 'https://images.unsplash.com/photo-1554412933-514a83d2f3c8?q=80&w=500&auto=format&fit=crop', likes: 320, precio: '€110' },
       { id: 4, img: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=500&auto=format&fit=crop', likes: 95 }
     ]
-  };
+  });
+
+  useEffect(() => {
+    if (!id) return;
+    const token = localStorage.getItem('token');
+    fetch(`http://localhost:3000/api/usuarios/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(response => {
+      if (!response.ok) throw new Error('No se encontró el perfil.');
+      return response.json();
+    }).then(({ usuario: perfil }) => {
+      setUsuario({
+        id_usuario: perfil.id_usuario,
+        nombre: `${perfil.nombre || ''} ${perfil.apellido || ''}`.trim() || perfil.username,
+        handle: perfil.username ? `@${perfil.username}` : '',
+        biografia: perfil.descripcion || '',
+        avatar: perfil.foto_perfil ? `http://localhost:3000${perfil.foto_perfil.startsWith('/') ? '' : '/'}${perfil.foto_perfil}` : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=500&auto=format&fit=crop',
+        banner: perfil.banner ? `http://localhost:3000${perfil.banner.startsWith('/') ? '' : '/'}${perfil.banner}` : 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1200&auto=format&fit=crop',
+        publicacionesCount: 0, seguidoresCount: 0, siguiendoCount: 0, publicaciones: []
+      });
+    }).catch(error => console.error('Error al cargar perfil:', error));
+  }, [id]);
 
   return (
     <div className="perfil-container">
@@ -75,7 +99,10 @@ export default function PerfilUsuario() {
                 >
                   {siguiendo ? 'Siguiendo' : 'Seguir'}
                 </button>
-                <button className="btn-mensaje">Mensaje</button>
+                <button className="btn-mensaje" disabled={!usuario.id_usuario || Number(usuario.id_usuario) === Number(JSON.parse(localStorage.getItem('usuario') || '{}').id_usuario)} onClick={() => {
+                  if (!localStorage.getItem('token')) { navigate('/IniciarSesion'); return; }
+                  navigate(`/chat?usuarioId=${usuario.id_usuario}`);
+                }}>Mensaje</button>
               </div>
             </div>
           </div>

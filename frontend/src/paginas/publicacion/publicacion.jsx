@@ -30,6 +30,7 @@ function Publicacion() {
 
   const [postEncontrado, setPostEncontrado] = useState(null);
   const [cargandoPublicacion, setCargandoPublicacion] = useState(true);
+  const [autorPublicacion, setAutorPublicacion] = useState(null);
 
   // Obtenemos los datos del usuario dinámicamente desde localStorage
   const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
@@ -78,6 +79,16 @@ function Publicacion() {
 
       cargarPublicacion();
   }, [id]);
+
+  useEffect(() => {
+    const autorId = postEncontrado?.id_usuario;
+    if (!autorId) return;
+    fetch(`http://localhost:3000/api/usuarios/${autorId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(response => response.ok ? response.json() : null)
+      .then(data => setAutorPublicacion(data?.usuario || null))
+      .catch(error => console.error("Error al cargar el autor de la publicación:", error));
+  }, [postEncontrado?.id_usuario]);
 
   const fotoAMostrar = postEncontrado?.img || "";
   const descripcionMostrar = postEncontrado?.descripcion || "";
@@ -161,8 +172,12 @@ function Publicacion() {
     }
   });
 
-  const nombreUsuarioHeader = palabrasNombre.join(' ') || usuarioSesion.username || 'Mi Usuario';
-  const usuarioTagHeader = usuarioSesion.username ? `@${usuarioSesion.username}` : '@usuario';
+  const nombreUsuarioHeader = autorPublicacion
+    ? `${autorPublicacion.nombre || ''} ${autorPublicacion.apellido || ''}`.trim()
+    : (palabrasNombre.join(' ') || usuarioSesion.username || 'Mi Usuario');
+  const usuarioTagHeader = autorPublicacion?.username
+    ? `@${autorPublicacion.username}`
+    : (usuarioSesion.username ? `@${usuarioSesion.username}` : '@usuario');
   
   const fotoGuardada = localStorage.getItem("grwm_foto_perfil");
 
@@ -493,9 +508,9 @@ function Publicacion() {
                 flexShrink: 0
               }}
             >
-              {fotoPerfilHeader ? (
+              {(autorPublicacion?.foto_perfil ? obtenerImagenPerfil(autorPublicacion.foto_perfil) : fotoPerfilHeader) ? (
                 <img 
-                  src={fotoPerfilHeader} 
+                  src={autorPublicacion?.foto_perfil ? obtenerImagenPerfil(autorPublicacion.foto_perfil) : fotoPerfilHeader}
                   alt="Foto de perfil" 
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                 />
@@ -516,10 +531,27 @@ function Publicacion() {
               )}
             </div>
                 <div>
-                  <strong>{nombreUsuarioHeader}</strong>
+                  <strong
+                    onClick={() => autorPublicacion?.id_usuario && navigate(`/perfil_usuario/${autorPublicacion.id_usuario}`)}
+                    style={{ cursor: autorPublicacion?.id_usuario ? 'pointer' : 'default' }}
+                  >{nombreUsuarioHeader}</strong>
                   <span>{usuarioTagHeader}</span>
                 </div>
               </div>
+
+              {Number(postEncontrado?.id_usuario) !== Number(idUsuarioActual) && postEncontrado?.id_usuario && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!token || !idUsuarioActual) {
+                      navigate('/IniciarSesion');
+                      return;
+                    }
+                    navigate(`/chat?usuarioId=${postEncontrado.id_usuario}`);
+                  }}
+                  style={{ border: 'none', borderRadius: '18px', padding: '8px 14px', background: '#8b3f68', color: 'white', cursor: 'pointer' }}
+                >Contactar</button>
+              )}
 
               {/* Botón de 3 puntitos */}
               <div className="opciones-publicacion" style={{ position: 'relative' }}>

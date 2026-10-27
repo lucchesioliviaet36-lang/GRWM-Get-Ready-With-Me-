@@ -141,9 +141,59 @@ const cerrar_sesion = async (req, res) => {
     }
 };
 
+const solicitarRecuperacion = async (req, res) => {
+    try {
+        const {mail} = req.body;
+
+        const resultado =
+            await authService.solicitarRecuperacion(
+                mail
+            );
+
+        return res.status(200).json(resultado);
+
+    } catch (error) {
+        console.error(
+            "Error solicitando recuperación:",
+            error
+        );
+
+        return res.status(400).json({
+            mensaje: error.message
+        });
+    }
+};
+
+const restablecerContrasena = async (req, res) => {
+    try {
+        const {token} = req.params;
+        const {nuevaContraseña} = req.body;
+
+        const resultado =
+            await authService.restablecerContrasena(
+                token,
+                nuevaContraseña
+            );
+
+        return res.status(200).json(resultado);
+
+    } catch (error) {
+        console.error(
+            "Error restableciendo contraseña:",
+            error
+        );
+
+        return res.status(400).json({
+            mensaje: error.message
+        });
+    }
+};
+
 module.exports = {
     cambiarContraseña,
     registrar,
     iniciar_sesion,
-    cerrar_sesion
+    cerrar_sesion, 
+    solicitarRecuperacion,
+    restablecerContrasena
 };

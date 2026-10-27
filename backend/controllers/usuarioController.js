@@ -136,7 +136,17 @@ const obtenerPorId = async (req, res) => {
             });
         }
 
-        return res.status(200).json({ success: true, usuario });
+        const perfilPublico = {
+            id_usuario: usuario.id_usuario,
+            nombre: usuario.nombre,
+            apellido: usuario.apellido,
+            username: usuario.username,
+            foto_perfil: usuario.foto_perfil,
+            banner: usuario.banner,
+            descripcion: usuario.descripcion
+        };
+
+        return res.status(200).json({ success: true, usuario: perfilPublico });
     } catch (error) {
         return res.status(500).json({
             success: false,
