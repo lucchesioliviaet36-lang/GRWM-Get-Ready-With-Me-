@@ -19,6 +19,34 @@ export default function Feed() {
   const [liked, setLiked] = useState(false);
   const [publicaciones, setPublicaciones] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [historias, setHistorias] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token'); 
+
+    fetch('http://localhost:3000/api/historias', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Historias que llegaron del backend:", data);
+        
+        if (Array.isArray(data)) {
+          setHistorias(data);
+        } else if (data.historias && Array.isArray(data.historias)) {
+          setHistorias(data.historias);
+        } else {
+          setHistorias([]);
+        }
+      })
+      .catch((err) => {
+        console.error('Error al conectar con el backend para historias:', err);
+      });
+  }, []);
 
   useEffect(() => {
     // 1. Recuperamos el token guardado en el navegador al hacer login
@@ -111,44 +139,6 @@ export default function Feed() {
   const INTERVALO_BARRA = 100;     // Actualización cada 100ms
 
   
-  // ==========================================
-  // HISTORIAS
-  // ==========================================
-
-  const historias = [
-    {
-      id: 1,
-      usuario: 'Tu historia',
-      img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop',
-      esUsuario: true
-    },
-    {
-      id: 2,
-      usuario: 'clara.v',
-      img: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop'
-    },
-    {
-      id: 3,
-      usuario: 'hugo_st',
-      img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop'
-    },
-    {
-      id: 4,
-      usuario: 'sofia.art',
-      img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop'
-    },
-    {
-      id: 5,
-      usuario: 'brian_m',
-      img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop'
-    },
-    {
-      id: 6,
-      usuario: 'mora_closet',
-      img: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&auto=format&fit=crop'
-    }
-  ];
-
   useEffect(() => {
     if (!historiaActiva || pausado) return; // Si está pausado, se congelan los timers
 
