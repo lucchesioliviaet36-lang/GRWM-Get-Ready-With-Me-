@@ -3,12 +3,17 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import "./chat.css";
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
-import fotoPerfilPropio from '../../assets/imagenes/fotoDePerfilPropio.jpg';
 
 const API = "http://localhost:3000/api/chat";
 const token = () => localStorage.getItem("token");
 const authHeaders = () => ({ Authorization: `Bearer ${token()}` });
-const avatarUrl = (path) => path ? (/^(https?:|data:|blob:)/.test(path) ? path : `http://localhost:3000${path.startsWith("/") ? "" : "/"}${path}`) : fotoPerfilPropio;
+const avatarUrl = (path) => path ? (/^(https?:|data:|blob:)/.test(path) ? path : `http://localhost:3000${path.startsWith("/") ? "" : "/"}${path}`) : null;
+
+function Avatar({ path, name, className = "" }) {
+  return path
+    ? <img src={avatarUrl(path)} className={className} alt={name || ""} />
+    : <span className={`${className} avatar-placeholder`} aria-label={name || "Usuario"}>{name?.trim()?.[0]?.toUpperCase() || "?"}</span>;
+}
 
 function Chat() {
   const navigate = useNavigate();
@@ -17,15 +22,26 @@ function Chat() {
   const usuarioActual = JSON.parse(localStorage.getItem("usuario") || "{}");
   const usuarioActualId = Number(usuarioActual.id_usuario);
   const [contactos, setContactos] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
+  const [busquedaUsuario, setBusquedaUsuario] = useState("");
+  const [cargandoUsuarios, setCargandoUsuarios] = useState(true);
+  const [errorUsuarios, setErrorUsuarios] = useState("");
   const [chatActivo, setChatActivo] = useState(null);
   const [mensajes, setMensajes] = useState([]);
+  const [mensajesCargadosId, setMensajesCargadosId] = useState(null);
   const [nuevoTexto, setNuevoTexto] = useState("");
   const [cargando, setCargando] = useState(true);
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState("");
   const [mostrarEmojis, setMostrarEmojis] = useState(false);
   const mensajesFinRef = useRef(null);
+  const chatActivoIdRef = useRef(null);
   const emojis = ["😀", "😃", "😄", "😁", "😅", "😂", "🥰", "😍", "😉", "😊", "✨", "💖", "🔥", "👑"];
+  const cargandoMensajes = Boolean(chatActivo && Number(mensajesCargadosId) !== Number(chatActivo.id_usuario));
+
+  useEffect(() => {
+    chatActivoIdRef.current = Number(chatActivo?.id_usuario) || null;
+  }, [chatActivo]);
 
   const cargarContactos = useCallback(async () => {
     const response = await fetch(API, { headers: authHeaders() });
@@ -35,6 +51,24 @@ function Chat() {
     setContactos(data);
     return data;
   }, [navigate]);
+
+  const cargarUsuarios = useCallback(async (termino = "") => {
+    setCargandoUsuarios(true);
+    try {
+      const response = await fetch(`${API}/usuarios?q=${encodeURIComponent(termino)}`, { headers: authHeaders() });
+      if (response.status === 401) { navigate("/IniciarSesion"); return; }
+      if (!response.ok) throw new Error("No se pudieron cargar los usuarios.");
+      const data = await response.json();
+      setUsuarios(data.usuarios || []);
+      setErrorUsuarios("");
+    } catch (e) { setErrorUsuarios(e.message); }
+    finally { setCargandoUsuarios(false); }
+  }, [navigate]);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => cargarUsuarios(busquedaUsuario), 250);
+    return () => window.clearTimeout(timeout);
+  }, [busquedaUsuario, cargarUsuarios]);
 
   useEffect(() => {
     if (!token() || !usuarioActualId) { navigate("/IniciarSesion"); return; }
@@ -48,9 +82,10 @@ function Chat() {
         if (objetivo) {
           let contacto = lista.find(item => Number(item.id_usuario) === objetivo);
           if (!contacto) {
-            const response = await fetch(`http://localhost:3000/api/usuarios/${objetivo}`, { headers: authHeaders() });
+            const response = await fetch(`${API}/usuarios/${objetivo}`, { headers: authHeaders() });
             const data = response.ok ? await response.json() : null;
             contacto = data?.usuario;
+            if (!contacto && activo) setError("No se encontró ese usuario.");
           }
           if (contacto && activo) setChatActivo(contacto);
         } else if (lista[0]) setChatActivo(lista[0]);
@@ -62,26 +97,37 @@ function Chat() {
 
   const cargarMensajes = useCallback(async (silencioso = false) => {
     if (!chatActivo?.id_usuario) return;
+    const contactoId = Number(chatActivo.id_usuario);
     try {
-      const response = await fetch(`${API}/${chatActivo.id_usuario}`, { headers: authHeaders() });
+      const response = await fetch(`${API}/${contactoId}`, { headers: authHeaders() });
       if (response.status === 401) { navigate("/IniciarSesion"); return; }
       if (!response.ok) throw new Error("No se pudieron cargar los mensajes.");
-      setMensajes(await response.json());
+      const data = await response.json();
+      if (chatActivoIdRef.current !== contactoId) return;
+      setMensajes(data);
       if (!silencioso) setError("");
-    } catch (e) { if (!silencioso) setError(e.message); }
+    } catch (e) {
+      if (!silencioso && chatActivoIdRef.current === contactoId) setError(e.message);
+    } finally {
+      if (!silencioso && chatActivoIdRef.current === contactoId) setMensajesCargadosId(contactoId);
+    }
   }, [chatActivo, navigate]);
 
   useEffect(() => {
-    setMensajes([]);
     if (!chatActivo) return;
-    cargarMensajes();
+    const cargaInicial = window.setTimeout(() => cargarMensajes(), 0);
     const interval = window.setInterval(() => cargarMensajes(true), 4000);
-    return () => window.clearInterval(interval);
+    return () => {
+      window.clearTimeout(cargaInicial);
+      window.clearInterval(interval);
+    };
   }, [chatActivo, cargarMensajes]);
 
   useEffect(() => { mensajesFinRef.current?.scrollIntoView({ behavior: "smooth" }); }, [mensajes]);
 
   const seleccionarContacto = (contacto) => {
+    setMensajes([]);
+    setMensajesCargadosId(null);
     setChatActivo(contacto);
     navigate(`/chat?usuarioId=${contacto.id_usuario}`, { replace: true });
   };
@@ -90,20 +136,23 @@ function Chat() {
     e.preventDefault();
     const contenido = nuevoTexto.trim();
     if (!contenido || !chatActivo || enviando) return;
+    const contactoId = Number(chatActivo.id_usuario);
     setEnviando(true);
     setError("");
     try {
       const response = await fetch(API, {
         method: "POST",
         headers: { ...authHeaders(), "Content-Type": "application/json" },
-        body: JSON.stringify({ destinatarioId: chatActivo.id_usuario, contenido })
+        body: JSON.stringify({ destinatarioId: contactoId, contenido })
       });
       const data = await response.json();
       if (response.status === 401) { navigate("/IniciarSesion"); return; }
       if (!response.ok) throw new Error(data.error || "No se pudo enviar el mensaje.");
-      setMensajes(current => [...current, data]);
-      setNuevoTexto("");
-      setMostrarEmojis(false);
+      if (chatActivoIdRef.current === contactoId) {
+        setMensajes(current => [...current, data]);
+        setNuevoTexto("");
+        setMostrarEmojis(false);
+      }
       await cargarContactos();
     } catch (e) { setError(e.message); }
     finally { setEnviando(false); }
@@ -115,12 +164,26 @@ function Chat() {
     <Header />
     <div className="chat-container">
       <aside className="chat-sidebar">
-        <h2>Chats</h2>
+        <h2>Mensajes</h2>
+        <label className="chat-busqueda-label" htmlFor="chat-busqueda">Buscar personas</label>
+        <input id="chat-busqueda" className="chat-busqueda" type="search" placeholder="Nombre o @usuario" value={busquedaUsuario} onChange={e => setBusquedaUsuario(e.target.value)} />
+        {errorUsuarios && <p className="chat-error" role="alert">{errorUsuarios}</p>}
+        {cargandoUsuarios ? <p className="chat-lista-estado">Buscando usuarios…</p> : <div className="chat-lista-contactos">
+          <h3 className="chat-seccion-titulo">Personas</h3>
+          {usuarios.map(c => <button type="button" key={`user-${c.id_usuario}`}
+            className={`chat-contacto-item ${Number(chatActivo?.id_usuario) === Number(c.id_usuario) ? 'activo' : ''}`}
+            onClick={() => seleccionarContacto(c)}>
+            <Avatar path={c.foto_perfil} name={nombre(c)} />
+            <div className="contacto-info"><h4>{nombre(c)}</h4><p>{c.username ? `@${c.username}` : "Usuario GRWM"}</p></div>
+          </button>)}
+          {!usuarios.length && <p className="chat-lista-estado">No encontramos personas con ese nombre.</p>}
+        </div>}
+        <h3 className="chat-seccion-titulo">Conversaciones</h3>
         <div className="chat-lista-contactos">
           {contactos.map(c => <button type="button" key={c.id_usuario}
             className={`chat-contacto-item ${Number(chatActivo?.id_usuario) === Number(c.id_usuario) ? 'activo' : ''}`}
             onClick={() => seleccionarContacto(c)}>
-            <img src={avatarUrl(c.foto_perfil)} alt="" />
+            <Avatar path={c.foto_perfil} name={nombre(c)} />
             <div className="contacto-info"><h4>{nombre(c)}</h4><p>{c.ultimoMensaje}</p></div>
           </button>)}
           {!contactos.length && !cargando && <p>No tienes conversaciones todavía.</p>}
@@ -129,18 +192,18 @@ function Chat() {
       <main className="chat-main">
         {chatActivo ? <>
           <div className="chat-main-header"><div className="header-info">
-            <img src={avatarUrl(chatActivo.foto_perfil)} alt="" />
+            <Avatar path={chatActivo.foto_perfil} name={nombre(chatActivo)} />
             <div className="header-text"><h3>{nombre(chatActivo)}</h3><span className="subtext">{chatActivo.username ? `@${chatActivo.username}` : "Conversación"}</span></div>
           </div></div>
           <div className="chat-mensajes-lista">
-            {cargando && !mensajes.length && <p>Cargando conversación…</p>}
-            {!cargando && !mensajes.length && <p>Inicia la conversación con {nombre(chatActivo)}.</p>}
+            {cargandoMensajes && !mensajes.length && <p>Cargando conversación…</p>}
+            {!cargandoMensajes && !mensajes.length && <p>Inicia la conversación con {nombre(chatActivo)}.</p>}
             {mensajes.map(m => {
               const esMio = Number(m.remitenteId) === usuarioActualId;
               return <div key={m.id} className={`mensaje-burbuja ${esMio ? 'mio' : 'suyo'}`}>
-                {!esMio && <img src={avatarUrl(chatActivo.foto_perfil)} className="avatar-msg" alt="" />}
+                {!esMio && <Avatar path={chatActivo.foto_perfil} name={nombre(chatActivo)} className="avatar-msg" />}
                 <div className="burbuja-contenido"><p>{m.contenido}</p><span className="mensaje-hora">{new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span></div>
-                {esMio && <img src={avatarUrl(usuarioActual.foto_perfil || localStorage.getItem("grwm_foto_perfil"))} className="avatar-msg" alt="" />}
+                {esMio && <Avatar path={usuarioActual.foto_perfil || localStorage.getItem("grwm_foto_perfil")} name={nombre(usuarioActual)} className="avatar-msg" />}
               </div>;
             })}<div ref={mensajesFinRef} />
           </div>

@@ -8,6 +8,51 @@ const authMiddleware = require('../middlewares/authMiddleware');
 router.use(authMiddleware);
 
 const idPositivo = (value) => Number.isInteger(Number(value)) && Number(value) > 0;
+const camposPublicosUsuario = ['id_usuario', 'nombre', 'apellido', 'username', 'foto_perfil'];
+
+// Usuarios reales disponibles para iniciar una conversación.
+router.get('/usuarios', async (req, res) => {
+  try {
+    const usuarioId = Number(req.user.id_usuario);
+    const termino = String(req.query.q || '').trim();
+    const filtros = [{ id_usuario: { [Op.ne]: usuarioId } }];
+    if (termino) {
+      filtros.push({
+        [Op.or]: [
+          { username: { [Op.like]: `%${termino}%` } },
+          { nombre: { [Op.like]: `%${termino}%` } },
+          { apellido: { [Op.like]: `%${termino}%` } }
+        ]
+      });
+    }
+    const usuarios = await Usuario.findAll({
+      where: { [Op.and]: filtros },
+      attributes: camposPublicosUsuario,
+      order: [['username', 'ASC']],
+      limit: 50
+    });
+    res.json({ usuarios });
+  } catch (error) {
+    console.error('Error al listar usuarios para chat:', error);
+    res.status(500).json({ error: 'Error al listar usuarios disponibles' });
+  }
+});
+
+// Ficha pública limitada a lo necesario para el encabezado del chat.
+router.get('/usuarios/:usuarioId', async (req, res) => {
+  try {
+    const usuarioId = Number(req.params.usuarioId);
+    if (!idPositivo(usuarioId) || usuarioId === Number(req.user.id_usuario)) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    const usuario = await Usuario.findByPk(usuarioId, { attributes: camposPublicosUsuario });
+    if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
+    res.json({ usuario });
+  } catch (error) {
+    console.error('Error al cargar usuario para chat:', error);
+    res.status(500).json({ error: 'Error al cargar el usuario' });
+  }
+});
 
 // Contactos con los que el usuario autenticado ya tiene historial.
 router.get('/', async (req, res) => {
@@ -54,7 +99,7 @@ router.get('/:usuario2Id', async (req, res) => {
           { remitenteId: usuario2Id, destinatarioId: usuario1Id }
         ]
       },
-      order: [['createdAt', 'ASC']],
+      order: [['createdAt', 'DESC'], ['id', 'DESC']],
       limit: 100
     });
     res.json(mensajes.reverse());
