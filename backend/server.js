@@ -12,6 +12,8 @@ const usuarioRoutes = require("./routes/usuarioRoutes");
 const publicacionRoutes = require("./routes/publicacionRoutes");
 const productoRoutes = require("./routes/productoRoutes");
 const iaOutfitRoutes = require("./routes/iaOutfitRoutes");
+const chatRoutes = require("./routes/chat");
+const Mensaje = require("./models/Mensaje");
 const app = express();
 const PORT = 3000;
 
@@ -27,6 +29,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/publicaciones", publicacionRoutes);
 app.use("/api/productos", productoRoutes);
 app.use( "/api/ai", iaOutfitRoutes);
+app.use("/api/chat", chatRoutes);
 
 app.get("/", (req, res) => {
     res.json({
@@ -62,6 +65,9 @@ async function cantPrendas() {
 async function startServer() {
     try {
         await sequelize.authenticate();
+
+        // Crea la tabla del modelo existente solo si todavía no existe.
+        await Mensaje.sync();
 
         console.log("Conexión con MySQL exitosa");
         console.log("Modelo Usuario cargado");

@@ -27,6 +27,7 @@ function App() {
         <Route path="/" element={<Registro />} />
         <Route path="/perfil_propio" element={<PerfilPropio />} />
         <Route path="/perfil_usuario/" element={<PerfilUsuario />} />
+        <Route path="/perfil_usuario/:id" element={<PerfilUsuario />} />
         <Route path="/editar_perfil" element={<EditarPerfil />} />
         <Route path="/miTienda" element={<MiTienda />} />
         <Route path="/paginaPrincipal" element={<PaginaPrincipal />} />
