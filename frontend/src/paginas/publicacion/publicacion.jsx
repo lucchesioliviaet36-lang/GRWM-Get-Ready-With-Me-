@@ -532,9 +532,26 @@ function Publicacion() {
             </div>
                 <div>
                   <strong
-                    onClick={() => autorPublicacion?.id_usuario && navigate(`/perfil_usuario/${autorPublicacion.id_usuario}`)}
-                    style={{ cursor: autorPublicacion?.id_usuario ? 'pointer' : 'default' }}
-                  >{nombreUsuarioHeader}</strong>
+                    onClick={() => {
+                      const idAutor = autorPublicacion?.id_usuario;
+                      const idUsuarioActual =
+                        usuarioSesion?.id_usuario || usuarioSesion?.id;
+
+                      if (!idAutor) return;
+
+                      if (String(idAutor) === String(idUsuarioActual)) {
+                        navigate('/perfil_propio');
+                      } else {
+                        navigate(`/perfil_usuario/${idAutor}`);
+                      }
+                    }}
+                    style={{
+                      cursor: autorPublicacion?.id_usuario ? 'pointer' : 'default'
+                    }}
+                  >
+                    {nombreUsuarioHeader}
+                  </strong>
+
                   <span>{usuarioTagHeader}</span>
                 </div>
               </div>
