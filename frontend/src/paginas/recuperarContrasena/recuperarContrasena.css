@@ -1,0 +1,182 @@
+.recuperar-contrasena {
+  min-height: 100vh;
+  background: #fff8fb;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px 20px;
+}
+
+.recuperar-contrasena h1 {
+  margin: 0 0 12px;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 32px;
+  font-weight: 600;
+
+  color: #70345c;
+}
+
+.recuperar-contrasena > p {
+  width: 100%;
+  max-width: 430px;
+
+  margin: 0 0 25px;
+
+  color: #8f7181;
+
+  font-size: 14px;
+  line-height: 1.6;
+
+  text-align: center;
+}
+
+.recuperar-contrasena form {
+  width: 100%;
+  max-width: 430px;
+
+  background: #ffffff;
+
+  border: 1px solid #f0dbe5;
+  border-radius: 18px;
+
+  padding: 30px;
+
+  box-shadow: 0 8px 25px rgba(112, 52, 92, 0.08);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+.recuperar-contrasena input {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 13px 15px;
+
+  border: 1px solid #e8cbd9;
+  border-radius: 10px;
+
+  background: #fffafb;
+
+  color: #60324f;
+
+  font-size: 14px;
+
+  outline: none;
+
+  transition: 0.2s;
+}
+
+.recuperar-contrasena input:focus {
+  border-color: #bd4f80;
+
+  box-shadow: 0 0 0 3px rgba(189, 79, 128, 0.1);
+
+  background: #ffffff;
+}
+
+.recuperar-contrasena input::placeholder {
+  color: #b99aaa;
+}
+
+.recuperar-contrasena form button {
+  width: 100%;
+
+  padding: 13px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #ffdce8;
+
+  color: #70345c;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.recuperar-contrasena form button:hover {
+  background: #fca9c9;
+}
+
+.recuperar-contrasena form button:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+.recuperar-contrasena > button {
+  margin-top: 18px;
+
+  border: none;
+
+  background: transparent;
+
+  color: #8b3f68;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.recuperar-contrasena > button:hover {
+  text-decoration: underline;
+}
+
+.recuperar-contrasena .error {
+  margin: 0;
+
+  padding: 10px 12px;
+
+  border-radius: 8px;
+
+  background: #fff0f2;
+
+  color: #c4475d;
+
+  font-size: 13px;
+
+  text-align: center;
+}
+
+.recuperar-contrasena .mensaje {
+  margin: 0;
+
+  padding: 10px 12px;
+
+  border-radius: 8px;
+
+  background: #f7edf3;
+
+  color: #70345c;
+
+  font-size: 13px;
+
+  text-align: center;
+}
+
+@media (max-width: 500px) {
+  .recuperar-contrasena {
+    padding: 25px 15px;
+  }
+
+  .recuperar-contrasena h1 {
+    font-size: 27px;
+  }
+
+  .recuperar-contrasena form {
+    padding: 24px 20px;
+  }
+}

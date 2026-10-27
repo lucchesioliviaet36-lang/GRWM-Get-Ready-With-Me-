@@ -3,6 +3,8 @@ import PaginaPrincipal from './paginas/pagina_principal/pagina_principal'
 import PerfilPropio from './paginas/perfil_propio/perfil_propio'
 import Publicacion from './paginas/publicacion/publicacion'
 import InicioSesion from './paginas/inicio_sesion/inicio_sesion'
+import RecuperarContrasena from './paginas/recuperarContrasena/RecuperarContrasena'
+import RestablecerContrasena from './paginas/RestablecerContrasena/RestablecerContrasena'
 import Registro from './paginas/registro/registro'
 import MiTienda from './paginas/miTienda/miTienda'
 import TiendaPrincipal from './paginas/tienda_principal/tienda_principal'
@@ -20,6 +22,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/IniciarSesion" element={<InicioSesion />} /> 
+        <Route path="/recuperar-contrasena" element={<RecuperarContrasena />}/>
+        <Route path="/restablecer-contrasena/:token" element={<RestablecerContrasena />}/>
         <Route path="/" element={<Registro />} />
         <Route path="/perfil_propio" element={<PerfilPropio />} />
         <Route path="/perfil_usuario/" element={<PerfilUsuario />} />
