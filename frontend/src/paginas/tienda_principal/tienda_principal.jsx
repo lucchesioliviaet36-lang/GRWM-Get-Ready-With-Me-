@@ -9,9 +9,11 @@ const API_URL = "http://localhost:3000";
 
 function obtenerUrlImagen(ruta) {
   if (!ruta) return "";
+
   if (ruta.startsWith("http://") || ruta.startsWith("https://")) {
     return ruta;
   }
+
   return `${API_URL}${ruta.startsWith("/") ? "" : "/"}${ruta}`;
 }
 
@@ -19,14 +21,11 @@ function TiendaPrincipal() {
   const navigate = useNavigate();
 
   const [productos, setProductos] = useState([]);
-  const [publicaciones, setPublicaciones] = useState([]);
   const [categoriaActiva, setCategoriaActiva] = useState("Todos");
   const [busqueda, setBusqueda] = useState("");
   const [orden, setOrden] = useState("Destacados");
   const [cargandoProductos, setCargandoProductos] = useState(true);
-  const [cargandoPublicaciones, setCargandoPublicaciones] = useState(true);
   const [errorProductos, setErrorProductos] = useState("");
-  const [errorPublicaciones, setErrorPublicaciones] = useState("");
 
   useEffect(() => {
     const obtenerProductos = async () => {
@@ -46,36 +45,7 @@ function TiendaPrincipal() {
       }
     };
 
-    const obtenerPublicaciones = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-          setErrorPublicaciones("Iniciá sesión para ver las publicaciones.");
-          return;
-        }
-
-        const respuesta = await fetch(`${API_URL}/api/publicaciones`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!respuesta.ok) {
-          throw new Error("No se pudieron cargar las publicaciones.");
-        }
-
-        const datos = await respuesta.json();
-        setPublicaciones(Array.isArray(datos) ? datos : []);
-      } catch (error) {
-        setErrorPublicaciones(error.message);
-      } finally {
-        setCargandoPublicaciones(false);
-      }
-    };
-
     obtenerProductos();
-    obtenerPublicaciones();
   }, []);
 
   const categorias = [
@@ -91,10 +61,13 @@ function TiendaPrincipal() {
     .filter((producto) => {
       const nombre = producto.nombre || "";
       const categoria = producto.categoria || "";
+
       const coincideCategoria =
         categoriaActiva === "Todos" || categoria === categoriaActiva;
 
-      const coincideBusqueda = `${nombre} ${categoria} ${producto.id_usuario || ""}`
+      const coincideBusqueda = `${nombre} ${categoria} ${
+        producto.id_usuario || ""
+      }`
         .toLowerCase()
         .includes(busqueda.toLowerCase());
 
@@ -123,6 +96,7 @@ function TiendaPrincipal() {
             <br />
             estilo consciente
           </h1>
+
           <p>
             Compra prendas únicas de la comunidad y vende lo que ya no usas.
             Moda circular, cuidada e inspirada en tus looks favoritos.
@@ -144,6 +118,7 @@ function TiendaPrincipal() {
                 onClick={() => setCategoriaActiva(categoria)}
               >
                 <span>{categoria}</span>
+
                 <small>
                   {categoria === "Todos"
                     ? productos.length
@@ -173,6 +148,7 @@ function TiendaPrincipal() {
 
             <div className="ordenar">
               <span>Ordenar por:</span>
+
               <select
                 value={orden}
                 onChange={(e) => setOrden(e.target.value)}
@@ -185,6 +161,7 @@ function TiendaPrincipal() {
           </div>
 
           {cargandoProductos && <p>Cargando productos...</p>}
+
           {errorProductos && <p role="alert">{errorProductos}</p>}
 
           {!cargandoProductos &&
@@ -209,24 +186,35 @@ function TiendaPrincipal() {
                       }}
                     />
                   ) : (
-                    <span className="sin-imagen">Sin imagen disponible</span>
+                    <span className="sin-imagen">
+                      Sin imagen disponible
+                    </span>
                   )}
 
                   <span className="estado-producto">
-                    {producto.estado_producto ? "Disponible" : "No disponible"}
+                    {producto.estado_producto
+                      ? "Disponible"
+                      : "No disponible"}
                   </span>
 
                   <strong className="precio-producto">
-                    ${Number(producto.precio || 0).toLocaleString("es-AR")}
+                    $
+                    {Number(producto.precio || 0).toLocaleString("es-AR")}
                   </strong>
                 </div>
 
+                
                 <div className="datos-producto">
                   <h3>{producto.nombre}</h3>
                   <p>{producto.categoria || "Sin categoría"}</p>
 
+                  <p className="descripcion-producto">
+                    {producto.descripcion || "Sin descripción disponible"}
+                  </p>
+
                   <div className="footer-producto">
                     <span>Vendedor #{producto.id_usuario}</span>
+
                     <button
                       disabled={!producto.estado_producto}
                       onClick={() => navigate("/pago")}
@@ -240,45 +228,6 @@ function TiendaPrincipal() {
           </div>
         </section>
       </main>
-
-      <section className="seccion-publicaciones">
-        <h2>Publicaciones de la comunidad</h2>
-        <p>Publicaciones guardadas en la base de datos de GRWM.</p>
-
-        {cargandoPublicaciones && <p>Cargando publicaciones...</p>}
-        {errorPublicaciones && <p role="status">{errorPublicaciones}</p>}
-
-        {!cargandoPublicaciones &&
-          !errorPublicaciones &&
-          publicaciones.length === 0 && (
-            <p>Todavía no hay publicaciones para mostrar.</p>
-          )}
-
-        <div className="grid-publicaciones-tienda">
-          {publicaciones.map((publicacion) => (
-            <article
-              className="publicacion-tienda-card"
-              key={publicacion.id_publicacion}
-            >
-              {publicacion.imagen_url && (
-                <img
-                  src={obtenerUrlImagen(publicacion.imagen_url)}
-                  alt={publicacion.descripcion || "Publicación de la comunidad"}
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
-                />
-              )}
-              <div>
-                <p>{publicacion.descripcion || "Publicación sin descripción"}</p>
-                <small>
-                  Publicación #{publicacion.id_publicacion}
-                </small>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
 
       <Footer />
     </div>
