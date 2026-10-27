@@ -2,12 +2,16 @@ const authService = require("../services/authService");
 const jwt = require("jsonwebtoken");
 const usuarioServicio = require("../services/usuarioServicio");
 
-class authController{
-
-async cambiarContraseña(req, res) {
+// Cambiar contraseña
+const cambiarContraseña = async (req, res) => {
     try {
         const id_usuario = req.user.id_usuario || req.user.id;
-        const { contraseñaActual, contraseñaNueva, confirmarContraseña } = req.body;
+
+        const {
+            contraseñaActual,
+            contraseñaNueva,
+            confirmarContraseña
+        } = req.body;
 
         if (contraseñaNueva !== confirmarContraseña) {
             return res.status(400).json({
@@ -26,15 +30,17 @@ async cambiarContraseña(req, res) {
             success: true,
             mensaje: "Contraseña actualizada correctamente"
         });
+
     } catch (error) {
         return res.status(400).json({
             success: false,
             mensaje: error.message || "No se pudo cambiar la contraseña"
         });
     }
-}
+};
 
-async registrar(req, res) {
+// Registrar usuario
+const registrar = async (req, res) => {
     try {
         const nuevoUsuario = await authService.registrar(req.body);
 
@@ -67,8 +73,9 @@ async registrar(req, res) {
                 rol: nuevoUsuario.rol
             }
         });
+
     } catch (error) {
-        console.error("❌ ERROR COMPLETO:");
+        console.error("ERROR COMPLETO:");
         console.error(error);
         console.error("NAME:", error.name);
         console.error("MESSAGE:", error.message);
@@ -85,51 +92,58 @@ async registrar(req, res) {
                 : []
         });
     }
-}
+};
 
-    async iniciar_sesion(req, res) {
-        try {
-            const { identificador, contraseña } = req.body;
+// Iniciar sesión
+const iniciar_sesion = async (req, res) => {
+    try {
+        const { identificador, contraseña } = req.body;
 
-            const resultado =
-                await authService.iniciar_sesion(
-                    identificador,
-                    contraseña
-                );
+        const resultado = await authService.iniciar_sesion(
+            identificador,
+            contraseña
+        );
 
-            return res.status(200).json({
-                success: true,
-                mensaje: "Inicio de sesión exitoso",
-                token: resultado.token,
-                usuario: resultado.usuario
-            });
+        return res.status(200).json({
+            success: true,
+            mensaje: "Inicio de sesión exitoso",
+            token: resultado.token,
+            usuario: resultado.usuario
+        });
 
-        } catch (error) {
-            console.error("Error en login:", error.message);
+    } catch (error) {
+        console.error("Error en login:", error.message);
 
-            const bloqueado =
-                error.message.includes("bloqueada") ||
-                error.message.includes("Alcanzaste los 5 intentos");
+        const bloqueado =
+            error.message.includes("bloqueada") ||
+            error.message.includes("Alcanzaste los 5 intentos");
 
-            return res.status(bloqueado ? 429 : 401).json({
-                success: false,
-                mensaje: error.message
-            });
-        }
+        return res.status(bloqueado ? 429 : 401).json({
+            success: false,
+            mensaje: error.message
+        });
     }
+};
 
-    async cerrar_sesion(req, res) {
-        try {
-            res.status(200).json({
-                mensaje: "Sesión cerrada correctamente"
-            });
-        } catch (error) {
-            console.error("Error en logout:", error);
-            res.status(500).json({
-                mensaje: "Error al cerrar sesión"
-            });
-        }
+// Cerrar sesión
+const cerrar_sesion = async (req, res) => {
+    try {
+        return res.status(200).json({
+            mensaje: "Sesión cerrada correctamente"
+        });
+
+    } catch (error) {
+        console.error("Error en logout:", error);
+
+        return res.status(500).json({
+            mensaje: "Error al cerrar sesión"
+        });
     }
-}
+};
 
-module.exports = new authController();
+module.exports = {
+    cambiarContraseña,
+    registrar,
+    iniciar_sesion,
+    cerrar_sesion
+};
