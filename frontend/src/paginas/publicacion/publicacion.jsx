@@ -32,6 +32,8 @@ function Publicacion() {
   const [cargandoPublicacion, setCargandoPublicacion] = useState(true);
   const [autorPublicacion, setAutorPublicacion] = useState(null);
 
+  const [usuariosEtiquetados, setUsuariosEtiquetados] = useState([]);
+
   // Obtenemos los datos del usuario dinámicamente desde localStorage
   const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
   const idUsuarioActual = usuarioSesion?.id_usuario;
@@ -89,6 +91,36 @@ function Publicacion() {
       .then(data => setAutorPublicacion(data?.usuario || null))
       .catch(error => console.error("Error al cargar el autor de la publicación:", error));
   }, [postEncontrado?.id_usuario]);
+
+  // Cargar usuarios etiquetados en la publicación
+  useEffect(() => {
+    const cargarUsuariosEtiquetados = async () => {
+      if (!id || !token) return;
+
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/publicaciones/${id}/etiquetados`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("No se pudieron cargar los usuarios etiquetados");
+        }
+
+        const data = await response.json();
+        setUsuariosEtiquetados(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Error al cargar usuarios etiquetados:", error);
+        setUsuariosEtiquetados([]);
+      }
+    };
+
+    cargarUsuariosEtiquetados();
+  }, [id, token]);
 
   const fotoAMostrar = postEncontrado?.img || "";
   const descripcionMostrar = postEncontrado?.descripcion || "";
@@ -614,8 +646,44 @@ function Publicacion() {
             {/* Descripción */}
             <div className="descripcion-publicacion">
               <p className="descripcion-texto">{descripcionMostrar}</p>
+
+              {usuariosEtiquetados.length > 0 && (
+                <div className="etiquetas-publicacion">
+                  <span className="etiquetas-icono">♡</span>
+
+                  <span className="etiquetas-texto">
+                    Etiquetó a{" "}
+                    {usuariosEtiquetados.map((usuario, index) => (
+                      <span key={usuario.id_usuario}>
+                        <button
+                          type="button"
+                          className="etiqueta-usuario-link"
+                          onClick={() => {
+                            const idEtiquetado = usuario.id_usuario;
+                            const idActual =
+                              usuarioSesion?.id_usuario || usuarioSesion?.id;
+
+                            if (String(idEtiquetado) === String(idActual)) {
+                              navigate("/perfil_propio");
+                            } else {
+                              navigate(`/perfil_usuario/${idEtiquetado}`);
+                            }
+                          }}
+                        >
+                          @{usuario.username}
+                        </button>
+                        {index < usuariosEtiquetados.length - 1 && ", "}
+                      </span>
+                    ))}
+                  </span>
+                </div>
+              )}
+
               <span className="fecha">
-                {new Date().toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })}
+                {new Date().toLocaleDateString('es-AR', {
+                  day: 'numeric',
+                  month: 'short'
+                })}
               </span>
             </div>
 

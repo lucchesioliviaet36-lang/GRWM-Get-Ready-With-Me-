@@ -1,4 +1,6 @@
 const Publicacion = require("../models/publicacion.js");
+const PublicacionEtiquetado = require("../models/publicacionEtiquetado.js");
+const Usuario = require("../models/usuarioModels.js");
 
 // Insertar una publicación
 const crearPublicacion = async (
@@ -9,9 +11,10 @@ const crearPublicacion = async (
     musica_url = null,
     musica_titulo = null,
     musica_artista = null,
-    musica_imagen = null
+    musica_imagen = null,
+    usuariosEtiquetados = []
 ) => {
-    return await Publicacion.create({
+    const nuevaPublicacion = await Publicacion.create({
         descripcion,
         fecha_publicacion: new Date(),
         id_usuario,
@@ -22,6 +25,19 @@ const crearPublicacion = async (
         musica_artista,
         musica_imagen
     });
+
+    if (usuariosEtiquetados.length > 0) {
+        const etiquetas = usuariosEtiquetados.map((idUsuario) => ({
+            id_usuario: Number(idUsuario),
+            id_publicacion: nuevaPublicacion.id_publicacion
+        }));
+
+        await PublicacionEtiquetado.bulkCreate(etiquetas, {
+            ignoreDuplicates: true
+        });
+    }
+
+    return nuevaPublicacion;
 };
 
 // Obtener todas las publicaciones
@@ -31,6 +47,27 @@ const obtenerTodas = async () => {
             ["fecha_publicacion", "DESC"],
             ["id_publicacion", "DESC"]
         ]
+    });
+};
+
+// Obtener usuarios etiquetados en una publicación
+const obtenerUsuariosEtiquetados = async (id_publicacion) => {
+    const etiquetas = await PublicacionEtiquetado.findAll({
+        where: { id_publicacion },
+        attributes: ["id_usuario"]
+    });
+
+    const idsUsuarios = etiquetas.map(etiqueta => etiqueta.id_usuario);
+
+    if (idsUsuarios.length === 0) {
+        return [];
+    }
+
+    return await Usuario.findAll({
+        where: {
+            id_usuario: idsUsuarios
+        },
+        attributes: ["id_usuario", "username"]
     });
 };
 
@@ -44,5 +81,6 @@ const eliminarPublicacion = async (id_publicacion) => {
 module.exports = {
     crearPublicacion,
     obtenerTodas,
-    eliminarPublicacion
+    eliminarPublicacion,
+    obtenerUsuariosEtiquetados
 };

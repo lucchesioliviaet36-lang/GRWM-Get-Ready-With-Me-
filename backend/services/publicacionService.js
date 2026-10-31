@@ -8,7 +8,8 @@ const crearPublicacion = async (
     musica_url,
     musica_titulo,
     musica_artista,
-    musica_imagen
+    musica_imagen,
+    usuariosEtiquetados = []
 ) => {
     if (!id_usuario) {
         throw new Error("El id_usuario es obligatorio");
@@ -22,12 +23,18 @@ const crearPublicacion = async (
         musica_url,
         musica_titulo,
         musica_artista,
-        musica_imagen
+        musica_imagen,
+        usuariosEtiquetados
     );
 };
 
 const obtenerPublicaciones = async () => {
     return await publicacionDao.obtenerTodas();
+};
+
+// Obtener usuarios etiquetados en una publicación
+const obtenerUsuariosEtiquetados = async (id_publicacion) => {
+    return await publicacionDao.obtenerUsuariosEtiquetados(id_publicacion);
 };
 
 const eliminarPublicacion = async (id_publicacion) => {
@@ -37,5 +44,6 @@ const eliminarPublicacion = async (id_publicacion) => {
 module.exports = {
     crearPublicacion,
     obtenerPublicaciones,
-    eliminarPublicacion
+    eliminarPublicacion,
+    obtenerUsuariosEtiquetados
 };

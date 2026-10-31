@@ -769,3 +769,153 @@ body {
     flex-direction: column;
   }
 }
+
+/* Buscador de usuarios para etiquetar */
+.resultados-usuarios {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid #e8dce5;
+  border-radius: 12px;
+  padding: 8px;
+  background-color: #fff;
+}
+
+.resultado-usuario {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s ease;
+}
+
+.resultado-usuario:hover {
+  background-color: #f8edf5;
+}
+
+.resultado-usuario strong {
+  color: #8c4778;
+  font-size: 14px;
+}
+
+.resultado-usuario span {
+  color: #777;
+  font-size: 13px;
+}
+
+/* Usuarios ya seleccionados */
+.usuarios-seleccionados {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.usuarios-seleccionados > p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.usuario-seleccionado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid #ead9e6;
+  border-radius: 10px;
+  background-color: #fcf7fb;
+}
+
+.usuario-seleccionado span {
+  color: #8c4778;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.usuario-seleccionado button {
+  padding: 6px 12px;
+  border: 1px solid #d9b6ce;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #8c4778;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.usuario-seleccionado button:hover {
+  background-color: #8c4778;
+  color: #fff;
+}
+
+.resultado-usuario {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s ease;
+}
+
+.resultado-usuario:hover {
+  background-color: #f8edf5;
+}
+
+.usuario-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.usuario-foto {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #f1e6ee;
+  flex-shrink: 0;
+}
+
+.resultado-usuario strong {
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.usuario-foto {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 50%;
+  background-color: #f3e8ee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.usuario-foto-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}

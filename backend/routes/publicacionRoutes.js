@@ -57,7 +57,12 @@ router.get("/", authMiddleware, (req, res) => {
     publicacionController.obtenerPublicaciones(req, res);
 });
 
- // --- LIKES ---
+// --- USUARIOS ETIQUETADOS ---
+router.get("/:id_publicacion/etiquetados", authMiddleware, (req, res) => {
+    publicacionController.obtenerUsuariosEtiquetados(req, res);
+});
+
+// --- LIKES ---
 router.post("/:id_publicacion/like", authMiddleware, (req, res) => {
     likeController.alternarLike(req, res);
 });

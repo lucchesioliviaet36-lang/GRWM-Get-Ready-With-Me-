@@ -69,7 +69,8 @@ const buscarUsuarios = async (texto, idUsuarioActual) => {
             "nombre",
             "apellido",
             "username",
-            "descripcion"
+            "descripcion",
+            "foto_perfil"
         ],
         limit: 20,
         order: [["username", "ASC"]]

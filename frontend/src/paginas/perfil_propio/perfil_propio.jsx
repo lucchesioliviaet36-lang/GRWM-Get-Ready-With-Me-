@@ -61,6 +61,57 @@ function PerfilPropio() {
   const [musicaSeleccionada, setMusicaSeleccionada] = useState(null);
   const [buscandoMusica, setBuscandoMusica] = useState(false);
 
+  const [busquedaUsuario, setBusquedaUsuario] = useState('');
+  const [resultadosUsuarios, setResultadosUsuarios] = useState([]);
+  const [usuariosEtiquetados, setUsuariosEtiquetados] = useState([]);
+  const [buscandoUsuarios, setBuscandoUsuarios] = useState(false);
+
+  const buscarUsuario = async (texto) => {
+    setBusquedaUsuario(texto);
+
+    if (!texto.trim()) {
+      setResultadosUsuarios([]);
+      return;
+    }
+
+    try {
+      setBuscandoUsuarios(true);
+
+      const token = localStorage.getItem('token');
+
+      const response = await fetch(
+        `http://localhost:3000/api/usuarios/buscar?q=${encodeURIComponent(texto)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.mensaje || 'No se pudieron buscar usuarios');
+      }
+
+      // Evitar mostrar usuarios que ya fueron seleccionados
+      const usuariosDisponibles = (data.usuarios || []).filter(
+        usuario =>
+          !usuariosEtiquetados.some(
+            seleccionado =>
+              seleccionado.id_usuario === usuario.id_usuario
+          )
+      );
+
+      setResultadosUsuarios(usuariosDisponibles);
+    } catch (error) {
+      console.error('Error al buscar usuarios:', error);
+      setResultadosUsuarios([]);
+    } finally {
+      setBuscandoUsuarios(false);
+    }
+  };
+
   const buscarMusica = async (texto) => {
     setBusquedaMusica(texto);
     setMusicaSeleccionada(null);
@@ -316,6 +367,12 @@ function PerfilPropio() {
       formData.append('imagen', imagenArchivo);
       formData.append('id_usuario', String(idUsuario));
       formData.append('descripcion', descripcion);
+
+      formData.append(
+        'usuariosEtiquetados',
+        JSON.stringify(usuariosEtiquetados.map(usuario => usuario.id_usuario))
+      );
+
       formData.append('musica_url', musicaSeleccionada?.url || '');
       formData.append('musica_titulo', musicaSeleccionada?.titulo || '');
       formData.append('musica_artista', musicaSeleccionada?.artista || '');
@@ -393,6 +450,11 @@ function PerfilPropio() {
       setImagenArchivo(null);
       setImagenPreview('');
       setDescripcion('');
+
+      setBusquedaUsuario('');
+      setResultadosUsuarios([]);
+      setUsuariosEtiquetados([]);
+
       setMostrarModal(false);
       setBusquedaMusica('');
       setResultadosMusica([]);
@@ -417,6 +479,11 @@ function PerfilPropio() {
     setBusquedaMusica('');
     setResultadosMusica([]);
     setMusicaSeleccionada(null);
+
+      setBusquedaUsuario('');
+      setResultadosUsuarios([]);
+      setUsuariosEtiquetados([]);
+
   };
 
   return (
@@ -662,6 +729,93 @@ function PerfilPropio() {
                   rows="3"
                   className="modal-textarea"
                 />
+              </div>
+
+              <div className="form-grupo">
+                <label>Etiquetar usuarios (opcional):</label>
+
+                <input
+                  type="text"
+                  placeholder="Buscá por nombre de usuario..."
+                  value={busquedaUsuario}
+                  onChange={(e) => buscarUsuario(e.target.value)}
+                />
+
+                {buscandoUsuarios && <p>Buscando usuarios...</p>}
+
+                {resultadosUsuarios.length > 0 && (
+                  <div className="resultados-usuarios">
+                    {resultadosUsuarios.map((usuario) => (
+                      <button
+                        key={usuario.id_usuario}
+                        type="button"
+                        className="resultado-usuario"
+                        onClick={() => {
+                          setUsuariosEtiquetados((prev) => [...prev, usuario]);
+                          setResultadosUsuarios([]);
+                          setBusquedaUsuario('');
+                        }}
+                      >
+                        <div className="usuario-info">
+                          <div className="usuario-foto">
+                            {usuario.foto_perfil ? (
+                              <img
+                                src={
+                                  usuario.foto_perfil.startsWith("http")
+                                    ? usuario.foto_perfil
+                                    : `http://localhost:3000${usuario.foto_perfil}`
+                                }
+                                alt=""
+                                className="usuario-foto-img"
+                              />
+                            ) : (
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#8b5274"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                              </svg>
+                            )}
+                          </div>
+
+                          <strong>@{usuario.username}</strong>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {usuariosEtiquetados.length > 0 && (
+                  <div className="usuarios-seleccionados">
+                    <p>Usuarios etiquetados:</p>
+
+                    {usuariosEtiquetados.map((usuario) => (
+                      <div key={usuario.id_usuario} className="usuario-seleccionado">
+                        <span>@{usuario.username}</span>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUsuariosEtiquetados((prev) =>
+                              prev.filter(
+                                (u) => u.id_usuario !== usuario.id_usuario
+                              )
+                            );
+                          }}
+                        >
+                          Quitar
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="form-grupo buscador-musica">

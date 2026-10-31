@@ -8,7 +8,8 @@ const crearPublicacion = async (req, res) => {
             musica_url,
             musica_titulo,
             musica_artista,
-            musica_imagen
+            musica_imagen,
+            usuariosEtiquetados
         } = req.body;
 
         const id_usuario = req.user.id_usuario;
@@ -35,7 +36,8 @@ const crearPublicacion = async (req, res) => {
             musica_url || null,
             musica_titulo || null,
             musica_artista || null,
-            musica_imagen || null
+            musica_imagen || null,
+            usuariosEtiquetados ? JSON.parse(usuariosEtiquetados) : []
         );
 
         return res.status(201).json(nuevaPublicacion);
@@ -62,6 +64,25 @@ const obtenerPublicaciones = async (req, res) => {
 
         return res.status(500).json({
             error: "Error al consultar las publicaciones"
+        });
+    }
+};
+
+const obtenerUsuariosEtiquetados = async (req, res) => {
+    try {
+        const { id_publicacion } = req.params;
+
+        const usuarios =
+            await publicacionService.obtenerUsuariosEtiquetados(
+                Number(id_publicacion)
+            );
+
+        return res.status(200).json(usuarios);
+    } catch (error) {
+        console.error("Error al obtener usuarios etiquetados:", error);
+
+        return res.status(500).json({
+            error: "No se pudieron obtener los usuarios etiquetados"
         });
     }
 };
@@ -177,5 +198,6 @@ module.exports = {
     obtenerPublicaciones,
     eliminarPublicacion,
     obtenerFavoritosPorUsuario,
-    buscarCanciones
+    buscarCanciones,
+    obtenerUsuariosEtiquetados
 };
