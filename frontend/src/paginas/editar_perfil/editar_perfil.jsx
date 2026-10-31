@@ -517,23 +517,6 @@ function EditarPerfil() {
               </div>
             </section>
 
-            <section className="form-seccion">
-              <h2>Estilos Preferidos</h2>
-              <p className="subtitulo-estilos">Selecciona los estilos que definen tus outfits para personalizar tu feed</p>
-              <div className="contenedor-estilos">
-                {styles.map((style) => (
-                  <button
-                    key={style.id}
-                    type="button"
-                    onClick={() => toggleStyle(style.id)}
-                    className={`btn-estilo ${style.active ? 'activo' : 'inactivo'}`}
-                  >
-                    {style.label}
-                  </button>
-                ))}
-              </div>
-            </section>
-
             {error && <div className="Error-Mensaje">{error}</div>}
 
             <div className="botones-accion">
