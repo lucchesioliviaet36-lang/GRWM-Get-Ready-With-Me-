@@ -9,6 +9,9 @@ function PerfilPropio() {
   const navigate = useNavigate();
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
 
+  const token = localStorage.getItem('token');
+
+
     // OBTENER URL DE IMAGEN
   const obtenerImagen = (imagen) => {
     if (!imagen) {
@@ -77,8 +80,6 @@ function PerfilPropio() {
     try {
       setBuscandoUsuarios(true);
 
-      const token = localStorage.getItem('token');
-
       const response = await fetch(
         `http://localhost:3000/api/usuarios/buscar?q=${encodeURIComponent(texto)}`,
         {
@@ -124,8 +125,6 @@ function PerfilPropio() {
 
     try {
       setBuscandoMusica(true);
-
-      const token = localStorage.getItem('token');
 
       const response = await fetch(
         `${API_URL}/api/publicaciones/buscar-canciones?q=${encodeURIComponent(texto.trim())}`,
@@ -180,8 +179,6 @@ function PerfilPropio() {
 
   // Cargar los datos actualizados del perfil
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
 
     fetch('http://localhost:3000/api/usuarios/perfil', {
       headers: {
@@ -220,7 +217,6 @@ function PerfilPropio() {
 
     const cargarFavoritos = async () => {
       try {
-        const token = localStorage.getItem('token');
 
         const response = await fetch(
           `http://localhost:3000/api/publicaciones/favoritos/usuario/${idUsuarioActual}`,
@@ -270,7 +266,6 @@ function PerfilPropio() {
 
     const cargarPublicaciones = async () => {
       try {
-        const token = localStorage.getItem('token');
 
         const response = await fetch(
           'http://localhost:3000/api/publicaciones',
@@ -348,7 +343,6 @@ function PerfilPropio() {
     }
 
     const idUsuario = usuarioSesion?.id_usuario || usuarioSesion?.id;
-    const token = localStorage.getItem('token');
 
     if (!idUsuario) {
       alert('No se encontró el usuario de la sesión. Volvé a iniciar sesión.');
