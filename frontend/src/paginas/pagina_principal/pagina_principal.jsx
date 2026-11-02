@@ -28,6 +28,7 @@ export default function Feed() {
   const [indiceActual, setIndiceActual] = useState(0);
   const [usuario, setUsuario] = useState(null);
   const usuarioGuardado = JSON.parse(localStorage.getItem("usuario")) || {};
+  const [mostrarCrearHistoria, setMostrarCrearHistoria] = useState(false);// Estado para mostrar u ocultar la vista de crear historia
 
   const obtenerFotoPerfil = () => {
     const foto = usuario?.foto_perfil || usuarioGuardado.foto_perfil;
@@ -178,7 +179,32 @@ export default function Feed() {
     alert(`Mensaje enviado a ${historiaActiva.usuario}`);
     setComentario('');
   };
+{/* Burbuja de tu propia historia / perfil */}
+<div 
+  className="historia-burbuja"
+  onClick={() => {
+    // Buscamos si hay una historia tuya en el array
+    const miHistoria = historias.find(h => h.id_usuario === miIdDeUsuario); // o tu lógica para identificar tu historia
 
+    if (miHistoria) {
+      // Si ya tenés una historia, la abrís para verla
+      abrirHistoria(miHistoria);
+    } else {
+      // Si NO hay ninguna historia, te lleva a crear una
+      setMostrarCrearHistoria(true); // O la función que uses para abrir el componente CrearHistoria
+    }
+  }}
+>
+  <div className="avatar-container">
+    <img src={miAvatar || "http://localhost:3000/uploads/default-avatar.png"} alt="Mi perfil" />
+    
+    {/* Si no hay historia, le mostramos un "+" estético abajo/al costado */}
+    {!historias.some(h => h.id_usuario === miIdDeUsuario) && (
+      <span className="badge-mas">+</span>
+    )}
+  </div>
+  <span>Tu historia</span>
+</div>
   // ==========================================
   // OTRAS FUNCIONES (SUGERENCIAS, LIKES, ETC.)
   // ==========================================
