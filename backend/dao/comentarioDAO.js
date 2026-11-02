@@ -1,57 +1,57 @@
-const { sequelize } = require("../config/database.js");
-const { QueryTypes } = require("sequelize");
+const PublicacionComentario = require("../models/comentarioModel.js");
+const Usuario = require("../models/usuarioModels.js");
 
-// Obtener comentarios con los datos del usuario
+// Obtener los comentarios de una publicación
 const obtenerComentariosPorPublicacion = async (id_publicacion) => {
-    const comentarios = await sequelize.query(
-        `SELECT c.id_comentario, c.comentario, c.fecha_comentario,
-                u.id_usuario, u.username, u.nombre
-         FROM Publicacion_Comentario c
-         JOIN Usuario u ON c.id_usuario = u.id_usuario
-         WHERE c.id_publicacion = :id_publicacion
-         ORDER BY c.fecha_comentario ASC`,
-        {
-            replacements: { id_publicacion },
-            type: QueryTypes.SELECT
-        }
+    const comentarios = await PublicacionComentario.findAll({
+        where: { id_publicacion },
+        order: [["fecha_comentario", "ASC"]]
+    });
+
+    const comentariosConUsuario = await Promise.all(
+        comentarios.map(async (comentario) => {
+            const usuario = await Usuario.findByPk(
+                comentario.id_usuario,
+                {
+                    attributes: ["id_usuario", "username", "nombre"]
+                }
+            );
+
+            return {
+                id_comentario: comentario.id_comentario,
+                comentario: comentario.comentario,
+                fecha_comentario: comentario.fecha_comentario,
+                id_usuario: comentario.id_usuario,
+                username: usuario?.username,
+                nombre: usuario?.nombre
+            };
+        })
     );
 
-    return comentarios;
+    return comentariosConUsuario;
 };
 
-// Insertar un comentario
+// Crear un comentario
 const crearComentario = async (
     id_publicacion,
     id_usuario,
     comentario
 ) => {
-    return await sequelize.query(
-        `INSERT INTO Publicacion_Comentario
-         (comentario, id_usuario, id_publicacion)
-         VALUES (:comentario, :id_usuario, :id_publicacion)`,
-        {
-            replacements: {
-                comentario,
-                id_usuario,
-                id_publicacion
-            }
-        }
-    );
+    return await PublicacionComentario.create({
+        id_publicacion,
+        id_usuario,
+        comentario
+    });
 };
 
 // Eliminar un comentario verificando quién lo escribió
 const eliminarComentario = async (id_comentario, id_usuario) => {
-    return await sequelize.query(
-        `DELETE FROM Publicacion_Comentario
-         WHERE id_comentario = :id_comentario
-         AND id_usuario = :id_usuario`,
-        {
-            replacements: {
-                id_comentario,
-                id_usuario
-            }
+    return await PublicacionComentario.destroy({
+        where: {
+            id_comentario,
+            id_usuario
         }
-    );
+    });
 };
 
 module.exports = {
