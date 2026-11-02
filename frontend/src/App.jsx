@@ -16,6 +16,7 @@ import AgregarPrenda from './paginas/agregar_prenda/agregar_prenda'
 import Pago from './paginas/pago/pago'
 import PerfilUsuario from './paginas/perfil_usuario/perfil_usuario'
 import AIOutfit from './paginas/iaOutfit/iaOutfit'
+import { CrearHistoria } from './paginas/crear_historia/crear_historia';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         <Route path="/agregar_prenda" element={<AgregarPrenda />} />
         <Route path="/pago" element={<Pago />} />
         <Route path="/iaOutfit" element={<AIOutfit />} />
+        <Route path="/crear_historia" element={<CrearHistoria />} />
         
       </Routes>
     </BrowserRouter>
