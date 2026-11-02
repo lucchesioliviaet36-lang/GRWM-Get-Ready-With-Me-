@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
-
+import { CrearHistoria } from '../crear_historia/crear_historia'; // (Ajustá los ../ según corresponda)
 
 const API_URL = "http://localhost:3000"; 
 
@@ -313,9 +313,10 @@ export default function Feed() {
 
           </div>
 
-          {mostrarCrearHistoria && (
-           <CrearHistoria onVolver={() => setMostrarCrearHistoria(false)} />
-          )}
+          {/* MODAL / PANTALLA DE CREAR HISTORIA */}
+      {mostrarCrearHistoria && (
+        <CrearHistoria onVolver={() => setMostrarCrearHistoria(false)} />
+      )}
 
           {/* Sugerencias */}
 
@@ -394,138 +395,117 @@ export default function Feed() {
 
 
             {/* ==================================
-                HISTORIAS
-            =================================== */}
+    HISTORIAS Y VISOR
+    =================================== */}
 
-            <section className="stories-bar">
+<section className="stories-bar">
 
-              {historias.map((historia) => (
+  {/* 1. Círculo FIJO de "Tu historia" (Evalúa si ya subiste historia o si debe abrir la cámara) */}
+  <div
+    className="story-item"
+    onClick={() => {
+      const miId = usuarioGuardado.id || usuarioGuardado.id_usuario;
+      const miHistoria = historias.find(h => h.id_usuario === miId);
 
-                <div
-                  className="story-item"
-                  key={historia.id}
-                  onClick={() => setHistoriaActiva(historia)} 
-                >
+      if (miHistoria) {
+        // Si ya subiste una historia, la abre para verla
+        abrirHistoria(miHistoria);
+      } else {
+        // Si no hay ninguna historia tuya, abre la pantalla de crear historia
+        setMostrarCrearHistoria(true);
+      }
+    }} 
+  >
+    <div className="avatar-ring user-story">
+      {fotoPerfilHeader ? (
+        <img
+          src={fotoPerfilHeader}
+          alt="Tu historia"
+        />
+      ) : (
+        <img
+          src="http://localhost:3000/uploads/default-avatar.png"
+          alt="Tu historia"
+        />
+      )}
 
-                  <div
-                    className={
-                      `avatar-ring ${
-                        historia.esUsuario
-                          ? 'user-story'
-                          : ''
-                      }`
-                    }
-                  >
+      {/* Muestra el botón "+" si todavía no subiste historia */}
+      {!historias.some(h => h.id_usuario === (usuarioGuardado.id || usuarioGuardado.id_usuario)) && (
+        <span className="badge-mas">+</span>
+      )}
+    </div>
+    <span>Tu historia</span>
+  </div>
 
-                    <img
-                      src={historia.img}
-                      alt={historia.usuario}
-                    />
+  {/* 2. Mapeo de las historias de los demás usuarios (excluyendo la tuya para que no se repita) */}
+{historias
+  .filter(historia => historia.id_usuario !== (usuarioGuardado.id || usuarioGuardado.id_usuario))
+  .map((historia) => {
+    const historiaId = historia.id_historia || historia.id;
 
-                  </div>
+    return (
+      <div
+        className="story-item"
+        key={historiaId}
+        onClick={() => abrirHistoria(historia)} 
+      >
+        <div className="avatar-ring">
+          <img
+            src={`http://localhost:3000${historia.imagen_url}`} 
+            alt={historia.usuario || "Historia"}
+          />
+        </div>
+        <span>
+          {historia.usuario || `Usuario #${historia.id_usuario}`}
+        </span>
+      </div>
+    );
+  })
+}
+</section>
 
-                  <span>
-                    {historia.usuario}
-                  </span>
+{/* Ventana flotante / modal para ver la historia activa */}
+{historiaActiva && (
+  <div className="story-modal-overlay" onClick={() => setHistoriaActiva(null)}>
+    <div className="story-modal-content" onClick={(e) => e.stopPropagation()}>
+      
+      {/* Cabecera */}
+      <div className="story-header">
+        <img src={`http://localhost:3000${historiaActiva.imagen_url}`} alt={historiaActiva.usuario} className="story-header-avatar" />
+        <span>{historiaActiva.usuario || `Usuario #${historiaActiva.id_usuario}`}</span>
+        <button className="story-close-btn" onClick={() => setHistoriaActiva(null)}>✕</button>
+      </div>
 
-                </div>
+      {/* Imagen de la historia */}
+      <div className="story-body">
+        <img src={`http://localhost:3000${historiaActiva.imagen_url}`} alt="Historia" />
+      </div>
 
-              ))}
+      {/* Barra inferior de interacciones */}
+      <div className="story-footer">
+        <form className="story-comment-form" onSubmit={handleEnviarComentario}>
+          <input
+            type="text"
+            placeholder={`Enviar mensaje a ${historiaActiva.usuario || 'usuario'}...`}
+            value={comentario}
+            onChange={(e) => setComentario(e.target.value)}
+          />
+          {comentario.trim() && (
+            <button type="submit" className="story-send-btn">Enviar</button>
+          )}
+        </form>
 
-            </section>
+        <button 
+          className={`story-like-btn ${liked ? 'liked' : ''}`}
+          onClick={() => setLiked(!liked)}
+        >
+          {liked ? '❤️' : '🤍'}
+        </button>
+      </div>
 
-            {/* Ventana flotante de la historia */}
-            {historiaActiva && (
-              <div className="story-modal-overlay" onClick={() => setHistoriaActiva(null)}>
-                <div className="story-modal-content" onClick={(e) => e.stopPropagation()}>
-                  
-                  {/* Cabecera */}
-                  <div className="story-header">
-                    <img src={historiaActiva.img} alt={historiaActiva.usuario} className="story-header-avatar" />
-                    <span>{historiaActiva.usuario}</span>
-                    <button className="story-close-btn" onClick={() => setHistoriaActiva(null)}>✕</button>
-                  </div>
-
-                  {/* Imagen de la historia */}
-                  <div className="story-body">
-                    <img src={historiaActiva.contenidoImg || historiaActiva.img} alt="Historia" />
-                  </div>
-
-                  {/* Barra inferior de interacciones */}
-                  <div className="story-footer">
-                    <form className="story-comment-form" onSubmit={handleEnviarComentario}>
-                      <input
-                        type="text"
-                        placeholder={`Enviar mensaje a ${historiaActiva.usuario}...`}
-                        value={comentario}
-                        onChange={(e) => setComentario(e.target.value)}
-                      />
-                      {comentario.trim() && (
-                        <button type="submit" className="story-send-btn">Enviar</button>
-                      )}
-                    </form>
-
-                    <button 
-                      className={`story-like-btn ${liked ? 'liked' : ''}`}
-                      onClick={() => setLiked(!liked)}
-                    >
-                      {liked ? '❤️' : '🤍'}
-                    </button>
-                  </div>
-
-                </div>
-              </div>
-            )}
-
-            <section className="stories-bar">
-
-              {/* 1. Círculo FIJO de "Tu historia" (siempre visible primero) */}
-              <div
-                className="story-item"
-                onClick={() => {
-                  // Acá ponés la función para abrir tu modal de subir historia o ver la tuya
-                  console.log("Crear o ver mi historia");
-                }} 
-              >
-                <div className="avatar-ring user-story">
-
-                  {fotoPerfilHeader && (
-                  <img
-                    src={fotoPerfilHeader}
-                    alt="Tu historia"
-                  />
-                )}
-                  
-                </div>
-                <span>Tu historia</span>
-              </div>
-
-              {/* 2. Mapeo de las historias que vienen de la base de datos */}
-              {historias.map((historia) => {
-                const historiaId = historia.id_historia || historia.id;
-
-                return (
-                  <div
-                    className="story-item"
-                    key={historiaId}
-                    onClick={() => setHistoriaActiva(historia)} 
-                  >
-                    <div className="avatar-ring">
-                      <img
-                        src={`http://localhost:3000${historia.imagen_url}`} 
-                        alt={historia.usuario || "Historia"}
-                      />
-                    </div>
-                    <span>
-                      {historia.usuario || `Usuario #${historia.id_usuario}`}
-                    </span>
-                  </div>
-                );
-              })}
-
-            </section>
-
-
+    </div>
+  </div>
+)}
           </div>
 
         </main>
