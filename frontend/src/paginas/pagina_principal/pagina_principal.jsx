@@ -181,31 +181,32 @@ export default function Feed() {
   };
 {/* Burbuja de tu propia historia / perfil */}
 <div 
-  className="historia-burbuja"
+  className="story-item"
   onClick={() => {
-    // Buscamos si hay una historia tuya en el array
-    const miHistoria = historias.find(h => h.id_usuario === miIdDeUsuario); // o tu lógica para identificar tu historia
+    // Buscamos si hay una historia tuya usando tu ID real
+    const miId = usuarioGuardado.id || usuarioGuardado.id_usuario;
+    const miHistoria = historias.find(h => h.id_usuario === miId);
 
     if (miHistoria) {
       // Si ya tenés una historia, la abrís para verla
       abrirHistoria(miHistoria);
     } else {
-      // Si NO hay ninguna historia, te lleva a crear una
-      setMostrarCrearHistoria(true); // O la función que uses para abrir el componente CrearHistoria
+      // Si NO hay ninguna historia, abrimos la pantalla de crear historia
+      setMostrarCrearHistoria(true);
     }
   }}
 >
-  <div className="avatar-container">
-    <img src={miAvatar || "http://localhost:3000/uploads/default-avatar.png"} alt="Mi perfil" />
+  <div className="avatar-ring user-story">
+    <img src={fotoPerfilHeader || "http://localhost:3000/uploads/default-avatar.png"} alt="Mi perfil" />
     
-    {/* Si no hay historia, le mostramos un "+" estético abajo/al costado */}
-    {!historias.some(h => h.id_usuario === miIdDeUsuario) && (
+    {/* Si no hay historia tuya, mostramos el botón "+" */}
+    {!historias.some(h => h.id_usuario === (usuarioGuardado.id || usuarioGuardado.id_usuario)) && (
       <span className="badge-mas">+</span>
     )}
   </div>
   <span>Tu historia</span>
-</div>
-  // ==========================================
+</div> 
+  //=====================================
   // OTRAS FUNCIONES (SUGERENCIAS, LIKES, ETC.)
   // ==========================================
   const sugerencias = [
@@ -312,7 +313,9 @@ export default function Feed() {
 
           </div>
 
-
+          {mostrarCrearHistoria && (
+           <CrearHistoria onVolver={() => setMostrarCrearHistoria(false)} />
+          )}
 
           {/* Sugerencias */}
 
