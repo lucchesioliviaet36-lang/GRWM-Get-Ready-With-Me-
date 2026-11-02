@@ -169,18 +169,11 @@ const solicitarRecuperacion = async (mail) => {
 
     const token = crypto.randomBytes(32).toString("hex");
 
-    const tokenHash = crypto
-        .createHash("sha256")
-        .update(token)
-        .digest("hex");
+    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
 
     const fechaExpiracion = new Date(Date.now() + 15 * 60 * 1000);
 
-    await usuarioDAO.guardarTokenRecuperacion(
-        usuario.id_usuario,
-        tokenHash,
-        fechaExpiracion
-    );
+    await usuarioDAO.guardarTokenRecuperacion(usuario.id_usuario, tokenHash,fechaExpiracion);
 
     try {
         await emailService.enviarRecuperacionContrasena(

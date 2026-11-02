@@ -11,9 +11,6 @@ function MiArmario() {
   const [prendas, setPrendas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  
-  // Estado para el menú desplegable del header interactivo
-  const [menuAbierto, setMenuAbierto] = useState(false); // Placeholder para el avatar
 
   const obtenerPrendas = async () => {
     try {
