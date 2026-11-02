@@ -32,6 +32,7 @@ const crearPublicacion = async (
             id_publicacion: nuevaPublicacion.id_publicacion
         }));
 
+        //se insertan
         await PublicacionEtiquetado.bulkCreate(etiquetas, {
             ignoreDuplicates: true
         });
@@ -56,10 +57,10 @@ const obtenerUsuariosEtiquetados = async (id_publicacion) => {
         where: {
             id_publicacion: id_publicacion
         },
-        attributes: ["id_usuario"]
+        attributes: ["id_usuario"] //id_usuario de la persona que está etiquetada
     });
 
-    const idsUsuarios = etiquetas.map(etiqueta => etiqueta.id_usuario);
+    const idsUsuarios = etiquetas.map(etiqueta => etiqueta.id_usuario); //"etiqueta" la crea map
 
     if (idsUsuarios.length === 0) {
         return [];
