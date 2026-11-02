@@ -53,7 +53,9 @@ const obtenerTodas = async () => {
 // Obtener usuarios etiquetados en una publicación
 const obtenerUsuariosEtiquetados = async (id_publicacion) => {
     const etiquetas = await PublicacionEtiquetado.findAll({
-        where: { id_publicacion },
+        where: {
+            id_publicacion: id_publicacion
+        },
         attributes: ["id_usuario"]
     });
 
