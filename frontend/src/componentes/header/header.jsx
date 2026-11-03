@@ -258,7 +258,7 @@ function Header() {
               <button
                 type="button"
                 onClick={() => {
-                  alert("Contacta al equipo de GRWM: soporteGRWM@gmail.com");
+                  alert("Contacta al equipo de GRWM: flores.miaet36@gmail.com (Especificar nombre de usuario al momento de contactarse)");
                   setMenuAbierto(false);
                 }}
               >

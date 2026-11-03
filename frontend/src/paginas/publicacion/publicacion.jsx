@@ -120,7 +120,10 @@ function Publicacion() {
     };
 
     cargarUsuariosEtiquetados();
-  }, [id, token]);
+  }, [id, token]); //«El array de dependencias indica cuándo debe volver a 
+  //    ejecutarse el useEffect. En este caso depende del ID de la publicación y 
+  //    del token. Si alguno cambia, React vuelve a ejecutar el 
+  //    efecto para actualizar los usuarios etiquetados».
 
   const fotoAMostrar = postEncontrado?.img || "";
   const descripcionMostrar = postEncontrado?.descripcion || "";
