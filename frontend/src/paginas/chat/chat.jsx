@@ -186,7 +186,7 @@ function Chat() {
             <Avatar path={c.foto_perfil} name={nombre(c)} />
             <div className="contacto-info"><h4>{nombre(c)}</h4><p>{c.ultimoMensaje}</p></div>
           </button>)}
-          {!contactos.length && !cargando && <p>No tienes conversaciones todavía.</p>}
+          {!contactos.length && !cargando && <p className="sin-contenido">No tienes conversaciones todavía.</p>}
         </div>
       </aside>
       <main className="chat-main">
@@ -196,8 +196,8 @@ function Chat() {
             <div className="header-text"><h3>{nombre(chatActivo)}</h3><span className="subtext">{chatActivo.username ? `@${chatActivo.username}` : "Conversación"}</span></div>
           </div></div>
           <div className="chat-mensajes-lista">
-            {cargandoMensajes && !mensajes.length && <p>Cargando conversación…</p>}
-            {!cargandoMensajes && !mensajes.length && <p>Inicia la conversación con {nombre(chatActivo)}.</p>}
+            {cargandoMensajes && !mensajes.length && <p className="sin-contenido">Cargando conversación…</p>}
+            {!cargandoMensajes && !mensajes.length && <p className="sin-contenido">Inicia la conversación con {nombre(chatActivo)}.</p>}
             {mensajes.map(m => {
               const esMio = Number(m.remitenteId) === usuarioActualId;
               return <div key={m.id} className={`mensaje-burbuja ${esMio ? 'mio' : 'suyo'}`}>
