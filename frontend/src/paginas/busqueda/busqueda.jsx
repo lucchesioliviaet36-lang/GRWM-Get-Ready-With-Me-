@@ -11,6 +11,16 @@ const Busqueda = () => {
 
   const navigate = useNavigate();
 
+  //Para obtener la foto de perfil del usuario que estamos buscando
+  const obtenerImagen = (imagen) => {
+    if (!imagen) return "";
+    if (imagen.startsWith("http") || imagen.startsWith("blob:") || imagen.startsWith("data:")) {
+      return imagen;
+    }
+    return `http://localhost:3000${imagen}`;
+  };
+
+
   // Texto ingresado en el buscador
   const [busqueda, setBusqueda] = useState("");
 
@@ -358,57 +368,42 @@ const Busqueda = () => {
 
                 <div className="lista-resultados-usuarios">
 
-                  {resultados.map((usuario) => (
-
-                    <div
-                      key={usuario.id_usuario}
-                      className="resultado-usuario"
-                    >
-
-
-                      {/* Como todavía tu Usuario
-                          no tiene foto de perfil,
-                          mostramos la inicial */}
-
-                      <div className="avatar-usuario-busqueda">
-
-                        {usuario.nombre
-                          ?.charAt(0)
-                          .toUpperCase()}
-
-                      </div>
-
-
-                      <div className="datos-usuario-busqueda">
-
-                        <h4>
-
-                          {usuario.nombre}{" "}
-                          {usuario.apellido}
-
-                        </h4>
-
-
-                        <span>
-
-                          @{usuario.username}
-
-                        </span>
-
-
-                        {usuario.descripcion && (
-
-                          <p>
-                            {usuario.descripcion}
-                          </p>
-
+                {resultados.map((usuario) => (
+                  <button
+                    key={usuario.id_usuario}
+                    type="button"
+                    className="resultado-usuario"
+                    onClick={() => navigate(`/perfil_usuario/${usuario.id_usuario}`)}
+                  >
+                    <div className="usuario-info">
+                      <div className="usuario-foto">
+                        {usuario.foto_perfil ? (
+                          <img
+                            src={obtenerImagen(usuario.foto_perfil)}
+                            alt=""
+                            className="usuario-foto-img"
+                          />
+                        ) : (
+                          <svg
+                            width="22"
+                            height="22"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#a58b9c"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <circle cx="12" cy="8" r="4" />
+                            <path d="M5 21c0-4 3-7 7-7s7 3 7 7" />
+                          </svg>
                         )}
-
                       </div>
 
+                      <strong>@{usuario.username}</strong>
                     </div>
-
-                  ))}
+                  </button>
+                ))}
 
                 </div>
 

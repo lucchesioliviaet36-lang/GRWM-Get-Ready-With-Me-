@@ -155,10 +155,141 @@ const obtenerPorId = async (req, res) => {
     }
 };
 
+//SEGUIR Y DEJAR DE SEGUIR
+
+// 6. Seguir a otro usuario
+const seguirUsuario = async (req, res) => {
+    try {
+        // El usuario que sigue se obtiene del token
+        const id_usuario_seguidor = req.user.id_usuario;
+
+        // El usuario al que queremos seguir viene de la URL
+        const id_usuario_seguido = Number(req.params.id);
+
+        if (!id_usuario_seguido) {
+            return res.status(400).json({
+                success: false,
+                mensaje: "ID de usuario inválido"
+            });
+        }
+
+        await usuarioServicio.seguirUsuario(
+            id_usuario_seguidor,
+            id_usuario_seguido
+        );
+
+        return res.status(201).json({
+            success: true,
+            mensaje: "Ahora seguís a este usuario"
+        });
+
+    } catch (error) {
+        console.error("Error al seguir usuario:", error);
+
+        return res.status(400).json({
+            success: false,
+            mensaje: error.message
+        });
+    }
+};
+
+// 7. Dejar de seguir a otro usuario
+const dejarDeSeguir = async (req, res) => {
+    try {
+        const id_usuario_seguidor = req.user.id_usuario;
+        const id_usuario_seguido = Number(req.params.id);
+
+        if (!id_usuario_seguido) {
+            return res.status(400).json({
+                success: false,
+                mensaje: "ID de usuario inválido"
+            });
+        }
+
+        await usuarioServicio.dejarDeSeguir(
+            id_usuario_seguidor,
+            id_usuario_seguido
+        );
+
+        return res.status(200).json({
+            success: true,
+            mensaje: "Dejaste de seguir a este usuario"
+        });
+
+    } catch (error) {
+        console.error("Error al dejar de seguir:", error);
+
+        return res.status(500).json({
+            success: false,
+            mensaje: "No se pudo dejar de seguir al usuario"
+        });
+    }
+};
+
+// 8. Obtener cantidad de seguidores y seguidos
+const obtenerEstadisticasSeguimiento = async (req, res) => {
+    try {
+        const id_usuario = Number(req.params.id);
+
+        if (!id_usuario) {
+            return res.status(400).json({
+                success: false,
+                mensaje: "ID de usuario inválido"
+            });
+        }
+
+        const estadisticas =
+            await usuarioServicio.obtenerEstadisticasSeguimiento(id_usuario);
+
+        return res.status(200).json({
+            success: true,
+            ...estadisticas
+        });
+
+    } catch (error) {
+        console.error("Error al obtener estadísticas:", error);
+
+        return res.status(500).json({
+            success: false,
+            mensaje: "No se pudieron obtener las estadísticas"
+        });
+    }
+};
+
+// Consultar si el usuario actual sigue a otro
+const obtenerEstadoSeguimiento = async (req, res) => {
+    try {
+        const id_usuario_seguidor = req.user.id_usuario;
+        const id_usuario_seguido = Number(req.params.id);
+
+        const loSigo = await usuarioServicio.obtenerEstadoSeguimiento(
+            id_usuario_seguidor,
+            id_usuario_seguido
+        );
+
+        return res.status(200).json({
+            success: true,
+            loSigo
+        });
+
+    } catch (error) {
+        console.error("Error consultando seguimiento:", error);
+
+        return res.status(500).json({
+            success: false,
+            mensaje: "No se pudo consultar el seguimiento"
+        });
+    }
+};
+
 module.exports = {
     obtenerPerfil,
     actualizarPerfil,
     buscarUsuarios,
     eliminarCuenta,
-    obtenerPorId
+    obtenerPorId,
+    seguirUsuario,
+    dejarDeSeguir,
+    obtenerEstadisticasSeguimiento,
+    obtenerEstadoSeguimiento
 };

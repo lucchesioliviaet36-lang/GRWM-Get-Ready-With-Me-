@@ -105,10 +105,64 @@ const cambiarContraseña = async (
     return true;
 };
 
+
+//SEGUIR Y DEJAR DE SEGUIR
+
+// Seguir a otro usuario
+const seguirUsuario = async (id_usuario_seguidor, id_usuario_seguido) => {
+    if (Number(id_usuario_seguidor) === Number(id_usuario_seguido)) {
+        throw new Error("No podés seguirte a vos mismo");
+    }
+
+    const usuario = await usuarioDao.buscarPorId(id_usuario_seguido);
+
+    if (!usuario) {
+        throw new Error("El usuario que querés seguir no existe");
+    }
+
+    return await usuarioDao.seguirUsuario(
+        id_usuario_seguidor,
+        id_usuario_seguido
+    );
+};
+
+// Dejar de seguir a otro usuario
+const dejarDeSeguir = async (id_usuario_seguidor, id_usuario_seguido) => {
+    return await usuarioDao.dejarDeSeguir(
+        id_usuario_seguidor,
+        id_usuario_seguido
+    );
+};
+
+// Obtener cantidad de seguidores y seguidos
+const obtenerEstadisticasSeguimiento = async (id_usuario) => {
+    const seguidores = await usuarioDao.contarSeguidores(id_usuario);
+    const seguidos = await usuarioDao.contarSeguidos(id_usuario);
+
+    return { seguidores, seguidos };
+};
+
+// Consultar si el usuario actual sigue al perfil visitado
+const obtenerEstadoSeguimiento = async (
+    id_usuario_seguidor,
+    id_usuario_seguido
+) => {
+    const seguimiento = await usuarioDao.obtenerSeguimiento(
+        id_usuario_seguidor,
+        id_usuario_seguido
+    );
+
+    return Boolean(seguimiento);
+};
+
 module.exports = {
     obtenerPorId,
     actualizarPerfil,
     buscarUsuarios,
     eliminarCuenta,
-    cambiarContraseña
+    cambiarContraseña,
+    seguirUsuario,
+    dejarDeSeguir,
+    obtenerEstadisticasSeguimiento,
+    obtenerEstadoSeguimiento
 };

@@ -210,3 +210,60 @@ body {
     color: #bd4f80 !important; 
     font-weight: bold; 
 }
+
+
+.lista-resultados-usuarios {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.lista-resultados-usuarios .resultado-usuario {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s ease;
+}
+
+.lista-resultados-usuarios .resultado-usuario:hover {
+  background-color: #f8edf5;
+}
+
+.lista-resultados-usuarios .usuario-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lista-resultados-usuarios .usuario-foto {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 50%;
+  background-color: #f3e8ee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.lista-resultados-usuarios .usuario-foto-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.lista-resultados-usuarios .resultado-usuario strong {
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+}

@@ -1,5 +1,6 @@
 const { Op } = require("sequelize");
 const Usuario = require("../models/usuarioModels.js");
+const Seguidores = require("../models/seguidores.js");
 
 // Buscar usuario por username o mail para iniciar sesión
 const buscarParaInicioSesion = async (identificador) => {
@@ -214,7 +215,14 @@ const eliminarUsuario = async (id_usuario) => {
     }
 
     if (models.Seguidores) {
-        await models.Seguidores.destroy({ where: { id_usuario } });
+        await models.Seguidores.destroy({
+            where: {
+                [Op.or]: [
+                    { id_usuario_seguidor: id_usuario },
+                    { id_usuario_seguido: id_usuario }
+                ]
+            }
+        });
     }
 
     if (models.Bitacora) {
@@ -235,6 +243,58 @@ const eliminarUsuario = async (id_usuario) => {
     });
 };
 
+
+//SEGUIR Y DEJAR DE SEGUIR
+
+// Seguir a otro usuario
+const seguirUsuario = async (id_usuario_seguidor, id_usuario_seguido) => {
+    return await Seguidores.create({
+        id_usuario_seguidor,
+        id_usuario_seguido
+    });
+};
+
+// Dejar de seguir a otro usuario
+const dejarDeSeguir = async (id_usuario_seguidor, id_usuario_seguido) => {
+    return await Seguidores.destroy({
+        where: {
+            id_usuario_seguidor,
+            id_usuario_seguido
+        }
+    });
+};
+
+// Contar los seguidores de un usuario
+const contarSeguidores = async (id_usuario) => {
+    return await Seguidores.count({
+        where: {
+            id_usuario_seguido: id_usuario
+        }
+    });
+};
+
+// Contar a cuántos usuarios sigue una persona
+const contarSeguidos = async (id_usuario) => {
+    return await Seguidores.count({
+        where: {
+            id_usuario_seguidor: id_usuario
+        }
+    });
+};
+
+// Consultar si un usuario sigue a otro
+const obtenerSeguimiento = async (
+    id_usuario_seguidor,
+    id_usuario_seguido
+) => {
+    return await Seguidores.findOne({
+        where: {
+            id_usuario_seguidor,
+            id_usuario_seguido
+        }
+    });
+};
+
 module.exports = {
     buscarParaInicioSesion,
     buscarPorUsername,
@@ -249,5 +309,10 @@ module.exports = {
     guardarTokenRecuperacion,
     buscarPorTokenRecuperacion,
     actualizarContrasenaRecuperada,
-    eliminarUsuario
+    eliminarUsuario,
+    seguirUsuario,
+    dejarDeSeguir,
+    contarSeguidores,
+    contarSeguidos,
+    obtenerSeguimiento
 };

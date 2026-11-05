@@ -53,6 +53,9 @@ function PerfilPropio() {
   const [listaPublicaciones, setListaPublicaciones] = useState([]);
   const [publicacionesFavoritas, setPublicacionesFavoritas] = useState([]);
 
+  const [seguidores, setSeguidores] = useState(0);
+  const [seguidos, setSeguidos] = useState(0);
+
   const [mostrarModal, setMostrarModal] = useState(false);
   const [imagenArchivo, setImagenArchivo] = useState(null);
   const [imagenPreview, setImagenPreview] = useState('');
@@ -207,6 +210,40 @@ function PerfilPropio() {
         console.error('Error al obtener el perfil:', error);
       });
   }, []);
+
+  // Cargar estadísticas de seguidores y seguidos
+  useEffect(() => {
+    const idUsuario = usuarioSesion?.id_usuario || usuarioSesion?.id;
+
+    if (!idUsuario || !token) return;
+
+    const cargarEstadisticas = async () => {
+      try {
+        const response = await fetch(
+          `${API_URL}/api/usuarios/${idUsuario}/estadisticas-seguimiento`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('No se pudieron cargar las estadísticas');
+        }
+
+        const datos = await response.json();
+
+        setSeguidores(Number(datos.seguidores) || 0);
+        setSeguidos(Number(datos.seguidos) || 0);
+
+      } catch (error) {
+        console.error('Error al cargar estadísticas:', error);
+      }
+    };
+
+    cargarEstadisticas();
+  }, [usuarioSesion?.id_usuario, usuarioSesion?.id, token]);
 
   // Cargar publicaciones favoritas
   useEffect(() => {
@@ -556,12 +593,12 @@ function PerfilPropio() {
               </div>
 
               <div>
-                <strong>0</strong>
+                <strong>{seguidores}</strong>
                 <span>Seguidores</span>
               </div>
 
               <div>
-                <strong>0</strong>
+                <strong>{seguidos}</strong>
                 <span>Siguiendo</span>
               </div>
 
