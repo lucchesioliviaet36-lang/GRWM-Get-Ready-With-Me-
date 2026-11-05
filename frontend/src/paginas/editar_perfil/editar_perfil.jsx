@@ -403,16 +403,6 @@ function EditarPerfil() {
                     onChange={handleChange} 
                   />
                 </div>
-                <div className="form-group-perfil">
-                  <label htmlFor="telefono">Teléfono</label>
-                  <input 
-                    id="telefono" 
-                    name="telefono" 
-                    type="text" 
-                    value={formData.telefono} 
-                    onChange={handleChange} 
-                  />
-                </div>
               </div>
 
               <div className="form-group-perfil">

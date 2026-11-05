@@ -67,6 +67,22 @@ function InicioSesion() {
   return (
     <div className="InicioSesion-Page">
 
+      <header className="barra-superior-registro">
+        <div className="logo-registro">
+          ✧ <span>GRWM</span>
+        </div>
+        <button
+          type="button"
+          className="btn-ayuda"
+          onClick={() => {
+              alert("Contacta al equipo de GRWM: flores.miaet36@gmail.com");
+              setMenuAbierto(false);
+            }}
+          >
+            ✉ Ayuda y Soporte
+        </button>
+      </header>
+
       <main className="sesion-contenido-principal">
         <div className="InicioSesion-Container">
 

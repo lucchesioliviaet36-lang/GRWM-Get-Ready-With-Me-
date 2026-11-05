@@ -298,6 +298,23 @@ body {
   text-decoration: underline;
 }
 
+.btn-ayuda {
+  border: none;
+  background: transparent;
+  color: #703c5e;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ayuda:hover {
+  background: #fff0f6;
+  color: #9a4f78;
+}
+
 @media (max-width: 600px) {
   .barra-superior-registro,
   .footer-registro {
@@ -320,3 +337,4 @@ body {
     padding: 30px 20px;
   }
 }
+

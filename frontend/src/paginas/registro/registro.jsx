@@ -81,7 +81,7 @@ function Registro() {
 
       alert("¡Registro realizado correctamente!");
 
-      navigate("/paginaPrincipal");
+      navigate("/editar_perfil");
 
     } 
     catch (error) {
@@ -104,9 +104,16 @@ function Registro() {
         <div className="logo-registro">
           ✧ <span>GRWM</span>
         </div>
-        <nav className="menu-registro">
-          <button onClick={() => navigate('/soporte')}>Soporte</button>
-        </nav>
+        <button
+          type="button"
+          className="btn-ayuda"
+          onClick={() => {
+              alert("Contacta al equipo de GRWM: flores.miaet36@gmail.com");
+              setMenuAbierto(false);
+            }}
+          >
+            ✉ Ayuda y Soporte
+        </button>
       </header>
 
       <main className="registro-contenido-principal">
