@@ -284,7 +284,9 @@ function EditarPerfil() {
           <div 
             className="editar-portada" 
             style={{ 
-              backgroundImage: bannerImg ? `url("${obtenerImagen(bannerImg)}")` : 'linear-gradient(135deg, #ebdcd3 0%, #d8c2af 100%)',
+              backgroundImage: bannerImg
+                  ? `url("${obtenerImagen(bannerImg)}")`
+                  : 'linear-gradient(135deg, #f8eaf1 0%, #e9cbdc 100%)',
               backgroundSize: 'cover',
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat',

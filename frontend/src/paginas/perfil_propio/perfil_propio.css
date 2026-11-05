@@ -40,7 +40,7 @@ body {
 /* PORTADA */
 .portada {
   height: 160px;
-  background: linear-gradient( rgba(235, 220, 211, 0.25), rgba(235, 220, 211, 0.25) ), #d8c2af;
+  background: linear-gradient( rgba(235, 220, 211, 0.25), rgba(235, 220, 211, 0.25) ), #dcd2c9;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
