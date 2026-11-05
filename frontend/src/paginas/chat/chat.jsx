@@ -215,7 +215,7 @@ function Chat() {
           </form>
           {mostrarEmojis && <div className="emoji-picker-advanced"><div className="emoji-grid-container">{emojis.map(emoji => <button type="button" key={emoji} onClick={() => setNuevoTexto(prev => prev + emoji)}>{emoji}</button>)}</div></div>}
           </div>
-        </> : <div className="chat-mensajes-lista">{cargando ? "Cargando conversaciones…" : error || "Elige una conversación o contacta a alguien desde su publicación o perfil."}</div>}
+        </> : <div  className="chat-mensajes-lista">{cargando ? "Cargando conversaciones…" : error || <p className="sin-contenido">Elige una conversación</p>}</div>}
       </main>
     </div>
     <Footer />
