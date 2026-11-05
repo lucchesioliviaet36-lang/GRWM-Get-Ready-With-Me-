@@ -44,19 +44,35 @@ body {
 }
 
 .boton-busqueda {
-  background-color: white;
-  padding-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  background: transparent;
   border: none;
   color: #70345c;
+
+  font-family: 'Inter', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+
   cursor: pointer;
-  font-size: 18px;
-  margin-right: 58%;
+  margin: 0 15px 0 30px;
+  padding: 10px 12px;
+
+  white-space: nowrap;
+  border-radius: 10px;
+  flex-shrink: 0;
+
+  transition: all 0.2s ease;
 }
 
-.boton-busqueda button {
-  margin-left: 0;
+.boton-busqueda:hover {
+  background-color: #fff0f6;
+  color: #9a4f78;
+  transform: translateY(-2px);
 }
-
 .menu {
   display: flex;
   justify-content: center;

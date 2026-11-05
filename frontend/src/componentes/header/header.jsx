@@ -167,10 +167,27 @@ function Header() {
         type="button"
         onClick={() => navigate("/busqueda")}
       >
-        🔍︎
+        <svg
+          width="19"
+          height="19"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-4-4" />
+        </svg>
+        Buscar usuarios
       </button>
 
       <nav className="menu">
+
+        <button onClick={() => navigate("/Chat")}>
+          Mensajes
+        </button>
 
         <button onClick={() => navigate("/miArmario")}>
           Mi Armario
