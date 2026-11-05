@@ -166,7 +166,7 @@ function TiendaPrincipal() {
           {!cargandoProductos &&
             !errorProductos &&
             productosFiltrados.length === 0 && (
-              <p className="mensaje-sin-productos">
+              <p className="mensaje-sin-productos ">
                 No hay productos disponibles en esta categoría.
               </p>
             )}

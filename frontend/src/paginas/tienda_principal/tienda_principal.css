@@ -457,15 +457,11 @@
 /* MENSAJE SIN PRODUCTOS */
 
 .mensaje-sin-productos {
-  margin: 28px 0;
-  padding: 15px;
   text-align: center;
-
-  font-family: Georgia, serif;
-  font-size: 20px;
-  font-style: italic;
-  font-weight: 500;
-
-  color: #a05c7e;
-  line-height: 1.5;
+  padding: 50px 20px;
+  color: #9a6685;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  font-style: normal;
+  letter-spacing: 0.5px;
 }
