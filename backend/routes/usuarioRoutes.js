@@ -25,6 +25,12 @@ router.delete("/:id/seguir", authMiddleware, usuarioController.dejarDeSeguir);
 // Obtener cantidad de seguidores y seguidos
 router.get("/:id/estadisticas-seguimiento", authMiddleware, usuarioController.obtenerEstadisticasSeguimiento);
 
+// Obtener listas de seguidores y seguidos
+router.get("/:id/seguidores", authMiddleware, usuarioController.obtenerListaSeguidores);
+
+router.get("/:id/seguidos", authMiddleware, usuarioController.obtenerListaSeguidos);
+
+
 router.get("/:id/seguir", authMiddleware, usuarioController.obtenerEstadoSeguimiento);
 
 

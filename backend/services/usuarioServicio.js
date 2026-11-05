@@ -160,6 +160,16 @@ const obtenerEstadisticasSeguimiento = async (id_usuario) => {
     return { seguidores, seguidos };
 };
 
+// Obtener usuarios que siguen a una persona
+const obtenerListaSeguidores = async (id_usuario) => {
+    return await usuarioDao.obtenerListaSeguidores(id_usuario);
+};
+
+// Obtener usuarios que sigue una persona
+const obtenerListaSeguidos = async (id_usuario) => {
+    return await usuarioDao.obtenerListaSeguidos(id_usuario);
+};
+
 // Consultar si el usuario actual sigue al perfil visitado
 const obtenerEstadoSeguimiento = async (
     id_usuario_seguidor,
@@ -188,5 +198,7 @@ module.exports = {
     dejarDeSeguir,
     obtenerEstadisticasSeguimiento,
     obtenerEstadoSeguimiento,
-    obtenerSugerencias
+    obtenerSugerencias,
+    obtenerListaSeguidores,
+    obtenerListaSeguidos
 };

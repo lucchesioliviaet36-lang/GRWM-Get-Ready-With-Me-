@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import './perfil_propio.css';
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
+import ModalSeguimiento from "../../paginas/modal_seguimiento/modal_seguimiento";
 const API_URL = "http://localhost:3000";
 
 function PerfilPropio() {
   const navigate = useNavigate();
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
+
+  const [modalSeguimiento, setModalSeguimiento] = useState(null);
 
   const token = localStorage.getItem('token');
 
@@ -592,15 +595,23 @@ function PerfilPropio() {
                 <span>Publicaciones</span>
               </div>
 
-              <div>
-                <strong>{seguidores}</strong>
-                <span>Seguidores</span>
-              </div>
+              <button
+                  type="button"
+                  className="estadistica-seguimiento"
+                  onClick={() => setModalSeguimiento('seguidores')}
+              >
+                  <strong>{seguidores}</strong>
+                  <span>Seguidores</span>
+              </button>
 
-              <div>
-                <strong>{seguidos}</strong>
-                <span>Siguiendo</span>
-              </div>
+              <button
+                  type="button"
+                  className="estadistica-seguimiento"
+                  onClick={() => setModalSeguimiento('seguidos')}
+              >
+                  <strong>{seguidos}</strong>
+                  <span>Siguiendo</span>
+              </button>
 
               <div className="botones">
                 <button
@@ -937,6 +948,19 @@ function PerfilPropio() {
       )}
 
       <Footer />
+
+      {modalSeguimiento && (
+          <ModalSeguimiento
+              idUsuario={usuarioSesion?.id_usuario || usuarioSesion?.id}
+              pestanaInicial={modalSeguimiento}
+              onCerrar={() => setModalSeguimiento(null)}
+              onSeleccionarUsuario={(id) => {
+                  setModalSeguimiento(null);
+                  navigate(`/perfil_usuario/${id}`);
+              }}
+          />
+      )}
+
     </div>
   );
 }

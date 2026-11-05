@@ -306,6 +306,60 @@ const obtenerSugerencias = async (req, res) => {
     }
 };
 
+// Obtener lista de seguidores
+const obtenerListaSeguidores = async (req, res) => {
+    try {
+        const id_usuario = Number(req.params.id);
+
+        if (!id_usuario) {
+            return res.status(400).json({
+                mensaje: "ID de usuario inválido"
+            });
+        }
+
+        const usuarios = await usuarioServicio.obtenerListaSeguidores(id_usuario);
+
+        return res.status(200).json({
+            success: true,
+            usuarios
+        });
+
+    } catch (error) {
+        console.error("Error al obtener seguidores:", error);
+
+        return res.status(500).json({
+            mensaje: "No se pudieron obtener los seguidores"
+        });
+    }
+};
+
+// Obtener lista de seguidos
+const obtenerListaSeguidos = async (req, res) => {
+    try {
+        const id_usuario = Number(req.params.id);
+
+        if (!id_usuario) {
+            return res.status(400).json({
+                mensaje: "ID de usuario inválido"
+            });
+        }
+
+        const usuarios = await usuarioServicio.obtenerListaSeguidos(id_usuario);
+
+        return res.status(200).json({
+            success: true,
+            usuarios
+        });
+
+    } catch (error) {
+        console.error("Error al obtener seguidos:", error);
+
+        return res.status(500).json({
+            mensaje: "No se pudieron obtener los usuarios seguidos"
+        });
+    }
+};
+
 module.exports = {
     obtenerPerfil,
     actualizarPerfil,
@@ -316,5 +370,7 @@ module.exports = {
     dejarDeSeguir,
     obtenerEstadisticasSeguimiento,
     obtenerEstadoSeguimiento,
-    obtenerSugerencias
+    obtenerSugerencias,
+    obtenerListaSeguidores,
+    obtenerListaSeguidos
 };

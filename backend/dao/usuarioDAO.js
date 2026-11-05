@@ -282,6 +282,68 @@ const contarSeguidos = async (id_usuario) => {
     });
 };
 
+// Obtener la lista de seguidores de un usuario
+const obtenerListaSeguidores = async (id_usuario) => {
+    const relaciones = await Seguidores.findAll({
+        attributes: ["id_usuario_seguidor"],
+        where: {
+            id_usuario_seguido: id_usuario
+        }
+    });
+
+    const idsUsuarios = relaciones.map(
+        relacion => relacion.id_usuario_seguidor
+    );
+
+    if (idsUsuarios.length === 0) return [];
+
+    return await Usuario.findAll({
+        where: {
+            id_usuario: {
+                [Op.in]: idsUsuarios
+            }
+        },
+        attributes: [
+            "id_usuario",
+            "nombre",
+            "apellido",
+            "username",
+            "foto_perfil"
+        ]
+    });
+};
+
+// Obtener la lista de usuarios que sigue una persona
+const obtenerListaSeguidos = async (id_usuario) => {
+    const relaciones = await Seguidores.findAll({
+        attributes: ["id_usuario_seguido"],
+        where: {
+            id_usuario_seguidor: id_usuario
+        }
+    });
+
+    const idsUsuarios = relaciones.map(
+        relacion => relacion.id_usuario_seguido
+    );
+
+    if (idsUsuarios.length === 0) return [];
+
+    return await Usuario.findAll({
+        where: {
+            id_usuario: {
+                [Op.in]: idsUsuarios
+            }
+        },
+        attributes: [
+            "id_usuario",
+            "nombre",
+            "apellido",
+            "username",
+            "foto_perfil"
+        ]
+    });
+};
+
 // Consultar si un usuario sigue a otro
 const obtenerSeguimiento = async (
     id_usuario_seguidor,
@@ -335,5 +397,7 @@ module.exports = {
     contarSeguidores,
     contarSeguidos,
     obtenerSeguimiento,
-    obtenerSugerencias
+    obtenerSugerencias,
+    obtenerListaSeguidores,
+    obtenerListaSeguidos
 };
