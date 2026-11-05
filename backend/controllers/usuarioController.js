@@ -282,6 +282,30 @@ const obtenerEstadoSeguimiento = async (req, res) => {
     }
 };
 
+// Obtener sugerencias de usuarios
+const obtenerSugerencias = async (req, res) => {
+    try {
+        const idUsuarioActual = req.user.id_usuario;
+
+        const usuarios = await usuarioServicio.obtenerSugerencias(
+            idUsuarioActual
+        );
+
+        return res.status(200).json({
+            success: true,
+            usuarios
+        });
+
+    } catch (error) {
+        console.error("Error al obtener sugerencias:", error);
+
+        return res.status(500).json({
+            success: false,
+            mensaje: "No se pudieron obtener las sugerencias"
+        });
+    }
+};
+
 module.exports = {
     obtenerPerfil,
     actualizarPerfil,
@@ -291,5 +315,6 @@ module.exports = {
     seguirUsuario,
     dejarDeSeguir,
     obtenerEstadisticasSeguimiento,
-    obtenerEstadoSeguimiento
+    obtenerEstadoSeguimiento,
+    obtenerSugerencias
 };

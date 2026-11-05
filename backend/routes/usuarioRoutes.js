@@ -9,6 +9,7 @@ router.get("/buscar", authMiddleware, (req, res) => {
     }
 );
 
+router.get("/sugerencias", authMiddleware, usuarioController.obtenerSugerencias);
 
 // Obtener perfil del usuario logueado
 router.get("/perfil", authMiddleware, usuarioController.obtenerPerfil);

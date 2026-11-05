@@ -155,6 +155,11 @@ const obtenerEstadoSeguimiento = async (
     return Boolean(seguimiento);
 };
 
+// Obtener sugerencias aleatorias
+const obtenerSugerencias = async (idUsuarioActual) => {
+    return await usuarioDao.obtenerSugerencias(idUsuarioActual);
+};
+
 module.exports = {
     obtenerPorId,
     actualizarPerfil,
@@ -164,5 +169,6 @@ module.exports = {
     seguirUsuario,
     dejarDeSeguir,
     obtenerEstadisticasSeguimiento,
-    obtenerEstadoSeguimiento
+    obtenerEstadoSeguimiento,
+    obtenerSugerencias
 };

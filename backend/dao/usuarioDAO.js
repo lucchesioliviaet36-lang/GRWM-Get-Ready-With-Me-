@@ -295,6 +295,26 @@ const obtenerSeguimiento = async (
     });
 };
 
+// Obtener usuarios aleatorios para las sugerencias
+const obtenerSugerencias = async (idUsuarioActual) => {
+    return await Usuario.findAll({
+        where: {
+            id_usuario: {
+                [Op.ne]: idUsuarioActual
+            }
+        },
+        attributes: [
+            "id_usuario",
+            "nombre",
+            "apellido",
+            "username",
+            "foto_perfil"
+        ],
+        order: Usuario.sequelize.literal("RAND()"),
+        limit: 5
+    });
+};
+
 module.exports = {
     buscarParaInicioSesion,
     buscarPorUsername,
@@ -314,5 +334,6 @@ module.exports = {
     dejarDeSeguir,
     contarSeguidores,
     contarSeguidos,
-    obtenerSeguimiento
+    obtenerSeguimiento,
+    obtenerSugerencias
 };
