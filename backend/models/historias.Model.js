@@ -21,7 +21,9 @@ const Historia = sequelize.define('Historia', {
     }
 }, {
     tableName: 'historias',
-    timestamps: false // Como usas TIMESTAMP DEFAULT CURRENT_TIMESTAMP en MySQL
+    timestamps: true, // Activamos timestamps
+    createdAt: 'fecha_creacion', // Mapeamos createdAt a tu columna real
+    updatedAt: false // Desactivamos updatedAt si no lo tenés en la tabla
 });
 
 module.exports = Historia;

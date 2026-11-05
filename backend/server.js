@@ -31,7 +31,7 @@ app.use("/api/publicaciones", publicacionRoutes);
 app.use("/api/productos", productoRoutes);
 app.use( "/api/ai", iaOutfitRoutes);
 app.use("/api/chat", chatRoutes);
-app.use("/api/historia", historiaRoutes);
+app.use("/api/historias", historiaRoutes);
 
 app.get("/", (req, res) => {
     res.json({

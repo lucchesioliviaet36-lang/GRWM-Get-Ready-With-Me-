@@ -1,72 +1,80 @@
-import './pagina_principal.css';
+﻿import './pagina_principal.css';
 import { useState, useEffect } from 'react';
 
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
-import { CrearHistoria } from '../crear_historia/crear_historia'; // (Ajustá los ../ según corresponda)
+import { CrearHistoria } from '../crear_historia/crear_historia';
 
-const API_URL = "http://localhost:3000"; 
+const API_URL = 'http://localhost:3000';
 
 export default function Feed() {
-
-  // ==========================================
-  // ESTADOS
-  // ==========================================
-
   const [siguiendo, setSiguiendo] = useState({});
   const [likes, setLikes] = useState({});
   const [guardados, setGuardados] = useState({});
   const [corazonGrande, setCorazonGrande] = useState(null);
   const [historiaActiva, setHistoriaActiva] = useState(null);
-  const [comentario, setComentario] = useState('');//nuevo
+  const [comentario, setComentario] = useState('');
   const [liked, setLiked] = useState(false);
   const [publicaciones, setPublicaciones] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [historias, setHistorias] = useState([]);
-  const [pausado, setPaused] = useState(false); // Estado para pausar la historia
-  const [progreso, setProgreso] = useState(0); 
+  const [pausado, setPaused] = useState(false);
+  const [progreso, setProgreso] = useState(0);
   const [indiceActual, setIndiceActual] = useState(0);
   const [usuario, setUsuario] = useState(null);
-  const usuarioGuardado = JSON.parse(localStorage.getItem("usuario")) || {};
-  const [mostrarCrearHistoria, setMostrarCrearHistoria] = useState(false);// Estado para mostrar u ocultar la vista de crear historia
+  const [usuarioGuardado, setUsuarioGuardado] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('usuario')) || {};
+    } catch (error) {
+      return {};
+    }
+  });
+  const [mostrarCrearHistoria, setMostrarCrearHistoria] = useState(false);
 
   const obtenerFotoPerfil = () => {
-    const foto = usuario?.foto_perfil || usuarioGuardado.foto_perfil;
+    const foto = usuario?.foto_perfil || usuarioGuardado?.foto_perfil;
 
     if (!foto) {
       return null;
     }
 
-    if (foto.startsWith("http")) {
+    if (foto.startsWith('http')) {
       return foto;
     }
 
     return `${API_URL}${foto}`;
   };
 
-  const fotoPerfilHeader = obtenerFotoPerfil(); 
-  
+  const fotoPerfilHeader = obtenerFotoPerfil();
 
-  // ==========================================
-  // TIMERS Y FETCH DE DATOS (USEEFFECTS)
-  // ==========================================
-  const DURACION_HISTORIA = 10000; // 10 segundos
-  const INTERVALO_BARRA = 100;    
+  const obtenerImagenHistoria = (imagenUrl) => {
+    if (!imagenUrl) {
+      return 'http://localhost:3000/uploads/default-story.png';
+    }
 
-  // Fetch de historias
+    if (imagenUrl.startsWith('http')) {
+      return imagenUrl;
+    }
+
+    return `${API_URL}${imagenUrl}`;
+  };
+
+  const DURACION_HISTORIA = 10000;
+  const INTERVALO_BARRA = 100;
+
   useEffect(() => {
-    const token = localStorage.getItem('token'); 
+    const token = localStorage.getItem('token');
 
     fetch('http://localhost:3000/api/historias', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
+        'Authorization': token ? `Bearer ${token}` : '',
+      },
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Historias que llegaron del backend:", data);
+        console.log('Historias que llegaron del backend:', data);
         if (Array.isArray(data)) {
           setHistorias(data);
         } else if (data.historias && Array.isArray(data.historias)) {
@@ -80,21 +88,20 @@ export default function Feed() {
       });
   }, []);
 
-  // Fetch de publicaciones
   useEffect(() => {
-    const token = localStorage.getItem('token'); 
+    const token = localStorage.getItem('token');
 
     fetch('http://localhost:3000/api/publicaciones', {
-      method: 'GET', 
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json', 
-        'Authorization': `Bearer ${token}` 
-      }
+        'Content-Type': 'application/json',
+        'Authorization': token ? `Bearer ${token}` : '',
+      },
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(JSON.stringify(data, null, 2));        
-        if (Array.isArray(data)) { 
+        console.log(JSON.stringify(data, null, 2));
+        if (Array.isArray(data)) {
           setPublicaciones(data);
         } else if (data.publicaciones && Array.isArray(data.publicaciones)) {
           setPublicaciones(data.publicaciones);
@@ -109,9 +116,8 @@ export default function Feed() {
       });
   }, []);
 
-  // Efecto de la barra de progreso de la historia
   useEffect(() => {
-    if (!historiaActiva || pausado) return; 
+    if (!historiaActiva || pausado) return;
 
     const timerProgreso = setInterval(() => {
       setProgreso((prev) => {
@@ -122,7 +128,7 @@ export default function Feed() {
 
     const timerCambio = setTimeout(() => {
       siguienteHistoria();
-    }, DURACION_HISTORIA * (1 - progreso / 100)); 
+    }, DURACION_HISTORIA * (1 - progreso / 100));
 
     return () => {
       clearInterval(timerProgreso);
@@ -130,11 +136,9 @@ export default function Feed() {
     };
   }, [historiaActiva, indiceActual, pausado, progreso]);
 
-  // ==========================================
-  // FUNCIONES DE HISTORIAS
-  // ==========================================
   const abrirHistoria = (historia, index = 0) => {
     if (!historia) return;
+
     setHistoriaActiva(historia);
     setIndiceActual(index);
     setProgreso(0);
@@ -150,7 +154,7 @@ export default function Feed() {
   };
 
   const siguienteHistoria = () => {
-    if (historias && indiceActual < historias.length - 1) {
+    if (historias.length > 0 && indiceActual < historias.length - 1) {
       const siguienteIndex = indiceActual + 1;
       setIndiceActual(siguienteIndex);
       setHistoriaActiva(historias[siguienteIndex]);
@@ -163,7 +167,7 @@ export default function Feed() {
   };
 
   const anteriorHistoria = () => {
-    if (historias && indiceActual > 0) {
+    if (historias.length > 0 && indiceActual > 0) {
       const anteriorIndex = indiceActual - 1;
       setIndiceActual(anteriorIndex);
       setHistoriaActiva(historias[anteriorIndex]);
@@ -176,55 +180,26 @@ export default function Feed() {
   const handleEnviarComentario = (e) => {
     e.preventDefault();
     if (!comentario.trim()) return;
-    alert(`Mensaje enviado a ${historiaActiva.usuario}`);
+    alert(`Mensaje enviado a ${historiaActiva?.usuario ?? 'usuario'}`);
     setComentario('');
   };
-{/* Burbuja de tu propia historia / perfil */}
-<div 
-  className="story-item"
-  onClick={() => {
-    // Buscamos si hay una historia tuya usando tu ID real
-    const miId = usuarioGuardado.id || usuarioGuardado.id_usuario;
-    const miHistoria = historias.find(h => h.id_usuario === miId);
 
-    if (miHistoria) {
-      // Si ya tenés una historia, la abrís para verla
-      abrirHistoria(miHistoria);
-    } else {
-      // Si NO hay ninguna historia, abrimos la pantalla de crear historia
-      setMostrarCrearHistoria(true);
-    }
-  }}
->
-  <div className="avatar-ring user-story">
-    <img src={fotoPerfilHeader || "http://localhost:3000/uploads/default-avatar.png"} alt="Mi perfil" />
-    
-    {/* Si no hay historia tuya, mostramos el botón "+" */}
-    {!historias.some(h => h.id_usuario === (usuarioGuardado.id || usuarioGuardado.id_usuario)) && (
-      <span className="badge-mas">+</span>
-    )}
-  </div>
-  <span>Tu historia</span>
-</div> 
-  //=====================================
-  // OTRAS FUNCIONES (SUGERENCIAS, LIKES, ETC.)
-  // ==========================================
   const sugerencias = [
     {
       nombre: 'Lucía M.',
       handle: 'luciatrends',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop'
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop',
     },
     {
       nombre: 'Marcos V.',
       handle: 'marcos_fit',
-      avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&auto=format&fit=crop'
+      avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&auto=format&fit=crop',
     },
     {
       nombre: 'Sonia Vintage',
       handle: 'sonia_retro',
-      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop'
-    }
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop',
+    },
   ];
 
   const toggleSeguir = (handle) => {
@@ -247,280 +222,152 @@ export default function Feed() {
     }, 900);
   };
 
-  // ==========================================
-  // RETURN
-  // ==========================================
+  const miId = usuarioGuardado?.id ?? usuarioGuardado?.id_usuario ?? null;
+  const tieneMiHistoria = historias.some((historia) => Number(historia.id_usuario) === Number(miId));
 
   return (
-
     <div className="feed-page">
-
-
-      {/* HEADER */}
-
-        <Header />
-
-
-
-      {/* CUERPO */}
+      <Header />
 
       <div className="feed-body">
-
-
-        {/* ==================================
-            SIDEBAR
-        =================================== */}
-
         <aside className="sidebar">
-
-
-          {/* Tendencias */}
-
           <div className="card-box">
-
-            <h3>
-              Tendencias para ti
-            </h3>
-
+            <h3>Tendencias para ti</h3>
             <ul className="trends-list">
-
-              <li>
-                <span>#OOTDMinimal</span>
-                <small>1.2k posts</small>
-              </li>
-
-              <li>
-                <span>#CottageCore</span>
-                <small>1.2k posts</small>
-              </li>
-
-              <li>
-                <span>#StreetwearSp</span>
-                <small>1.2k posts</small>
-              </li>
-
-              <li>
-                <span>#SecondHandFinds</span>
-                <small>1.2k posts</small>
-              </li>
-
-              <li>
-                <span>#Y2KRevival</span>
-                <small>1.2k posts</small>
-              </li>
-
+              <li><span>#OOTDMinimal</span><small>1.2k posts</small></li>
+              <li><span>#CottageCore</span><small>1.2k posts</small></li>
+              <li><span>#StreetwearSp</span><small>1.2k posts</small></li>
+              <li><span>#SecondHandFinds</span><small>1.2k posts</small></li>
+              <li><span>#Y2KRevival</span><small>1.2k posts</small></li>
             </ul>
-
           </div>
 
-          {/* MODAL / PANTALLA DE CREAR HISTORIA */}
-      {mostrarCrearHistoria && (
-        <CrearHistoria onVolver={() => setMostrarCrearHistoria(false)} />
-      )}
-
-          {/* Sugerencias */}
+          {mostrarCrearHistoria && (
+            <CrearHistoria
+              onVolver={() => setMostrarCrearHistoria(false)}
+              onHistoriaCreada={cargarHistorias}
+            />
+          )}
 
           <div className="card-box">
-
-            <h3>
-              Sugerencias
-            </h3>
-
+            <h3>Sugerencias</h3>
             <ul className="suggestions-list">
-
               {sugerencias.map((persona) => (
-
                 <li key={persona.handle}>
-
-                  <img
-                    src={persona.avatar}
-                    alt={persona.nombre}
-                  />
-
+                  <img src={persona.avatar} alt={persona.nombre} />
                   <div className="suggestion-info">
-
-                    <strong>
-                      {persona.nombre}
-                    </strong>
-
-                    <small>
-                      @{persona.handle}
-                    </small>
-
+                    <strong>{persona.nombre}</strong>
+                    <small>@{persona.handle}</small>
                   </div>
-
                   <button
-                    className={
-                      `btn-follow ${
-                        siguiendo[persona.handle]
-                          ? 'siguiendo'
-                          : ''
-                      }`
-                    }
-
-                    onClick={() =>
-                      toggleSeguir(persona.handle)
-                    }
+                    className={`btn-follow ${siguiendo[persona.handle] ? 'siguiendo' : ''}`}
+                    onClick={() => toggleSeguir(persona.handle)}
                   >
-
-                    {siguiendo[persona.handle]
-                      ? 'Siguiendo'
-                      : 'Seguir'}
-
+                    {siguiendo[persona.handle] ? 'Siguiendo' : 'Seguir'}
                   </button>
-
                 </li>
-
               ))}
-
             </ul>
-
           </div>
-
         </aside>
 
-        
-
-
-        {/* ==================================
-            FEED
-        =================================== */}
-
         <main className="feed-content">
-
-
-          {/* CONTENEDOR CENTRAL */}
-
           <div className="feed-inner">
+            <section className="stories-bar">
+              <div
+                className="story-item"
+                onClick={() => {
+                  const miHistoria = historias.find((historia) => Number(historia.id_usuario) === Number(miId));
 
+                  if (miHistoria) {
+                    abrirHistoria(miHistoria);
+                  } else {
+                    setMostrarCrearHistoria(true);
+                  }
+                }}
+              >
+                <div className="avatar-ring user-story">
+                  {fotoPerfilHeader ? (
+                    <img src={fotoPerfilHeader} alt="Tu historia" />
+                  ) : (
+                    <img src="http://localhost:3000/uploads/default-avatar.png" alt="Tu historia" />
+                  )}
 
-            {/* ==================================
-    HISTORIAS Y VISOR
-    =================================== */}
+                  {!tieneMiHistoria && <span className="badge-mas">+</span>}
+                </div>
+                <span>Tu historia</span>
+              </div>
 
-<section className="stories-bar">
+              {historias
+                .filter((historia) => Number(historia.id_usuario) !== Number(miId))
+                .map((historia) => {
+                  const historiaId = historia.id_historia || historia.id;
 
-  {/* 1. Círculo FIJO de "Tu historia" (Evalúa si ya subiste historia o si debe abrir la cámara) */}
-  <div
-    className="story-item"
-    onClick={() => {
-      const miId = usuarioGuardado.id || usuarioGuardado.id_usuario;
-      const miHistoria = historias.find(h => h.id_usuario === miId);
+                  return (
+                    <div
+                      className="story-item"
+                      key={historiaId}
+                      onClick={() => abrirHistoria(historia)}
+                    >
+                      <div className="avatar-ring">
+                        <img
+                          src={obtenerImagenHistoria(historia.imagen_url)}
+                          alt={historia.usuario || 'Historia'}
+                        />
+                      </div>
+                      <span>{historia.usuario || `Usuario #${historia.id_usuario}`}</span>
+                    </div>
+                  );
+                })}
+            </section>
 
-      if (miHistoria) {
-        // Si ya subiste una historia, la abre para verla
-        abrirHistoria(miHistoria);
-      } else {
-        // Si no hay ninguna historia tuya, abre la pantalla de crear historia
-        setMostrarCrearHistoria(true);
-      }
-    }} 
-  >
-    <div className="avatar-ring user-story">
-      {fotoPerfilHeader ? (
-        <img
-          src={fotoPerfilHeader}
-          alt="Tu historia"
-        />
-      ) : (
-        <img
-          src="http://localhost:3000/uploads/default-avatar.png"
-          alt="Tu historia"
-        />
-      )}
+            {historiaActiva && (
+              <div className="story-modal-overlay" onClick={() => setHistoriaActiva(null)}>
+                <div className="story-modal-content" onClick={(e) => e.stopPropagation()}>
+                  <div className="story-header">
+                    <img
+                      src={obtenerImagenHistoria(historiaActiva.imagen_url)}
+                      alt={historiaActiva.usuario || 'Historia'}
+                      className="story-header-avatar"
+                    />
+                    <span>{historiaActiva.usuario || `Usuario #${historiaActiva.id_usuario}`}</span>
+                    <button className="story-close-btn" onClick={() => setHistoriaActiva(null)}>✕</button>
+                  </div>
 
-      {/* Muestra el botón "+" si todavía no subiste historia */}
-      {!historias.some(h => h.id_usuario === (usuarioGuardado.id || usuarioGuardado.id_usuario)) && (
-        <span className="badge-mas">+</span>
-      )}
-    </div>
-    <span>Tu historia</span>
-  </div>
+                  <div className="story-body">
+                    <img src={obtenerImagenHistoria(historiaActiva.imagen_url)} alt="Historia" />
+                  </div>
 
-  {/* 2. Mapeo de las historias de los demás usuarios (excluyendo la tuya para que no se repita) */}
-{historias
-  .filter(historia => historia.id_usuario !== (usuarioGuardado.id || usuarioGuardado.id_usuario))
-  .map((historia) => {
-    const historiaId = historia.id_historia || historia.id;
+                  <div className="story-footer">
+                    <form className="story-comment-form" onSubmit={handleEnviarComentario}>
+                      <input
+                        type="text"
+                        placeholder={`Enviar mensaje a ${historiaActiva.usuario || 'usuario'}...`}
+                        value={comentario}
+                        onChange={(e) => setComentario(e.target.value)}
+                      />
+                      {comentario.trim() && (
+                        <button type="submit" className="story-send-btn">Enviar</button>
+                      )}
+                    </form>
 
-    return (
-      <div
-        className="story-item"
-        key={historiaId}
-        onClick={() => abrirHistoria(historia)} 
-      >
-        <div className="avatar-ring">
-          <img
-            src={`http://localhost:3000${historia.imagen_url}`} 
-            alt={historia.usuario || "Historia"}
-          />
-        </div>
-        <span>
-          {historia.usuario || `Usuario #${historia.id_usuario}`}
-        </span>
-      </div>
-    );
-  })
-}
-</section>
-
-{/* Ventana flotante / modal para ver la historia activa */}
-{historiaActiva && (
-  <div className="story-modal-overlay" onClick={() => setHistoriaActiva(null)}>
-    <div className="story-modal-content" onClick={(e) => e.stopPropagation()}>
-      
-      {/* Cabecera */}
-      <div className="story-header">
-        <img src={`http://localhost:3000${historiaActiva.imagen_url}`} alt={historiaActiva.usuario} className="story-header-avatar" />
-        <span>{historiaActiva.usuario || `Usuario #${historiaActiva.id_usuario}`}</span>
-        <button className="story-close-btn" onClick={() => setHistoriaActiva(null)}>✕</button>
-      </div>
-
-      {/* Imagen de la historia */}
-      <div className="story-body">
-        <img src={`http://localhost:3000${historiaActiva.imagen_url}`} alt="Historia" />
-      </div>
-
-      {/* Barra inferior de interacciones */}
-      <div className="story-footer">
-        <form className="story-comment-form" onSubmit={handleEnviarComentario}>
-          <input
-            type="text"
-            placeholder={`Enviar mensaje a ${historiaActiva.usuario || 'usuario'}...`}
-            value={comentario}
-            onChange={(e) => setComentario(e.target.value)}
-          />
-          {comentario.trim() && (
-            <button type="submit" className="story-send-btn">Enviar</button>
-          )}
-        </form>
-
-        <button 
-          className={`story-like-btn ${liked ? 'liked' : ''}`}
-          onClick={() => setLiked(!liked)}
-        >
-          {liked ? '❤️' : '🤍'}
-        </button>
-      </div>
-
-    </div>
-  </div>
-)}
+                    <button
+                      className={`story-like-btn ${liked ? 'liked' : ''}`}
+                      onClick={() => setLiked(!liked)}
+                    >
+                      {liked ? '❤️' : '🤍'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-
         </main>
-
       </div>
-
-
-
-      {/* FOOTER */}
 
       <footer className="feed-footer">
         <Footer />
       </footer>
-
-
     </div>
   );
 }

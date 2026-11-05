@@ -1,4 +1,4 @@
-const Historia = require('../services/historiaService.js'); 
+const Historia = require('../models/historias.Model.js'); 
 
 // 1. GET /api/historias - Obtener todas las historias
 const obtenerHistorias = async (req, res) => {

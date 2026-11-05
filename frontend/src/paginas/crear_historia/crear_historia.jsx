@@ -1,52 +1,60 @@
 import { useState, useRef, useEffect } from 'react';
-import './Crear_historia.css'; // Tus estilos para que quede fachero
+import './crear_historia.css';
 
-export function CrearHistoria({ onVolver }) {
+const API_URL = 'http://localhost:3000';
+
+export function CrearHistoria({ onVolver, onHistoriaCreada }) {
   const videoRef = useRef(null);
   const [fotoCapturada, setFotoCapturada] = useState(null);
+  const [subiendo, setSubiendo] = useState(false);
 
-  // 1. Activar la cámara al cargar el componente
   useEffect(() => {
     async function iniciarCamara() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: 'user' } // Cámara frontal por defecto
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user' }
         });
+
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
       } catch (err) {
-        console.error("Error al acceder a la cámara:", err);
-        // Acá podés manejar si el usuario deniega el permiso
+        console.error('Error al acceder a la cámara:', err);
       }
     }
 
     iniciarCamara();
 
-    // Limpieza: apagar la cámara al desmontar la vista
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {
         const stream = videoRef.current.srcObject;
         const tracks = stream.getTracks();
-        tracks.forEach(track => track.stop());
+        tracks.forEach((track) => track.stop());
       }
     };
   }, []);
 
-  // 2. Función para sacar la foto con la cámara
+  const convertirDataUrlABlob = async (dataUrl, nombreArchivo) => {
+    const respuesta = await fetch(dataUrl);
+    const blob = await respuesta.blob();
+    return new File([blob], nombreArchivo, { type: blob.type || 'image/png' });
+  };
+
   const tomarFoto = () => {
     const video = videoRef.current;
+    if (!video || video.videoWidth === 0 || video.videoHeight === 0) return;
+
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
+
     const ctx = canvas.getContext('2d');
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
+
     const imagenUrl = canvas.toDataURL('image/png');
     setFotoCapturada(imagenUrl);
   };
 
-  // 3. Función para seleccionar foto de la fototeca del dispositivo
   const manejarSeleccionArchivo = (e) => {
     const archivo = e.target.files[0];
     if (archivo) {
@@ -55,41 +63,97 @@ export function CrearHistoria({ onVolver }) {
     }
   };
 
+  const guardarHistoria = async () => {
+    if (!fotoCapturada) return;
+
+    const token = localStorage.getItem('token');
+    const usuarioGuardado = JSON.parse(localStorage.getItem('usuario') || '{}');
+
+    if (!token) {
+      alert('Debes iniciar sesión para compartir una historia.');
+      return;
+    }
+
+    setSubiendo(true);
+
+    try {
+      const formData = new FormData();
+      let archivoImagen;
+
+      if (fotoCapturada.startsWith('data:image')) {
+        archivoImagen = await convertirDataUrlABlob(fotoCapturada, `historia-${Date.now()}.png`);
+      } else {
+        archivoImagen = await fetch(fotoCapturada)
+          .then((res) => res.blob())
+          .then((blob) => new File([blob], `historia-${Date.now()}.png`, { type: blob.type || 'image/png' }));
+      }
+
+      formData.append('imagen', archivoImagen);
+
+      const idUsuario = usuarioGuardado?.id ?? usuarioGuardado?.id_usuario;
+      if (idUsuario) {
+        formData.append('id_usuario', String(idUsuario));
+      }
+
+      const respuesta = await fetch(`${API_URL}/api/historias/historia`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      const data = await respuesta.json();
+
+      if (!respuesta.ok) {
+        throw new Error(data?.error || 'No se pudo guardar la historia');
+      }
+
+      if (onHistoriaCreada) {
+        onHistoriaCreada();
+      }
+
+      setFotoCapturada(null);
+      if (onVolver) {
+        onVolver();
+      }
+    } catch (error) {
+      console.error('Error al subir la historia:', error);
+      alert(error.message || 'Error al guardar la historia');
+    } finally {
+      setSubiendo(false);
+    }
+  };
+
   return (
     <div className="crear-historia-container">
-      {/* Botón para volver atrás */}
       <button className="btn-cerrar" onClick={onVolver}>✕</button>
 
-      {/* Si ya sacó o eligió una foto, la mostramos para confirmar */}
       {fotoCapturada ? (
         <div className="vista-previa">
           <img src={fotoCapturada} alt="Historia previa" />
           <div className="acciones-previa">
             <button onClick={() => setFotoCapturada(null)}>Repetir / Elegir otra</button>
-            <button className="btn-subir" onClick={() => alert('¡Guardar/Subir historia!')}>
-              Compartir historia 🚀
+            <button className="btn-subir" onClick={guardarHistoria} disabled={subiendo}>
+              {subiendo ? 'Subiendo...' : 'Compartir historia 🚀'}
             </button>
           </div>
         </div>
       ) : (
-        /* Si todavía no eligió nada, mostramos la cámara en vivo */
         <div className="camara-wrapper">
           <video ref={videoRef} autoPlay playsInline className="video-camara"></video>
-          
-          {/* Controles inferiores (Cámara + Fototeca) */}
+
           <div className="controles-inferiores">
-            {/* Input oculto para la fototeca */}
             <label className="btn-fototeca">
               📁 Galería
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={manejarSeleccionArchivo} 
-                style={{ display: 'none' }} 
+              <input
+                type="file"
+                accept="image/*"
+                onChange={manejarSeleccionArchivo}
+                style={{ display: 'none' }}
               />
             </label>
 
-            {/* Botón central para disparar la foto */}
             <button className="btn-disparador" onClick={tomarFoto}></button>
           </div>
         </div>

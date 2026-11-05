@@ -11,10 +11,13 @@ class HistoriaDAO {
 
     async obtenerTodas() {
         try {
-            return await Historia.findAll();
+            return await Historia.findAll({
+                order: [['fecha_creacion', 'DESC']] // <--- Forzamos que ordene por tu columna real
+            });
         } catch (error) {
             throw new Error(`Error en DAO al obtener historias: ${error.message}`);
         }
+    
     }
 }
 
