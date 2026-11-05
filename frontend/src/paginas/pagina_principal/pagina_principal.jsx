@@ -33,11 +33,9 @@ export default function Feed() {
 
   const obtenerFotoPerfil = () => {
     const foto = usuario?.foto_perfil || usuarioGuardado?.foto_perfil;
-
     if (!foto) return null;
     if (foto.startsWith('http')) return foto;
-
-    return `${API_URL}${foto}`;
+    return API_URL + foto;
   };
 
   const fotoPerfilHeader = obtenerFotoPerfil();
@@ -51,7 +49,7 @@ export default function Feed() {
       return imagenUrl;
     }
 
-    return `${API_URL}${imagenUrl}`;
+    return API_URL + imagenUrl;
   };
 
   const DURACION_HISTORIA = 10000;
@@ -59,13 +57,14 @@ export default function Feed() {
 
   const cargarHistorias = () => {
     const token = localStorage.getItem('token');
+    const authHeader = token ? 'Bearer ' + token : '';
 
-    fetch(`${API_URL}/api/historias`, {
+    fetch(API_URL + '/api/historias', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: token ? `Bearer ${token}` : ''
-      }
+        Authorization: authHeader,
+      },
     })
       .then((res) => res.json())
       .then((data) => {
@@ -73,7 +72,7 @@ export default function Feed() {
 
         if (Array.isArray(data)) {
           setHistorias(data);
-        } else if (data.historias && Array.isArray(data.historias)) {
+        } else if (data && Array.isArray(data.historias)) {
           setHistorias(data.historias);
         } else {
           setHistorias([]);
@@ -90,13 +89,14 @@ export default function Feed() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const authHeader = token ? 'Bearer ' + token : '';
 
-    fetch(`${API_URL}/api/publicaciones`, {
+    fetch(API_URL + '/api/publicaciones', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: token ? `Bearer ${token}` : ''
-      }
+        Authorization: authHeader,
+      },
     })
       .then((res) => res.json())
       .then((data) => {
@@ -104,7 +104,7 @@ export default function Feed() {
 
         if (Array.isArray(data)) {
           setPublicaciones(data);
-        } else if (data.publicaciones && Array.isArray(data.publicaciones)) {
+        } else if (data && Array.isArray(data.publicaciones)) {
           setPublicaciones(data.publicaciones);
         } else {
           setPublicaciones([]);
@@ -182,7 +182,7 @@ export default function Feed() {
   const handleEnviarComentario = (e) => {
     e.preventDefault();
     if (!comentario.trim()) return;
-    alert(`Mensaje enviado a ${historiaActiva?.usuario ?? 'usuario'}`);
+    alert('Mensaje enviado a ' + (historiaActiva?.usuario || 'usuario'));
     setComentario('');
   };
 
@@ -190,18 +190,18 @@ export default function Feed() {
     {
       nombre: 'Lucía M.',
       handle: 'luciatrends',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop'
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop',
     },
     {
       nombre: 'Marcos V.',
       handle: 'marcos_fit',
-      avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&auto=format&fit=crop'
+      avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&auto=format&fit=crop',
     },
     {
       nombre: 'Sonia Vintage',
       handle: 'sonia_retro',
-      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop'
-    }
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop',
+    },
   ];
 
   const toggleSeguir = (handle) => {
@@ -228,14 +228,14 @@ export default function Feed() {
   const tieneMiHistoria = historias.some((historia) => Number(historia.id_usuario) === Number(miId));
 
   return (
-    <div className="feed-page">
+    <div className='feed-page'>
       <Header />
 
-      <div className="feed-body">
-        <aside className="sidebar">
-          <div className="card-box">
+      <div className='feed-body'>
+        <aside className='sidebar'>
+          <div className='card-box'>
             <h3>Tendencias para ti</h3>
-            <ul className="trends-list">
+            <ul className='trends-list'>
               <li><span>#OOTDMinimal</span><small>1.2k posts</small></li>
               <li><span>#CottageCore</span><small>1.2k posts</small></li>
               <li><span>#StreetwearSp</span><small>1.2k posts</small></li>
@@ -251,18 +251,18 @@ export default function Feed() {
             />
           )}
 
-          <div className="card-box">
+          <div className='card-box'>
             <h3>Sugerencias</h3>
-            <ul className="suggestions-list">
+            <ul className='suggestions-list'>
               {sugerencias.map((persona) => (
                 <li key={persona.handle}>
                   <img src={persona.avatar} alt={persona.nombre} />
-                  <div className="suggestion-info">
+                  <div className='suggestion-info'>
                     <strong>{persona.nombre}</strong>
                     <small>@{persona.handle}</small>
                   </div>
                   <button
-                    className={`btn-follow ${siguiendo[persona.handle] ? 'siguiendo' : ''}`}
+                    className={'btn-follow ' + (siguiendo[persona.handle] ? 'siguiendo' : '')}
                     onClick={() => toggleSeguir(persona.handle)}
                   >
                     {siguiendo[persona.handle] ? 'Siguiendo' : 'Seguir'}
@@ -273,11 +273,11 @@ export default function Feed() {
           </div>
         </aside>
 
-        <main className="feed-content">
-          <div className="feed-inner">
-            <section className="stories-bar">
+        <main className='feed-content'>
+          <div className='feed-inner'>
+            <section className='stories-bar'>
               <div
-                className="story-item"
+                className='story-item'
                 onClick={() => {
                   const miHistoria = historias.find((historia) => Number(historia.id_usuario) === Number(miId));
 
@@ -288,14 +288,14 @@ export default function Feed() {
                   }
                 }}
               >
-                <div className="avatar-ring user-story">
+                <div className='avatar-ring user-story'>
                   {fotoPerfilHeader ? (
-                    <img src={fotoPerfilHeader} alt="Tu historia" />
+                    <img src={fotoPerfilHeader} alt='Tu historia' />
                   ) : (
-                    <img src="http://localhost:3000/uploads/default-avatar.png" alt="Tu historia" />
+                    <img src='http://localhost:3000/uploads/default-avatar.png' alt='Tu historia' />
                   )}
 
-                  {!tieneMiHistoria && <span className="badge-mas">+</span>}
+                  {!tieneMiHistoria && <span className='badge-mas'>+</span>}
                 </div>
                 <span>Tu historia</span>
               </div>
@@ -306,57 +306,47 @@ export default function Feed() {
                   const historiaId = historia.id_historia || historia.id;
 
                   return (
-                    <div
-                      className="story-item"
-                      key={historiaId}
-                      onClick={() => abrirHistoria(historia)}
-                    >
-                      <div className="avatar-ring">
-                        <img
-                          src={obtenerImagenHistoria(historia.imagen_url)}
-                          alt={historia.usuario || 'Historia'}
-                        />
+                    <div className='story-item' key={historiaId} onClick={() => abrirHistoria(historia)}>
+                      <div className='avatar-ring'>
+                        <img src={obtenerImagenHistoria(historia.imagen_url)} alt={historia.usuario || 'Historia'} />
                       </div>
-                      <span>{historia.usuario || `Usuario #${historia.id_usuario}`}</span>
+                      <span>{historia.usuario || 'Usuario #' + historia.id_usuario}</span>
                     </div>
                   );
                 })}
             </section>
 
             {historiaActiva && (
-              <div className="story-modal-overlay" onClick={() => setHistoriaActiva(null)}>
-                <div className="story-modal-content" onClick={(e) => e.stopPropagation()}>
-                  <div className="story-header">
+              <div className='story-modal-overlay' onClick={() => setHistoriaActiva(null)}>
+                <div className='story-modal-content' onClick={(e) => e.stopPropagation()}>
+                  <div className='story-header'>
                     <img
                       src={obtenerImagenHistoria(historiaActiva.imagen_url)}
                       alt={historiaActiva.usuario || 'Historia'}
-                      className="story-header-avatar"
+                      className='story-header-avatar'
                     />
-                    <span>{historiaActiva.usuario || `Usuario #${historiaActiva.id_usuario}`}</span>
-                    <button className="story-close-btn" onClick={() => setHistoriaActiva(null)}>✕</button>
+                    <span>{historiaActiva.usuario || 'Usuario #' + historiaActiva.id_usuario}</span>
+                    <button className='story-close-btn' onClick={() => setHistoriaActiva(null)}>✕</button>
                   </div>
 
-                  <div className="story-body">
-                    <img src={obtenerImagenHistoria(historiaActiva.imagen_url)} alt="Historia" />
+                  <div className='story-body'>
+                    <img src={obtenerImagenHistoria(historiaActiva.imagen_url)} alt='Historia' />
                   </div>
 
-                  <div className="story-footer">
-                    <form className="story-comment-form" onSubmit={handleEnviarComentario}>
+                  <div className='story-footer'>
+                    <form className='story-comment-form' onSubmit={handleEnviarComentario}>
                       <input
-                        type="text"
-                        placeholder={`Enviar mensaje a ${historiaActiva.usuario || 'usuario'}...`}
+                        type='text'
+                        placeholder={'Enviar mensaje a ' + (historiaActiva.usuario || 'usuario') + '...'}
                         value={comentario}
                         onChange={(e) => setComentario(e.target.value)}
                       />
                       {comentario.trim() && (
-                        <button type="submit" className="story-send-btn">Enviar</button>
+                        <button type='submit' className='story-send-btn'>Enviar</button>
                       )}
                     </form>
 
-                    <button
-                      className={`story-like-btn ${liked ? 'liked' : ''}`}
-                      onClick={() => setLiked(!liked)}
-                    >
+                    <button className={'story-like-btn ' + (liked ? 'liked' : '')} onClick={() => setLiked(!liked)}>
                       {liked ? '❤️' : '🤍'}
                     </button>
                   </div>
@@ -367,7 +357,7 @@ export default function Feed() {
         </main>
       </div>
 
-      <footer className="feed-footer">
+      <footer className='feed-footer'>
         <Footer />
       </footer>
     </div>

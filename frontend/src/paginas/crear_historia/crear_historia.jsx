@@ -12,7 +12,7 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
     async function iniciarCamara() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'user' }
+          video: { facingMode: 'user' },
         });
 
         if (videoRef.current) {
@@ -68,6 +68,7 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
 
     const token = localStorage.getItem('token');
     const usuarioGuardado = JSON.parse(localStorage.getItem('usuario') || '{}');
+    const authHeader = token ? 'Bearer ' + token : '';
 
     if (!token) {
       alert('Debes iniciar sesión para compartir una historia.');
@@ -81,11 +82,11 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
       let archivoImagen;
 
       if (fotoCapturada.startsWith('data:image')) {
-        archivoImagen = await convertirDataUrlABlob(fotoCapturada, `historia-${Date.now()}.png`);
+        archivoImagen = await convertirDataUrlABlob(fotoCapturada, 'historia-' + Date.now() + '.png');
       } else {
         archivoImagen = await fetch(fotoCapturada)
           .then((res) => res.blob())
-          .then((blob) => new File([blob], `historia-${Date.now()}.png`, { type: blob.type || 'image/png' }));
+          .then((blob) => new File([blob], 'historia-' + Date.now() + '.png', { type: blob.type || 'image/png' }));
       }
 
       formData.append('imagen', archivoImagen);
@@ -95,12 +96,12 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
         formData.append('id_usuario', String(idUsuario));
       }
 
-      const respuesta = await fetch(`${API_URL}/api/historias/historia`, {
+      const respuesta = await fetch(API_URL + '/api/historias/historia', {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: authHeader,
         },
-        body: formData
+        body: formData,
       });
 
       const data = await respuesta.json();
@@ -126,35 +127,35 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
   };
 
   return (
-    <div className="crear-historia-container">
-      <button className="btn-cerrar" onClick={onVolver}>✕</button>
+    <div className='crear-historia-container'>
+      <button className='btn-cerrar' onClick={onVolver}>✕</button>
 
       {fotoCapturada ? (
-        <div className="vista-previa">
-          <img src={fotoCapturada} alt="Historia previa" />
-          <div className="acciones-previa">
+        <div className='vista-previa'>
+          <img src={fotoCapturada} alt='Historia previa' />
+          <div className='acciones-previa'>
             <button onClick={() => setFotoCapturada(null)}>Repetir / Elegir otra</button>
-            <button className="btn-subir" onClick={guardarHistoria} disabled={subiendo}>
+            <button className='btn-subir' onClick={guardarHistoria} disabled={subiendo}>
               {subiendo ? 'Subiendo...' : 'Compartir historia 🚀'}
             </button>
           </div>
         </div>
       ) : (
-        <div className="camara-wrapper">
-          <video ref={videoRef} autoPlay playsInline className="video-camara"></video>
+        <div className='camara-wrapper'>
+          <video ref={videoRef} autoPlay playsInline className='video-camara'></video>
 
-          <div className="controles-inferiores">
-            <label className="btn-fototeca">
+          <div className='controles-inferiores'>
+            <label className='btn-fototeca'>
               📁 Galería
               <input
-                type="file"
-                accept="image/*"
+                type='file'
+                accept='image/*'
                 onChange={manejarSeleccionArchivo}
                 style={{ display: 'none' }}
               />
             </label>
 
-            <button className="btn-disparador" onClick={tomarFoto}></button>
+            <button className='btn-disparador' onClick={tomarFoto}></button>
           </div>
         </div>
       )}
