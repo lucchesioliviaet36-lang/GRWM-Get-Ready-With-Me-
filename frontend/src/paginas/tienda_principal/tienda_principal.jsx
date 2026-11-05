@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./tienda_principal.css";
@@ -167,9 +166,10 @@ function TiendaPrincipal() {
           {!cargandoProductos &&
             !errorProductos &&
             productosFiltrados.length === 0 && (
-              <p>No hay productos disponibles en esta categoría.</p>
+              <p className="mensaje-sin-productos">
+                No hay productos disponibles en esta categoría.
+              </p>
             )}
-
           <div className="grid-productos-principal">
             {productosFiltrados.map((producto) => (
               <article

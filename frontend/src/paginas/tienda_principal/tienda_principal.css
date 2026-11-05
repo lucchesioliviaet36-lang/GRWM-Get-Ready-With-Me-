@@ -11,6 +11,9 @@
   min-height: 100vh;
   background: #fffafb;
   color: #70415e;
+
+  display: flex;
+  flex-direction: column;
 }
 
 /* =========================
@@ -20,7 +23,7 @@
 .hero-tienda {
   width: calc(100% - 105px);
   max-width: 1240px;
-  height: 160px;
+  height: 195px;
   margin: 18px auto;
   border-radius: 14px;
 
@@ -40,27 +43,27 @@
 }
 
 .hero-texto {
-  width: 340px;
   background: rgba(255, 255, 255, 0.92);
   border-radius: 13px;
-  padding: 18px 25px;
   position: absolute;
+  width: 380px;
+  padding: 20px 28px;
   left: 30px;
-  top: 18px;
+  top: 20px;
 }
 
 .hero-texto h1 {
   margin: 0 0 7px;
   font-family: Georgia, serif;
   color: #70345c;
-  font-size: 22px;
+  font-size: 24px;
   line-height: 1.1;
 }
 
 .hero-texto p {
   margin: 0;
   color: #967387;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -76,6 +79,9 @@
   display: grid;
   grid-template-columns: 135px 1fr;
   gap: 25px;
+
+  flex: 1;
+  align-content: start;
 }
 
 /* =========================
@@ -93,7 +99,7 @@
 .sidebar-tienda h3 {
   margin: 0 0 10px;
   font-family: Georgia, serif;
-  font-size: 11px;
+  font-size: 14px;
   color: #70415e;
 }
 
@@ -102,7 +108,7 @@
   align-items: center;
   gap: 5px;
   margin-bottom: 8px;
-  font-size: 8px;
+  font-size: 11px;
   color: #8e7180;
 }
 
@@ -132,7 +138,7 @@
   border-radius: 7px;
 
   color: #8b6b7c;
-  font-size: 9px;
+  font-size: 12px;
   cursor: pointer;
 }
 
@@ -142,6 +148,7 @@
 
 .categorias button small {
   color: #b696a6;
+  font-size: 11px;
 }
 
 .categorias .categoria-activa {
@@ -168,7 +175,7 @@
 
   background: white;
   color: #70415e;
-  font-size: 12px;
+  font-size: 14px;
   outline: none;
 
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -203,7 +210,7 @@
   margin-bottom: 12px;
 
   color: #977688;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .barra-productos strong {
@@ -222,7 +229,7 @@
   color: #794561;
   border-radius: 6px;
   padding: 4px 7px;
-  font-size: 8px;
+  font-size: 11px;
   outline: none;
 }
 
@@ -281,7 +288,7 @@
 
   padding: 12px;
   color: #8e7180;
-  font-size: 12px;
+  font-size: 14px;
   text-align: center;
 }
 
@@ -297,7 +304,7 @@
 
   padding: 4px 7px;
   border-radius: 5px;
-  font-size: 7px;
+  font-size: 10px;
 }
 
 /* PRECIO DEL PRODUCTO */
@@ -312,7 +319,7 @@
 
   padding: 5px 8px;
   border-radius: 6px;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 /* DATOS DEL PRODUCTO */
@@ -324,7 +331,7 @@
 .datos-producto h3 {
   margin: 0 0 4px;
   font-family: Georgia, serif;
-  font-size: 11px;
+  font-size: 15px;
   color: #70415e;
   overflow-wrap: anywhere;
 }
@@ -332,19 +339,18 @@
 .datos-producto p {
   margin: 0;
   color: #a07f90;
-  font-size: 8px;
+  font-size: 11px;
   overflow-wrap: anywhere;
 }
 
 .descripcion-producto {
   margin-top: 8px !important;
   color: #8e7180;
-  font-size: 10px !important;
+  font-size: 12px !important;
   line-height: 1.5;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
 }
-
 
 /* VENDEDOR Y BOTÓN COMPRAR */
 
@@ -359,7 +365,7 @@
 
 .footer-producto span {
   color: #ad8799;
-  font-size: 8px;
+  font-size: 10px;
   overflow-wrap: anywhere;
 }
 
@@ -370,7 +376,7 @@
 
   border-radius: 6px;
   padding: 5px 10px;
-  font-size: 8px;
+  font-size: 11px;
   cursor: pointer;
   flex-shrink: 0;
 
@@ -406,6 +412,8 @@
 
   .hero-tienda {
     width: calc(100% - 40px);
+    height: 175px;
+
   }
 
   .grid-productos-principal {
@@ -444,4 +452,20 @@
   .barra-productos {
     align-items: flex-start;
   }
+}
+
+/* MENSAJE SIN PRODUCTOS */
+
+.mensaje-sin-productos {
+  margin: 28px 0;
+  padding: 15px;
+  text-align: center;
+
+  font-family: Georgia, serif;
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 500;
+
+  color: #a05c7e;
+  line-height: 1.5;
 }
