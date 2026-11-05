@@ -1,12 +1,26 @@
 const Historia = require('../models/historias.Model.js'); 
+const Usuario = require('../models/usuarioModels.js');
+const { Op } = require('sequelize');
 
 // 1. GET /api/historias - Obtener todas las historias
 const obtenerHistorias = async (req, res) => {
     try {
         const historias = await Historia.findAll({
-            order: [['createdAt', 'DESC']]
+            order: [['fecha_creacion', 'DESC']]
         });
-        res.json(historias);
+        const idsUsuario = [...new Set(historias.map((historia) => historia.id_usuario))];
+        const usuarios = idsUsuario.length
+            ? await Usuario.findAll({
+                attributes: ['id_usuario', 'username'],
+                where: { id_usuario: { [Op.in]: idsUsuario } }
+            })
+            : [];
+        const nombresPorId = new Map(usuarios.map((usuario) => [usuario.id_usuario, usuario.username]));
+
+        res.json(historias.map((historia) => ({
+            ...historia.get({ plain: true }),
+            usuario: nombresPorId.get(historia.id_usuario) || `Usuario #${historia.id_usuario}`
+        })));
     } catch (error) {
         console.error("Error al obtener historias:", error);
         res.status(500).json({ error: 'Error al consultar las historias' });
@@ -17,22 +31,28 @@ const obtenerHistorias = async (req, res) => {
 const crearHistoria = async (req, res) => {
     try {
         const imagen_url = req.file ? `/uploads/historias/${req.file.filename}` : null;
-        const id_usuario = req.usuario ? req.usuario.id : req.body.id_usuario;
+        const id_usuario = req.user?.id_usuario ?? req.body.id_usuario;
 
         if (!imagen_url) {
             return res.status(400).json({ error: 'La imagen es obligatoria para la historia' });
         }
 
-        const nuevaHistoria = await Historia.create({ 
+        if (!Number.isInteger(Number(id_usuario))) {
+            return res.status(400).json({ error: 'No se pudo identificar al usuario de la historia' });
+        }
+
+        const nuevaHistoria = await Historia.create({
             imagen_url,
-            id_usuario,
-            likesCount: 0
+            id_usuario: Number(id_usuario)
         });
 
         res.status(201).json({
             success: true,
             message: 'Historia creada con éxito',
-            historia: nuevaHistoria
+            historia: {
+                ...nuevaHistoria.get({ plain: true }),
+                usuario: req.user?.username || `Usuario #${id_usuario}`
+            }
         });
     } catch (error) {
         console.error("Error al crear historia:", error);

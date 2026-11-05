@@ -62,6 +62,20 @@
   z-index: 1;
 }
 
+.error-camara {
+  position: absolute;
+  z-index: 3;
+  top: 72px;
+  left: 16px;
+  right: 16px;
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.85);
+  color: #ffffff;
+  text-align: center;
+}
+
 /* Barra inferior con controles estéticos */
 .controles-inferiores {
   position: relative;
@@ -195,6 +209,12 @@
 .btn-subir {
   background: linear-gradient(135deg, #ec4899, #db2777); /* Degradado rosa/fucsia moderno */
   color: #ffffff;
+}
+
+.btn-subir:disabled {
+  cursor: wait;
+  opacity: 0.65;
+  transform: none;
 }
 
 .btn-subir:hover {

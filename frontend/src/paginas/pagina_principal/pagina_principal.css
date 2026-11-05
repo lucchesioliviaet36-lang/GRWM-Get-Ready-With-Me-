@@ -387,6 +387,32 @@ body {
 
   text-overflow: ellipsis;
 }
+
+.stories-status,
+.stories-error {
+  flex: 0 0 auto;
+  align-self: center;
+  color: #70485b;
+  font-size: 12px;
+}
+
+.stories-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid #e8b8c9;
+  border-radius: 10px;
+  background: #fff7fa;
+}
+
+.stories-error button {
+  border: 0;
+  background: transparent;
+  color: #a52e62;
+  font-weight: 600;
+  cursor: pointer;
+}
 /* =====================================================
    MODAL DE HISTORIA ABIERTA
 ===================================================== */
@@ -444,9 +470,21 @@ body {
   border: 1.5px solid #ffffff;
 }
 
-.story-header span {
+.story-header-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.story-header-info span {
   font-size: 13px;
   font-weight: 600;
+}
+
+.story-header-info time {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 11px;
 }
 
 .story-close-btn {

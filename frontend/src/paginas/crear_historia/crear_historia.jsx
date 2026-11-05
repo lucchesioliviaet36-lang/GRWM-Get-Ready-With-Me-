@@ -7,10 +7,15 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
   const videoRef = useRef(null);
   const [fotoCapturada, setFotoCapturada] = useState(null);
   const [subiendo, setSubiendo] = useState(false);
+  const [errorCamara, setErrorCamara] = useState('');
 
   useEffect(() => {
     async function iniciarCamara() {
       try {
+        if (!navigator.mediaDevices?.getUserMedia) {
+          throw new Error('La cámara no está disponible en este navegador o contexto.');
+        }
+
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: 'user' },
         });
@@ -20,6 +25,7 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
         }
       } catch (err) {
         console.error('Error al acceder a la cámara:', err);
+        setErrorCamara(err.message || 'No se pudo acceder a la cámara.');
       }
     }
 
@@ -34,10 +40,23 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
     };
   }, []);
 
-  const convertirDataUrlABlob = async (dataUrl, nombreArchivo) => {
+  const crearArchivoImagen = (blob) => {
+    const tipo = blob.type || 'image/png';
+    const extensiones = {
+      'image/jpeg': 'jpg',
+      'image/png': 'png',
+      'image/webp': 'webp',
+      'image/gif': 'gif',
+      'image/svg+xml': 'svg',
+    };
+    const extension = extensiones[tipo] || 'png';
+    return new File([blob], `historia-${Date.now()}.${extension}`, { type: tipo });
+  };
+
+  const convertirDataUrlABlob = async (dataUrl) => {
     const respuesta = await fetch(dataUrl);
     const blob = await respuesta.blob();
-    return new File([blob], nombreArchivo, { type: blob.type || 'image/png' });
+    return crearArchivoImagen(blob);
   };
 
   const tomarFoto = () => {
@@ -67,7 +86,6 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
     if (!fotoCapturada) return;
 
     const token = localStorage.getItem('token');
-    const usuarioGuardado = JSON.parse(localStorage.getItem('usuario') || '{}');
     const authHeader = token ? 'Bearer ' + token : '';
 
     if (!token) {
@@ -82,19 +100,14 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
       let archivoImagen;
 
       if (fotoCapturada.startsWith('data:image')) {
-        archivoImagen = await convertirDataUrlABlob(fotoCapturada, 'historia-' + Date.now() + '.png');
+        archivoImagen = await convertirDataUrlABlob(fotoCapturada);
       } else {
         archivoImagen = await fetch(fotoCapturada)
           .then((res) => res.blob())
-          .then((blob) => new File([blob], 'historia-' + Date.now() + '.png', { type: blob.type || 'image/png' }));
+          .then(crearArchivoImagen);
       }
 
       formData.append('imagen', archivoImagen);
-
-      const idUsuario = usuarioGuardado?.id ?? usuarioGuardado?.id_usuario;
-      if (idUsuario) {
-        formData.append('id_usuario', String(idUsuario));
-      }
 
       const respuesta = await fetch(API_URL + '/api/historias/historia', {
         method: 'POST',
@@ -104,14 +117,23 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
         body: formData,
       });
 
-      const data = await respuesta.json();
+      let data = {};
+      try {
+        data = await respuesta.json();
+      } catch {
+        data = {};
+      }
 
       if (!respuesta.ok) {
-        throw new Error(data?.error || 'No se pudo guardar la historia');
+        throw new Error(data?.error || data?.message || `No se pudo guardar la historia (${respuesta.status})`);
+      }
+
+      if (!data.historia) {
+        throw new Error('El servidor no devolvió la historia guardada.');
       }
 
       if (onHistoriaCreada) {
-        onHistoriaCreada();
+        onHistoriaCreada(data.historia);
       }
 
       setFotoCapturada(null);
@@ -143,6 +165,7 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
       ) : (
         <div className='camara-wrapper'>
           <video ref={videoRef} autoPlay playsInline className='video-camara'></video>
+          {errorCamara && <p className='error-camara' role='alert'>{errorCamara}</p>}
 
           <div className='controles-inferiores'>
             <label className='btn-fototeca'>
