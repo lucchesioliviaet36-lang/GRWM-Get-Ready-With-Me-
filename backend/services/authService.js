@@ -45,6 +45,21 @@ const registrar = async (datos) => {
         DVH: null
     });
 
+    await digitoVerificadorService.recalcularRegistroYTabla(
+        Usuario,
+        "Usuario",
+        "id_usuario",
+        nuevoUsuario.id_usuario
+    );
+
+    await bitacoraService.registrar({
+        idUsuario: nuevoUsuario.id_usuario,
+        descripcion: "Registro de usuario",
+        accion: "INSERT",
+        tablaAfectada: "Usuario",
+        usuarioAfectado: nuevoUsuario.id_usuario
+    });
+
     return nuevoUsuario;
 };
 

@@ -1,6 +1,12 @@
 const prendaDAO = require("../dao/prendaDAO");
+const Prenda = require("../models/prenda");
+const digitoVerificadorService = require("./digitoVerificadorService");
+const bitacoraService = require("./bitacoraService");
 
 const agregarPrenda = async (idUsuario, datos) => {
+
+    const prenda = await prendaDAO.crear(datos);
+
     if (!datos.nombre) {
         throw new Error("El nombre de la prenda es obligatorio");
     }
@@ -8,6 +14,21 @@ const agregarPrenda = async (idUsuario, datos) => {
     if (!datos.categoria) {
         throw new Error("La categoría es obligatoria");
     }
+    
+    await digitoVerificadorService.recalcularRegistroYTabla(
+        Prenda,
+        "Prenda",
+        "id_prenda",
+        prenda.id_prenda
+    );
+
+    await bitacoraService.registrar({
+        idUsuario,
+        descripcion: "Nueva prenda agregada",
+        accion: "INSERT",
+        tablaAfectada: "Prenda",
+        usuarioAfectado: idUsuario
+    });
 
     return await prendaDAO.crear({
         id_usuario: idUsuario,
@@ -19,6 +40,7 @@ const agregarPrenda = async (idUsuario, datos) => {
         origen: datos.origen || "manual",
         id_externo: datos.id_externo || null
     });
+
 };
 
 const obtenerArmario = async (idUsuario) => {
@@ -27,6 +49,20 @@ const obtenerArmario = async (idUsuario) => {
 
 const eliminarPrenda = async (idPrenda, idUsuario) => {
     const eliminadas = await prendaDAO.eliminar(idPrenda, idUsuario);
+
+    await digitoVerificadorService.recalcularTabla(
+        Prenda,
+        "Prenda",
+        "id_prenda"
+    );
+    
+    await bitacoraService.registrar({
+        idUsuario,
+        descripcion: "Prenda eliminada",
+        accion: "DELETE",
+        tablaAfectada: "Prenda",
+        usuarioAfectado: idUsuario
+    });
 
     if (eliminadas === 0) {
         throw new Error("Prenda no encontrada");

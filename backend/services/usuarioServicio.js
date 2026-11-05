@@ -1,4 +1,7 @@
 const usuarioDao = require("../dao/usuarioDAO");
+const Usuario = require("../models/usuarioModels");
+const digitoVerificadorService = require("./digitoVerificadorService");
+const bitacoraService = require("./bitacoraService");
 const bcrypt = require("bcrypt");
 
 // 1. Obtener datos del usuario por ID
@@ -38,6 +41,21 @@ const actualizarPerfil = async (id_usuario, datos) => {
         id_usuario,
         datosActualizados
     );
+    
+    await digitoVerificadorService.recalcularRegistroYTabla(
+        Usuario,
+        "Usuario",
+        "id_usuario",
+        id_usuario
+    );
+
+    await bitacoraService.registrar({
+        idUsuario,
+        descripcion: "Perfil actualizado",
+        accion: "UPDATE",
+        tablaAfectada: "Usuario",
+        usuarioAfectado: idUsuario
+    });
 
     return await usuarioDao.buscarPorId(id_usuario);
 };
