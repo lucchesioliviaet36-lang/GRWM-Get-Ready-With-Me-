@@ -1,8 +1,8 @@
 ﻿import './pagina_principal.css';
 import { useState, useEffect } from 'react';
 
-import Header from "../../componentes/header/header";
-import Footer from "../../componentes/footer/footer";
+import Header from '../../componentes/header/header';
+import Footer from '../../componentes/footer/footer';
 import { CrearHistoria } from '../crear_historia/crear_historia';
 
 const API_URL = 'http://localhost:3000';
@@ -34,13 +34,8 @@ export default function Feed() {
   const obtenerFotoPerfil = () => {
     const foto = usuario?.foto_perfil || usuarioGuardado?.foto_perfil;
 
-    if (!foto) {
-      return null;
-    }
-
-    if (foto.startsWith('http')) {
-      return foto;
-    }
+    if (!foto) return null;
+    if (foto.startsWith('http')) return foto;
 
     return `${API_URL}${foto}`;
   };
@@ -62,19 +57,20 @@ export default function Feed() {
   const DURACION_HISTORIA = 10000;
   const INTERVALO_BARRA = 100;
 
-  useEffect(() => {
+  const cargarHistorias = () => {
     const token = localStorage.getItem('token');
 
-    fetch('http://localhost:3000/api/historias', {
+    fetch(`${API_URL}/api/historias`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token ? `Bearer ${token}` : '',
-      },
+        Authorization: token ? `Bearer ${token}` : ''
+      }
     })
       .then((res) => res.json())
       .then((data) => {
         console.log('Historias que llegaron del backend:', data);
+
         if (Array.isArray(data)) {
           setHistorias(data);
         } else if (data.historias && Array.isArray(data.historias)) {
@@ -86,21 +82,26 @@ export default function Feed() {
       .catch((err) => {
         console.error('Error al conectar con el backend para historias:', err);
       });
+  };
+
+  useEffect(() => {
+    cargarHistorias();
   }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
 
-    fetch('http://localhost:3000/api/publicaciones', {
+    fetch(`${API_URL}/api/publicaciones`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token ? `Bearer ${token}` : '',
-      },
+        Authorization: token ? `Bearer ${token}` : ''
+      }
     })
       .then((res) => res.json())
       .then((data) => {
         console.log(JSON.stringify(data, null, 2));
+
         if (Array.isArray(data)) {
           setPublicaciones(data);
         } else if (data.publicaciones && Array.isArray(data.publicaciones)) {
@@ -108,6 +109,7 @@ export default function Feed() {
         } else {
           setPublicaciones([]);
         }
+
         setCargando(false);
       })
       .catch((err) => {
@@ -188,18 +190,18 @@ export default function Feed() {
     {
       nombre: 'Lucía M.',
       handle: 'luciatrends',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop'
     },
     {
       nombre: 'Marcos V.',
       handle: 'marcos_fit',
-      avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&auto=format&fit=crop',
+      avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&auto=format&fit=crop'
     },
     {
       nombre: 'Sonia Vintage',
       handle: 'sonia_retro',
-      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop',
-    },
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop'
+    }
   ];
 
   const toggleSeguir = (handle) => {
