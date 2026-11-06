@@ -11,15 +11,18 @@ const obtenerHistorias = async (req, res) => {
         const idsUsuario = [...new Set(historias.map((historia) => historia.id_usuario))];
         const usuarios = idsUsuario.length
             ? await Usuario.findAll({
-                attributes: ['id_usuario', 'username'],
+                attributes: ['id_usuario', 'username', 'foto_perfil'],
                 where: { id_usuario: { [Op.in]: idsUsuario } }
             })
             : [];
-        const nombresPorId = new Map(usuarios.map((usuario) => [usuario.id_usuario, usuario.username]));
+        const usuariosPorId = new Map(
+            usuarios.map((usuario) => [usuario.id_usuario, usuario.get({ plain: true })])
+        );
 
         res.json(historias.map((historia) => ({
             ...historia.get({ plain: true }),
-            usuario: nombresPorId.get(historia.id_usuario) || `Usuario #${historia.id_usuario}`
+            usuario: usuariosPorId.get(historia.id_usuario)?.username || `Usuario #${historia.id_usuario}`,
+            foto_perfil: usuariosPorId.get(historia.id_usuario)?.foto_perfil || null
         })));
     } catch (error) {
         console.error("Error al obtener historias:", error);

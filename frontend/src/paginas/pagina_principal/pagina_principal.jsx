@@ -1,5 +1,6 @@
 ﻿import './pagina_principal.css';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Header from '../../componentes/header/header';
 import Footer from '../../componentes/footer/footer';
@@ -8,6 +9,7 @@ import { CrearHistoria } from '../crear_historia/crear_historia';
 const API_URL = 'http://localhost:3000';
 
 export default function Feed() {
+  const navigate = useNavigate();
   const DURACION_HISTORIA = 10000;
   const INTERVALO_BARRA = 100;
   const [siguiendo, setSiguiendo] = useState({});
@@ -15,17 +17,18 @@ export default function Feed() {
   const [guardados, setGuardados] = useState({});
   const [corazonGrande, setCorazonGrande] = useState(null);
   const [historiaActiva, setHistoriaActiva] = useState(null);
+  const [historiasDelVisor, setHistoriasDelVisor] = useState([]);
   const [comentario, setComentario] = useState('');
   const [liked, setLiked] = useState(false);
   const [publicaciones, setPublicaciones] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [errorPublicaciones, setErrorPublicaciones] = useState('');
   const [historias, setHistorias] = useState([]);
   const [cargandoHistorias, setCargandoHistorias] = useState(true);
   const [errorHistorias, setErrorHistorias] = useState('');
   const [pausado, setPaused] = useState(false);
   const [progreso, setProgreso] = useState(0);
   const [indiceActual, setIndiceActual] = useState(0);
-  const [usuario, setUsuario] = useState(null);
   const [usuarioGuardado, setUsuarioGuardado] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('usuario')) || {};
@@ -41,7 +44,7 @@ export default function Feed() {
   const tiempoRestanteHistoria = useRef(DURACION_HISTORIA);
 
   const obtenerFotoPerfil = () => {
-    const foto = usuario?.foto_perfil || usuarioGuardado?.foto_perfil;
+    const foto = usuarioGuardado?.foto_perfil;
 
     if (!foto) return null;
     if (foto.startsWith('http')) return foto;
@@ -50,6 +53,12 @@ export default function Feed() {
   };
 
   const fotoPerfilHeader = obtenerFotoPerfil();
+
+  const obtenerAvatarUsuario = (fotoPerfil) => {
+    if (!fotoPerfil) return `${API_URL}/uploads/default-avatar.png`;
+    if (fotoPerfil.startsWith('http')) return fotoPerfil;
+    return `${API_URL}/${fotoPerfil.replace(/^\/+/, '')}`;
+  };
 
   const obtenerImagenHistoria = (imagenUrl) => {
     if (!imagenUrl) {
@@ -70,10 +79,10 @@ export default function Feed() {
   }, []);
 
   const siguienteHistoria = useCallback(() => {
-    if (historias.length > 0 && indiceActual < historias.length - 1) {
+    if (historiasDelVisor.length > 0 && indiceActual < historiasDelVisor.length - 1) {
       const siguienteIndex = indiceActual + 1;
       setIndiceActual(siguienteIndex);
-      setHistoriaActiva(historias[siguienteIndex]);
+      setHistoriaActiva(historiasDelVisor[siguienteIndex]);
       tiempoRestanteHistoria.current = DURACION_HISTORIA;
       setProgreso(0);
       setLiked(false);
@@ -81,7 +90,7 @@ export default function Feed() {
     } else {
       cerrarHistoria();
     }
-  }, [historias, indiceActual, cerrarHistoria]);
+  }, [historiasDelVisor, indiceActual, cerrarHistoria]);
 
   const cargarHistorias = () => {
     const token = localStorage.getItem('token');
@@ -142,7 +151,20 @@ export default function Feed() {
         Authorization: token ? `Bearer ${token}` : ''
       }
     })
-      .then((res) => res.json())
+      .then(async (res) => {
+        let data;
+        try {
+          data = await res.json();
+        } catch {
+          data = {};
+        }
+
+        if (!res.ok) {
+          throw new Error(data?.error || data?.message || `Error al cargar publicaciones (${res.status})`);
+        }
+
+        return data;
+      })
       .then((data) => {
         console.log(JSON.stringify(data, null, 2));
 
@@ -151,13 +173,15 @@ export default function Feed() {
         } else if (data.publicaciones && Array.isArray(data.publicaciones)) {
           setPublicaciones(data.publicaciones);
         } else {
-          setPublicaciones([]);
+          throw new Error('El servidor devolvió un formato de publicaciones no válido.');
         }
 
-        setCargando(false);
       })
       .catch((err) => {
         console.error('Error al conectar con el backend:', err);
+        setErrorPublicaciones(err.message || 'No se pudieron cargar las publicaciones.');
+      })
+      .finally(() => {
         setCargando(false);
       });
   }, []);
@@ -180,9 +204,10 @@ export default function Feed() {
     return () => clearInterval(timerProgreso);
   }, [historiaActiva, indiceActual, pausado, siguienteHistoria]);
 
-  const abrirHistoria = (historia, index = 0) => {
+  const abrirHistoria = (historia, index = 0, grupoHistorias = historias) => {
     if (!historia) return;
 
+    setHistoriasDelVisor(grupoHistorias);
     setHistoriaActiva(historia);
     setIndiceActual(index);
     tiempoRestanteHistoria.current = DURACION_HISTORIA;
@@ -193,10 +218,10 @@ export default function Feed() {
   };
 
   const anteriorHistoria = () => {
-    if (historias.length > 0 && indiceActual > 0) {
+    if (historiasDelVisor.length > 0 && indiceActual > 0) {
       const anteriorIndex = indiceActual - 1;
       setIndiceActual(anteriorIndex);
-      setHistoriaActiva(historias[anteriorIndex]);
+      setHistoriaActiva(historiasDelVisor[anteriorIndex]);
       tiempoRestanteHistoria.current = DURACION_HISTORIA;
       setProgreso(0);
       setLiked(false);
@@ -309,13 +334,43 @@ export default function Feed() {
     }, 900);
   };
 
-  const miId = usuarioGuardado?.id ?? usuarioGuardado?.id_usuario ?? null;
-  const tieneMiHistoria = historias.some((historia) => Number(historia.id_usuario) === Number(miId));
-  const historiaActivaEsPropia = miId !== null
-    && Number(historiaActiva?.id_usuario) === Number(miId);
+  const miId = usuarioGuardado?.id_usuario ?? usuarioGuardado?.id ?? usuarioGuardado?.user_id ?? null;
+  const miUsername = usuarioGuardado?.username?.replace(/^@/, '').toLowerCase();
+  const gruposHistorias = Array.from(
+    historias.reduce((grupos, historia) => {
+      const username = historia.usuario?.toLowerCase();
+      const clave = historia.id_usuario != null
+        ? `id:${historia.id_usuario}`
+        : `username:${username || historia.usuario}`;
+      const grupo = grupos.get(clave) || {
+        historias: [],
+        usuario: historia.usuario,
+        foto_perfil: historia.foto_perfil
+      };
+      grupo.historias.push(historia);
+      if (!grupo.foto_perfil && historia.foto_perfil) {
+        grupo.foto_perfil = historia.foto_perfil;
+      }
+      grupos.set(clave, grupo);
+      return grupos;
+    }, new Map()).values()
+  );
+  const esMiGrupoHistoria = (grupo) => {
+    const historia = grupo.historias[0];
+    const coincideId = miId != null && Number(historia.id_usuario) === Number(miId);
+    const coincideUsername = miUsername
+      && grupo.usuario?.replace(/^@/, '').toLowerCase() === miUsername;
+    return Boolean(coincideId || coincideUsername);
+  };
+  const miGrupoHistoria = gruposHistorias.find(esMiGrupoHistoria);
+  const tieneMiHistoria = Boolean(miGrupoHistoria);
+  const historiaActivaEsPropia = Boolean(historiaActiva && (
+    (miId != null && Number(historiaActiva.id_usuario) === Number(miId))
+    || (miUsername && historiaActiva.usuario?.replace(/^@/, '').toLowerCase() === miUsername)
+  ));
   const fotoPerfilHistoriaActiva = historiaActivaEsPropia
-    ? fotoPerfilHeader || `${API_URL}/uploads/default-avatar.png`
-    : obtenerImagenHistoria(historiaActiva?.imagen_url);
+    ? obtenerAvatarUsuario(fotoPerfilHeader || miGrupoHistoria?.foto_perfil)
+    : obtenerAvatarUsuario(historiaActiva?.foto_perfil);
 
   const handleHistoriaCreada = (historia) => {
     const historiaNueva = {
@@ -327,6 +382,7 @@ export default function Feed() {
       historiaNueva,
       ...actuales.filter((actual) => (actual.id_historia || actual.id) !== (historiaNueva.id_historia || historiaNueva.id)),
     ]);
+    setHistoriasDelVisor([historiaNueva]);
     setHistoriaActiva(historiaNueva);
     setIndiceActual(0);
     tiempoRestanteHistoria.current = DURACION_HISTORIA;
@@ -397,43 +453,39 @@ export default function Feed() {
               <div
                 className="story-item"
                 onClick={() => {
-                  const miHistoriaIndex = historias.findIndex((historia) => Number(historia.id_usuario) === Number(miId));
-                  const miHistoria = historias[miHistoriaIndex];
-
-                  if (miHistoria) {
-                    abrirHistoria(miHistoria, miHistoriaIndex);
+                  if (miGrupoHistoria) {
+                    abrirHistoria(miGrupoHistoria.historias[0], 0, miGrupoHistoria.historias);
                   } else {
                     setMostrarCrearHistoria(true);
                   }
                 }}
               >
                 <div className="avatar-ring user-story">
-                  {fotoPerfilHeader ? (
-                    <img src={fotoPerfilHeader} alt="Tu historia" />
-                  ) : (
-                    <img src="http://localhost:3000/uploads/default-avatar.png" alt="Tu historia" />
-                  )}
+                  <img
+                    src={obtenerAvatarUsuario(fotoPerfilHeader || miGrupoHistoria?.foto_perfil)}
+                    alt="Tu historia"
+                  />
 
                   {!tieneMiHistoria && <span className="badge-mas">+</span>}
                 </div>
                 <span>Tu historia</span>
               </div>
 
-              {historias
-                .map((historia, index) => {
-                  if (Number(historia.id_usuario) === Number(miId)) return null;
-
-                  const historiaId = historia.id_historia || historia.id;
+              {gruposHistorias
+                .filter((grupo) => !esMiGrupoHistoria(grupo))
+                .map((grupo) => {
+                  const historia = grupo.historias[0];
+                  const historiaId = historia.id_usuario ?? historia.id_historia ?? historia.id;
 
                   return (
                     <div
                       className="story-item"
                       key={historiaId}
-                      onClick={() => abrirHistoria(historia, index)}
+                      onClick={() => abrirHistoria(historia, 0, grupo.historias)}
                     >
                       <div className="avatar-ring">
                         <img
-                          src={obtenerImagenHistoria(historia.imagen_url)}
+                          src={obtenerAvatarUsuario(grupo.foto_perfil)}
                           alt={historia.usuario || 'Historia'}
                         />
                       </div>
@@ -441,6 +493,58 @@ export default function Feed() {
                     </div>
                   );
                 })}
+            </section>
+
+            <section className="posts-grid" aria-label="Publicaciones">
+              {cargando && <p className="posts-status">Cargando publicaciones...</p>}
+              {errorPublicaciones && (
+                <p className="posts-status posts-error" role="alert">{errorPublicaciones}</p>
+              )}
+              {!cargando && !errorPublicaciones && publicaciones.length === 0 && (
+                <p className="posts-status">Todavía no hay publicaciones.</p>
+              )}
+              {!errorPublicaciones && publicaciones.map((publicacion) => {
+                const publicacionId = publicacion.id_publicacion || publicacion.id;
+                const autor = publicacion.usuario;
+                const imagenAutor = autor?.foto_perfil
+                  ? obtenerImagenHistoria(autor.foto_perfil)
+                  : `${API_URL}/uploads/default-avatar.png`;
+
+                return (
+                  <article className="post-card" key={publicacionId}>
+                    <div className="post-header">
+                      <div className="user-info">
+                        <img className="user-avatar" src={imagenAutor} alt="" />
+                        <strong>{autor?.username || `Usuario #${publicacion.id_usuario}`}</strong>
+                      </div>
+                    </div>
+                    {publicacion.imagen_url ? (
+                      <button
+                        type="button"
+                        className="image-container"
+                        onClick={() => navigate(`/publicacion/${publicacionId}`)}
+                        aria-label={`Ver publicación de ${autor?.username || 'un usuario'}`}
+                      >
+                        <img
+                          src={obtenerImagenHistoria(publicacion.imagen_url)}
+                          alt={publicacion.descripcion || 'Imagen de la publicación'}
+                        />
+                      </button>
+                    ) : (
+                      <div className="post-no-image">Esta publicación no tiene imagen.</div>
+                    )}
+                    <p className="post-description">
+                      {publicacion.descripcion || 'Sin descripción'}
+                    </p>
+                    {publicacion.musica_titulo && (
+                      <p className="post-music">
+                        {publicacion.musica_titulo}
+                        {publicacion.musica_artista && ` · ${publicacion.musica_artista}`}
+                      </p>
+                    )}
+                  </article>
+                );
+              })}
             </section>
 
             {historiaActiva && (
