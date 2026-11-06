@@ -1,5 +1,5 @@
 ﻿import './pagina_principal.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 import Header from '../../componentes/header/header';
 import Footer from '../../componentes/footer/footer';
@@ -8,6 +8,8 @@ import { CrearHistoria } from '../crear_historia/crear_historia';
 const API_URL = 'http://localhost:3000';
 
 export default function Feed() {
+  const DURACION_HISTORIA = 10000;
+  const INTERVALO_BARRA = 100;
   const [siguiendo, setSiguiendo] = useState({});
   const [likes, setLikes] = useState({});
   const [guardados, setGuardados] = useState({});
@@ -32,6 +34,11 @@ export default function Feed() {
     }
   });
   const [mostrarCrearHistoria, setMostrarCrearHistoria] = useState(false);
+  const clickHistoriaTimer = useRef(null);
+  const mantenerPresionadoTimer = useRef(null);
+  const mantenerPresionado = useRef(false);
+  const ignorarClickDespuesDePausa = useRef(false);
+  const tiempoRestanteHistoria = useRef(DURACION_HISTORIA);
 
   const obtenerFotoPerfil = () => {
     const foto = usuario?.foto_perfil || usuarioGuardado?.foto_perfil;
@@ -56,8 +63,25 @@ export default function Feed() {
     return `${API_URL}/${imagenUrl.replace(/^\/+/, '')}`;
   };
 
-  const DURACION_HISTORIA = 10000;
-  const INTERVALO_BARRA = 100;
+  const cerrarHistoria = useCallback(() => {
+    setHistoriaActiva(null);
+    setProgreso(0);
+    setPaused(false);
+  }, []);
+
+  const siguienteHistoria = useCallback(() => {
+    if (historias.length > 0 && indiceActual < historias.length - 1) {
+      const siguienteIndex = indiceActual + 1;
+      setIndiceActual(siguienteIndex);
+      setHistoriaActiva(historias[siguienteIndex]);
+      tiempoRestanteHistoria.current = DURACION_HISTORIA;
+      setProgreso(0);
+      setLiked(false);
+      setComentario('');
+    } else {
+      cerrarHistoria();
+    }
+  }, [historias, indiceActual, cerrarHistoria]);
 
   const cargarHistorias = () => {
     const token = localStorage.getItem('token');
@@ -142,50 +166,30 @@ export default function Feed() {
     if (!historiaActiva || pausado) return;
 
     const timerProgreso = setInterval(() => {
-      setProgreso((prev) => {
-        if (prev >= 100) return 100;
-        return prev + (INTERVALO_BARRA / DURACION_HISTORIA) * 100;
-      });
+      tiempoRestanteHistoria.current = Math.max(
+        0,
+        tiempoRestanteHistoria.current - INTERVALO_BARRA
+      );
+      setProgreso(100 - (tiempoRestanteHistoria.current / DURACION_HISTORIA) * 100);
+
+      if (tiempoRestanteHistoria.current === 0) {
+        siguienteHistoria();
+      }
     }, INTERVALO_BARRA);
 
-    const timerCambio = setTimeout(() => {
-      siguienteHistoria();
-    }, DURACION_HISTORIA * (1 - progreso / 100));
-
-    return () => {
-      clearInterval(timerProgreso);
-      clearTimeout(timerCambio);
-    };
-  }, [historiaActiva, indiceActual, pausado, progreso]);
+    return () => clearInterval(timerProgreso);
+  }, [historiaActiva, indiceActual, pausado, siguienteHistoria]);
 
   const abrirHistoria = (historia, index = 0) => {
     if (!historia) return;
 
     setHistoriaActiva(historia);
     setIndiceActual(index);
+    tiempoRestanteHistoria.current = DURACION_HISTORIA;
     setProgreso(0);
     setPaused(false);
     setLiked(false);
     setComentario('');
-  };
-
-  const cerrarHistoria = () => {
-    setHistoriaActiva(null);
-    setProgreso(0);
-    setPaused(false);
-  };
-
-  const siguienteHistoria = () => {
-    if (historias.length > 0 && indiceActual < historias.length - 1) {
-      const siguienteIndex = indiceActual + 1;
-      setIndiceActual(siguienteIndex);
-      setHistoriaActiva(historias[siguienteIndex]);
-      setProgreso(0);
-      setLiked(false);
-      setComentario('');
-    } else {
-      cerrarHistoria();
-    }
   };
 
   const anteriorHistoria = () => {
@@ -193,11 +197,72 @@ export default function Feed() {
       const anteriorIndex = indiceActual - 1;
       setIndiceActual(anteriorIndex);
       setHistoriaActiva(historias[anteriorIndex]);
+      tiempoRestanteHistoria.current = DURACION_HISTORIA;
       setProgreso(0);
       setLiked(false);
       setComentario('');
     }
   };
+
+  const manejarToqueHistoria = () => {
+    if (ignorarClickDespuesDePausa.current) {
+      ignorarClickDespuesDePausa.current = false;
+      return;
+    }
+
+    if (clickHistoriaTimer.current) {
+      clearTimeout(clickHistoriaTimer.current);
+      clickHistoriaTimer.current = null;
+      anteriorHistoria();
+      return;
+    }
+
+    clickHistoriaTimer.current = setTimeout(() => {
+      clickHistoriaTimer.current = null;
+      tiempoRestanteHistoria.current = DURACION_HISTORIA;
+      setProgreso(0);
+    }, 250);
+  };
+
+  const iniciarMantenerPresionado = (event) => {
+    if (event.button !== 0) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    mantenerPresionado.current = false;
+    mantenerPresionadoTimer.current = setTimeout(() => {
+      mantenerPresionado.current = true;
+      setPaused(true);
+    }, 350);
+  };
+
+  const terminarMantenerPresionado = () => {
+    if (mantenerPresionadoTimer.current) {
+      clearTimeout(mantenerPresionadoTimer.current);
+      mantenerPresionadoTimer.current = null;
+    }
+
+    if (mantenerPresionado.current) {
+      mantenerPresionado.current = false;
+      ignorarClickDespuesDePausa.current = true;
+      setPaused(false);
+    }
+  };
+
+  const cancelarMantenerPresionado = () => {
+    if (mantenerPresionadoTimer.current) {
+      clearTimeout(mantenerPresionadoTimer.current);
+      mantenerPresionadoTimer.current = null;
+    }
+
+    if (mantenerPresionado.current) {
+      mantenerPresionado.current = false;
+      setPaused(false);
+    }
+  };
+
+  useEffect(() => () => {
+    if (clickHistoriaTimer.current) clearTimeout(clickHistoriaTimer.current);
+    if (mantenerPresionadoTimer.current) clearTimeout(mantenerPresionadoTimer.current);
+  }, []);
 
   const handleEnviarComentario = (e) => {
     e.preventDefault();
@@ -246,6 +311,12 @@ export default function Feed() {
 
   const miId = usuarioGuardado?.id ?? usuarioGuardado?.id_usuario ?? null;
   const tieneMiHistoria = historias.some((historia) => Number(historia.id_usuario) === Number(miId));
+  const historiaActivaEsPropia = miId !== null
+    && Number(historiaActiva?.id_usuario) === Number(miId);
+  const fotoPerfilHistoriaActiva = historiaActivaEsPropia
+    ? fotoPerfilHeader || `${API_URL}/uploads/default-avatar.png`
+    : obtenerImagenHistoria(historiaActiva?.imagen_url);
+
   const handleHistoriaCreada = (historia) => {
     const historiaNueva = {
       ...historia,
@@ -258,6 +329,7 @@ export default function Feed() {
     ]);
     setHistoriaActiva(historiaNueva);
     setIndiceActual(0);
+    tiempoRestanteHistoria.current = DURACION_HISTORIA;
     setProgreso(0);
     setPaused(false);
     setLiked(false);
@@ -374,10 +446,20 @@ export default function Feed() {
             {historiaActiva && (
               <div className="story-modal-overlay" onClick={() => setHistoriaActiva(null)}>
                 <div className="story-modal-content" onClick={(e) => e.stopPropagation()}>
+                  <div
+                    className="story-progress"
+                    role="progressbar"
+                    aria-label="Tiempo de la historia"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={Math.round(progreso)}
+                  >
+                    <div className="story-progress-fill" style={{ width: `${progreso}%` }} />
+                  </div>
                   <div className="story-header">
                     <img
-                      src={obtenerImagenHistoria(historiaActiva.imagen_url)}
-                      alt={historiaActiva.usuario || 'Historia'}
+                      src={fotoPerfilHistoriaActiva}
+                      alt={historiaActivaEsPropia ? 'Tu foto de perfil' : (historiaActiva.usuario || 'Historia')}
                       className="story-header-avatar"
                     />
                     <div className="story-header-info">
@@ -391,7 +473,13 @@ export default function Feed() {
                     <button className="story-close-btn" onClick={() => setHistoriaActiva(null)}>✕</button>
                   </div>
 
-                  <div className="story-body">
+                  <div
+                    className="story-body"
+                    onClick={manejarToqueHistoria}
+                    onPointerDown={iniciarMantenerPresionado}
+                    onPointerUp={terminarMantenerPresionado}
+                    onPointerCancel={cancelarMantenerPresionado}
+                  >
                     <img src={obtenerImagenHistoria(historiaActiva.imagen_url)} alt="Historia" />
                   </div>
 
