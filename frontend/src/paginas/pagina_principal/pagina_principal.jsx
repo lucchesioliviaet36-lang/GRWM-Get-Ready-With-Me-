@@ -394,6 +394,59 @@ export default function Feed() {
     setMostrarCrearHistoria(false);
   };
 
+  const eliminarHistoriaActiva = async () => {
+    if (!historiaActivaEsPropia) return;
+
+    const confirmar = window.confirm('¿Querés eliminar esta historia? Esta acción no se puede deshacer.');
+    if (!confirmar) return;
+
+    const token = localStorage.getItem('token');
+    const historiaId = historiaActiva.id_historia || historiaActiva.id;
+
+    try {
+      const respuesta = await fetch(`${API_URL}/api/historias/${historiaId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: token ? `Bearer ${token}` : ''
+        }
+      });
+
+      let data = {};
+      try {
+        data = await respuesta.json();
+      } catch {
+        data = {};
+      }
+
+      if (!respuesta.ok) {
+        throw new Error(data.error || data.message || 'No se pudo eliminar la historia.');
+      }
+
+      const historiasActualizadas = historias.filter(
+        (historia) => (historia.id_historia || historia.id) !== historiaId
+      );
+      const visorActualizado = historiasDelVisor.filter(
+        (historia) => (historia.id_historia || historia.id) !== historiaId
+      );
+      const nuevoIndice = Math.min(indiceActual, visorActualizado.length - 1);
+
+      setHistorias(historiasActualizadas);
+      setHistoriasDelVisor(visorActualizado);
+
+      if (visorActualizado.length === 0) {
+        cerrarHistoria();
+      } else {
+        setIndiceActual(nuevoIndice);
+        setHistoriaActiva(visorActualizado[nuevoIndice]);
+        tiempoRestanteHistoria.current = DURACION_HISTORIA;
+        setProgreso(0);
+      }
+    } catch (error) {
+      console.error('Error al eliminar historia:', error);
+      window.alert(error.message || 'No se pudo eliminar la historia.');
+    }
+  };
+
   return (
     <div className="feed-page">
       <Header />
@@ -589,6 +642,15 @@ export default function Feed() {
                           : ''}
                       </time>
                     </div>
+                    {historiaActivaEsPropia && (
+                      <button
+                        type="button"
+                        className="story-delete-btn"
+                        onClick={eliminarHistoriaActiva}
+                      >
+                        Eliminar
+                      </button>
+                    )}
                     <button className="story-close-btn" onClick={() => setHistoriaActiva(null)}>✕</button>
                   </div>
 

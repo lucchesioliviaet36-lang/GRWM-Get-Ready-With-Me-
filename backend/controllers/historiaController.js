@@ -1,6 +1,8 @@
 const Historia = require('../models/historias.Model.js'); 
 const Usuario = require('../models/usuarioModels.js');
 const { Op } = require('sequelize');
+const fs = require('fs/promises');
+const path = require('path');
 
 // 1. GET /api/historias - Obtener todas las historias
 const obtenerHistorias = async (req, res) => {
@@ -63,6 +65,52 @@ const crearHistoria = async (req, res) => {
     }
 };
 
+const eliminarHistoria = async (req, res) => {
+    try {
+        const idHistoria = Number(req.params.id);
+        const idUsuario = Number(req.user?.id_usuario ?? req.user?.id);
+
+        if (!Number.isInteger(idHistoria) || idHistoria <= 0) {
+            return res.status(400).json({ error: 'ID de historia inválido' });
+        }
+
+        if (!Number.isInteger(idUsuario) || idUsuario <= 0) {
+            return res.status(401).json({ error: 'No se pudo identificar al usuario' });
+        }
+
+        const historia = await Historia.findByPk(idHistoria);
+        if (!historia) {
+            return res.status(404).json({ error: 'Historia no encontrada' });
+        }
+
+        if (Number(historia.id_usuario) !== idUsuario) {
+            return res.status(403).json({ error: 'Solo podés eliminar tu propia historia' });
+        }
+
+        const rutaImagen = historia.imagen_url;
+        await historia.destroy();
+
+        const nombreArchivo = path.basename(rutaImagen || '');
+        if (rutaImagen?.startsWith('/uploads/historias/') && nombreArchivo) {
+            const rutaUploads = path.resolve(__dirname, '../uploads/historias');
+            const rutaArchivo = path.resolve(rutaUploads, nombreArchivo);
+
+            if (rutaArchivo.startsWith(`${rutaUploads}${path.sep}`)) {
+                try {
+                    await fs.unlink(rutaArchivo);
+                } catch (error) {
+                    if (error.code !== 'ENOENT') throw error;
+                }
+            }
+        }
+
+        return res.status(200).json({ success: true, message: 'Historia eliminada' });
+    } catch (error) {
+        console.error('Error al eliminar historia:', error);
+        return res.status(500).json({ error: 'Error al eliminar la historia' });
+    }
+};
+
 // 3. POST /api/historias/:id/like - Dar like a una historia
 const darLikeHistoria = async (req, res) => {
     try {
@@ -106,6 +154,7 @@ const comentarHistoria = async (req, res) => {
 module.exports = {
     obtenerHistorias,
     crearHistoria,
+    eliminarHistoria,
     darLikeHistoria,
     comentarHistoria
 };
