@@ -12,7 +12,9 @@ export default function Feed() {
   const navigate = useNavigate();
   const DURACION_HISTORIA = 10000;
   const INTERVALO_BARRA = 100;
-  const [siguiendo, setSiguiendo] = useState({});
+  const [sugerencias, setSugerencias] = useState([]);
+  const [cargandoSugerencias, setCargandoSugerencias] = useState(true);
+  const [errorSugerencias, setErrorSugerencias] = useState('');
   const [likes, setLikes] = useState({});
   const [guardados, setGuardados] = useState({});
   const [corazonGrande, setCorazonGrande] = useState(null);
@@ -139,6 +141,53 @@ export default function Feed() {
 
   useEffect(() => {
     cargarHistorias();
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const controller = new AbortController();
+
+    if (!token) {
+      setErrorSugerencias('Iniciá sesión para ver sugerencias.');
+      setCargandoSugerencias(false);
+      return () => controller.abort();
+    }
+
+    fetch(`${API_URL}/api/usuarios/sugerencias`, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal: controller.signal
+    })
+      .then(async (res) => {
+        let data = {};
+        try {
+          data = await res.json();
+        } catch {
+          data = {};
+        }
+
+        if (!res.ok) {
+          throw new Error(data?.mensaje || `Error al cargar sugerencias (${res.status})`);
+        }
+
+        const usuariosSugeridos = Array.isArray(data)
+          ? data
+          : data.usuarios;
+        if (!Array.isArray(usuariosSugeridos)) {
+          throw new Error('El servidor devolvió un formato de sugerencias no válido.');
+        }
+        return usuariosSugeridos;
+      })
+      .then(setSugerencias)
+      .catch((error) => {
+        if (error.name === 'AbortError') return;
+        console.error('Error al cargar sugerencias:', error);
+        setErrorSugerencias(error.message || 'No se pudieron cargar las sugerencias.');
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setCargandoSugerencias(false);
+      });
+
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {
@@ -296,28 +345,6 @@ export default function Feed() {
     setComentario('');
   };
 
-  const sugerencias = [
-    {
-      nombre: 'Lucía M.',
-      handle: 'luciatrends',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop'
-    },
-    {
-      nombre: 'Marcos V.',
-      handle: 'marcos_fit',
-      avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&auto=format&fit=crop'
-    },
-    {
-      nombre: 'Sonia Vintage',
-      handle: 'sonia_retro',
-      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop'
-    }
-  ];
-
-  const toggleSeguir = (handle) => {
-    setSiguiendo((prev) => ({ ...prev, [handle]: !prev[handle] }));
-  };
-
   const toggleLike = (id) => {
     setLikes((prev) => ({ ...prev, [id]: !prev[id] }));
   };
@@ -371,6 +398,25 @@ export default function Feed() {
   const fotoPerfilHistoriaActiva = historiaActivaEsPropia
     ? obtenerAvatarUsuario(fotoPerfilHeader || miGrupoHistoria?.foto_perfil)
     : obtenerAvatarUsuario(historiaActiva?.foto_perfil);
+  const tendencias = publicaciones.reduce((conteo, publicacion) => {
+    const hashtags = publicacion.descripcion?.match(/(^|\s)#([\p{L}\p{N}_]+)/gu) || [];
+    const hashtagsUnicos = new Set(hashtags.map((hashtagCompleto) => {
+      const hashtag = hashtagCompleto.trim().replace(/^#/, '');
+      return hashtag.toLocaleLowerCase();
+    }));
+    hashtagsUnicos.forEach((clave) => {
+      const hashtag = hashtags
+        .map((hashtagCompleto) => hashtagCompleto.trim().replace(/^#/, ''))
+        .find((nombre) => nombre.toLocaleLowerCase() === clave);
+      const tendencia = conteo.get(clave) || { nombre: hashtag, cantidad: 0 };
+      tendencia.cantidad += 1;
+      conteo.set(clave, tendencia);
+    });
+    return conteo;
+  }, new Map());
+  const tendenciasOrdenadas = [...tendencias.values()]
+    .sort((a, b) => b.cantidad - a.cantidad || a.nombre.localeCompare(b.nombre))
+    .slice(0, 5);
 
   const handleHistoriaCreada = (historia) => {
     const historiaNueva = {
@@ -456,11 +502,17 @@ export default function Feed() {
           <div className="card-box">
             <h3>Tendencias para ti</h3>
             <ul className="trends-list">
-              <li><span>#OOTDMinimal</span><small>1.2k posts</small></li>
-              <li><span>#CottageCore</span><small>1.2k posts</small></li>
-              <li><span>#StreetwearSp</span><small>1.2k posts</small></li>
-              <li><span>#SecondHandFinds</span><small>1.2k posts</small></li>
-              <li><span>#Y2KRevival</span><small>1.2k posts</small></li>
+              {cargando && <li className="sidebar-status">Cargando tendencias...</li>}
+              {!cargando && tendenciasOrdenadas.map((tendencia) => (
+                <li key={tendencia.nombre}>
+                  <span>#{tendencia.nombre}</span>
+                  <small>{tendencia.cantidad} {tendencia.cantidad === 1 ? 'post' : 'posts'}</small>
+                </li>
+              ))}
+              {!cargando && !errorPublicaciones && tendenciasOrdenadas.length === 0 && (
+                <li className="sidebar-status">Agregá hashtags a las descripciones para ver tendencias.</li>
+              )}
+              {errorPublicaciones && <li className="sidebar-status">No se pudieron calcular las tendencias.</li>}
             </ul>
           </div>
 
@@ -474,21 +526,39 @@ export default function Feed() {
           <div className="card-box">
             <h3>Sugerencias</h3>
             <ul className="suggestions-list">
-              {sugerencias.map((persona) => (
-                <li key={persona.handle}>
-                  <img src={persona.avatar} alt={persona.nombre} />
-                  <div className="suggestion-info">
-                    <strong>{persona.nombre}</strong>
-                    <small>@{persona.handle}</small>
-                  </div>
-                  <button
-                    className={`btn-follow ${siguiendo[persona.handle] ? 'siguiendo' : ''}`}
-                    onClick={() => toggleSeguir(persona.handle)}
-                  >
-                    {siguiendo[persona.handle] ? 'Siguiendo' : 'Seguir'}
-                  </button>
-                </li>
-              ))}
+              {cargandoSugerencias && <li className="sidebar-status">Cargando sugerencias...</li>}
+              {errorSugerencias && <li className="sidebar-status" role="alert">{errorSugerencias}</li>}
+              {!cargandoSugerencias && !errorSugerencias && sugerencias.length === 0 && (
+                <li className="sidebar-status">No hay sugerencias por ahora.</li>
+              )}
+              {!errorSugerencias && sugerencias.map((persona) => {
+                const nombre = [persona.nombre, persona.apellido].filter(Boolean).join(' ')
+                  || persona.username
+                  || `Usuario #${persona.id_usuario}`;
+
+                return (
+                  <li key={persona.id_usuario}>
+                    <button
+                      type="button"
+                      className="suggestion-profile"
+                      onClick={() => navigate(`/perfil_usuario/${persona.id_usuario}`)}
+                      aria-label={`Ver perfil de ${nombre}`}
+                    >
+                      <img src={obtenerAvatarUsuario(persona.foto_perfil)} alt="" />
+                      <span className="suggestion-info">
+                        <strong>{nombre}</strong>
+                        <small>@{persona.username}</small>
+                      </span>
+                    </button>
+                    <button
+                      className="btn-follow"
+                      onClick={() => navigate(`/perfil_usuario/${persona.id_usuario}`)}
+                    >
+                      Ver perfil
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </aside>
