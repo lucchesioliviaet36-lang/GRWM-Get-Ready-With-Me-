@@ -564,6 +564,26 @@ export default function Feed() {
         </aside>
 
         <main className="feed-content">
+          <button
+            type="button"
+            className="messages-fab"
+            onClick={() => navigate('/Chat')}
+            aria-label="Ir a mensajes"
+            title="Mensajes"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="m22 2-7 20-4-9-9-4Z" />
+              <path d="M22 2 11 13" />
+            </svg>
+          </button>
           <div className="feed-inner">
             <section className="stories-bar">
               {cargandoHistorias && <span className="stories-status">Cargando historias...</span>}

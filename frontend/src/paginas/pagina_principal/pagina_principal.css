@@ -311,6 +311,40 @@ body {
   overflow: hidden;
 }
 
+.messages-fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 100;
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #b64e79;
+  color: #ffffff;
+  box-shadow: 0 5px 16px rgba(104, 53, 79, 0.28);
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.messages-fab svg {
+  width: 24px;
+  height: 24px;
+}
+
+.messages-fab:hover {
+  transform: translateY(-2px) scale(1.05);
+  background: #963b65;
+  box-shadow: 0 7px 20px rgba(104, 53, 79, 0.35);
+}
+
+.messages-fab:focus-visible {
+  outline: 3px solid #e59bb7;
+  outline-offset: 3px;
+}
+
 
 /* =====================================================
    HISTORIAS
