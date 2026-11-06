@@ -22,6 +22,8 @@ function PerfilUsuario() {
     const [seguidos, setSeguidos] = useState(0);
 
     const [loSigo, setLoSigo] = useState(false);
+    const [errorSeguimiento, setErrorSeguimiento] = useState('');
+    const [seguimientoDisponible, setSeguimientoDisponible] = useState(true);
     const [cargando, setCargando] = useState(true);
     const [procesando, setProcesando] = useState(false);
     const [error, setError] = useState('');
@@ -38,79 +40,128 @@ function PerfilUsuario() {
             return imagen;
         }
 
-        return `${API_URL}${imagen}`;
+        return `${API_URL}${imagen.startsWith("/") ? "" : "/"}${imagen}`;
     };
 
     // Cargar información del perfil
     useEffect(() => {
-        if (!id || !token) return;
+        if (!id) {
+            setError("No se indicó qué perfil querés ver.");
+            setCargando(false);
+            return;
+        }
 
+        if (!token) {
+            setError("Iniciá sesión para ver este perfil.");
+            setCargando(false);
+            return;
+        }
+
+        const controller = new AbortController();
         const cargarPerfil = async () => {
             try {
                 setCargando(true);
                 setError('');
+                setUsuario(null);
+                setPublicaciones([]);
+                setSeguidores(0);
+                setSeguidos(0);
+                setLoSigo(false);
+                setErrorSeguimiento('');
+                setSeguimientoDisponible(true);
 
                 const headers = {
                     Authorization: `Bearer ${token}`
                 };
 
-                const [
-                    respuestaUsuario,
-                    respuestaPublicaciones,
-                    respuestaEstadisticas,
-                    respuestaSeguimiento
-                ] = await Promise.all([
-                    fetch(`${API_URL}/api/usuarios/${id}`, { headers }),
-                    fetch(`${API_URL}/api/publicaciones`, { headers }),
-                    fetch(`${API_URL}/api/usuarios/${id}/estadisticas-seguimiento`, { headers }),
-                    fetch(`${API_URL}/api/usuarios/${id}/seguir`, { headers })
-                ]);
+                const consultarJson = async (url) => {
+                    const respuesta = await fetch(url, {
+                        headers,
+                        signal: controller.signal
+                    });
+                    let cuerpo = {};
+                    try {
+                        cuerpo = await respuesta.json();
+                    } catch {
+                        cuerpo = {};
+                    }
 
-                if (
-                    !respuestaUsuario.ok ||
-                    !respuestaPublicaciones.ok ||
-                    !respuestaEstadisticas.ok ||
-                    !respuestaSeguimiento.ok
-                ) {
-                    throw new Error("No se pudo cargar el perfil");
+                    if (!respuesta.ok) {
+                        throw new Error(
+                            cuerpo.mensaje ||
+                            cuerpo.message ||
+                            `No se pudo cargar el perfil (${respuesta.status}).`
+                        );
+                    }
+
+                    return cuerpo;
+                };
+
+                const [datosUsuario, datosPublicaciones] = await Promise.all([
+                    consultarJson(`${API_URL}/api/usuarios/${id}`),
+                    consultarJson(`${API_URL}/api/publicaciones`)
+                ]);
+                const listaPublicaciones = Array.isArray(datosPublicaciones)
+                    ? datosPublicaciones
+                    : datosPublicaciones?.publicaciones;
+
+                if (!Array.isArray(listaPublicaciones)) {
+                    throw new Error("El servidor devolvió un formato de publicaciones no válido.");
                 }
 
-                const datosUsuario = await respuestaUsuario.json();
-                const datosPublicaciones = await respuestaPublicaciones.json();
-                const datosEstadisticas = await respuestaEstadisticas.json();
-                const datosSeguimiento = await respuestaSeguimiento.json();
+                const perfil = datosUsuario.usuario || datosUsuario;
+                if (!perfil?.id_usuario) {
+                    throw new Error("No se encontró el usuario solicitado.");
+                }
 
-                setUsuario(datosUsuario.usuario || datosUsuario);
-
-                // Filtrar solamente las publicaciones de este usuario
-                const publicacionesUsuario = Array.isArray(datosPublicaciones)
-                    ? datosPublicaciones.filter(
+                setUsuario(perfil);
+                setPublicaciones(
+                    listaPublicaciones.filter(
                         post => Number(post.id_usuario) === Number(id)
                     )
-                    : [];
+                );
 
-                setPublicaciones(publicacionesUsuario);
+                const resultadosSeguimiento = await Promise.allSettled([
+                    consultarJson(`${API_URL}/api/usuarios/${id}/estadisticas-seguimiento`),
+                    consultarJson(`${API_URL}/api/usuarios/${id}/seguir`)
+                ]);
 
-                setSeguidores(Number(datosEstadisticas.seguidores) || 0);
-                setSeguidos(Number(datosEstadisticas.seguidos) || 0);
-
-                setLoSigo(Boolean(datosSeguimiento.loSigo));
+                if (resultadosSeguimiento.every((resultado) => resultado.status === 'fulfilled')) {
+                    const [datosEstadisticas, datosSeguimiento] = resultadosSeguimiento
+                        .map((resultado) => resultado.value);
+                    setSeguidores(Number(datosEstadisticas.seguidores) || 0);
+                    setSeguidos(Number(datosEstadisticas.seguidos) || 0);
+                    setLoSigo(Boolean(datosSeguimiento.loSigo));
+                } else {
+                    resultadosSeguimiento.forEach((resultado) => {
+                        if (resultado.status === 'rejected') {
+                            console.error("Error al cargar los datos de seguimiento:", resultado.reason);
+                        }
+                    });
+                    setErrorSeguimiento("Las estadísticas y el seguimiento no están disponibles por el momento.");
+                    setSeguimientoDisponible(false);
+                }
 
             } catch (error) {
+                if (error.name === 'AbortError') return;
                 console.error("Error al cargar el perfil:", error);
-                setError("No se pudo cargar el perfil del usuario.");
+                setError(error.message || "No se pudo cargar el perfil del usuario.");
             } finally {
-                setCargando(false);
+                if (!controller.signal.aborted) {
+                    setCargando(false);
+                }
             }
+
         };
 
         cargarPerfil();
+        return () => controller.abort();
 
     }, [id, token]);
 
     // Seguir o dejar de seguir
     const alternarSeguimiento = async () => {
-        if (procesando || !token) return;
+        if (procesando || !token || !seguimientoDisponible) return;
 
         try {
             setProcesando(true);
@@ -165,8 +216,12 @@ function PerfilUsuario() {
                 <Header />
                 <main className="perfil-usuario-cargando">
                     <p>{error || "Usuario no encontrado"}</p>
-                    <button onClick={() => navigate(-1)}>
-                        Volver
+                    <button
+                        onClick={() => error.includes("Iniciá sesión")
+                            ? navigate('/IniciarSesion')
+                            : navigate(-1)}
+                    >
+                        {error.includes("Iniciá sesión") ? "Iniciar sesión" : "Volver"}
                     </button>
                 </main>
                 <Footer />
@@ -262,6 +317,7 @@ function PerfilUsuario() {
                                 type="button"
                                 className="estadistica-seguimiento"
                                 onClick={() => setModalSeguimiento('seguidores')}
+                                disabled={!seguimientoDisponible}
                             >
                                 <strong>{seguidores}</strong>
                                 <span>Seguidores</span>
@@ -271,6 +327,7 @@ function PerfilUsuario() {
                                 type="button"
                                 className="estadistica-seguimiento"
                                 onClick={() => setModalSeguimiento('seguidos')}
+                                disabled={!seguimientoDisponible}
                             >
                                 <strong>{seguidos}</strong>
                                 <span>Siguiendo</span>
@@ -286,11 +343,13 @@ function PerfilUsuario() {
                                             : "btn-seguir"
                                     }
                                     onClick={alternarSeguimiento}
-                                    disabled={procesando}
+                                    disabled={procesando || !seguimientoDisponible}
                                 >
                                     {procesando
                                         ? "Procesando..."
-                                        : loSigo
+                                        : !seguimientoDisponible
+                                            ? "No disponible"
+                                            : loSigo
                                             ? "Dejar de seguir"
                                             : "Seguir"
                                     }
@@ -301,6 +360,12 @@ function PerfilUsuario() {
                         </div>
 
                     </div>
+
+                    {errorSeguimiento && (
+                        <p className="error-seguimiento-perfil" role="status">
+                            {errorSeguimiento}
+                        </p>
+                    )}
 
                 </section>
 
@@ -340,6 +405,11 @@ function PerfilUsuario() {
                                             src={obtenerImagen(post.imagen_url)}
                                             alt={`Publicación de ${usuario.username}`}
                                         />
+                                    )}
+                                    {!post.imagen_url && (
+                                        <span className="post-sin-imagen-perfil-usuario">
+                                            Sin imagen
+                                        </span>
                                     )}
 
                                 </div>
