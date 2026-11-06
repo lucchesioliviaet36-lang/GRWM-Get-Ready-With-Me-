@@ -4,6 +4,8 @@ const path = require("path");
 require("dotenv").config();
 const { sequelize } = require("./config/database.js");
 const Usuario = require("./models/usuarioModels.js");
+const HistoriaLike = require("./models/historiaLike.Model.js");
+const HistoriaComentario = require("./models/historiaComentario.Model.js");
 const authRoutes = require("./routes/authRoutes");
 const catalogoRoutes = require("./routes/catalogoRoutes.js");
 const prendaRoutes = require("./routes/prendaRoutes");
@@ -70,6 +72,8 @@ async function startServer() {
 
         // Crea la tabla del modelo existente solo si todavía no existe.
         await Mensaje.sync();
+        await HistoriaLike.sync();
+        await HistoriaComentario.sync();
 
         console.log("Conexión con MySQL exitosa");
         console.log("Modelo Usuario cargado");
