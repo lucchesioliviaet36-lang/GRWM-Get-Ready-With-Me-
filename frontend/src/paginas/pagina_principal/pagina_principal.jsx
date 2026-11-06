@@ -561,11 +561,26 @@ export default function Feed() {
                     <div className="story-progress-fill" style={{ width: `${progreso}%` }} />
                   </div>
                   <div className="story-header">
-                    <img
-                      src={fotoPerfilHistoriaActiva}
-                      alt={historiaActivaEsPropia ? 'Tu foto de perfil' : (historiaActiva.usuario || 'Historia')}
-                      className="story-header-avatar"
-                    />
+                    {historiaActivaEsPropia || !historiaActiva.id_usuario ? (
+                      <img
+                        src={fotoPerfilHistoriaActiva}
+                        alt={historiaActivaEsPropia ? 'Tu foto de perfil' : (historiaActiva.usuario || 'Historia')}
+                        className="story-header-avatar"
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        className="story-header-avatar-button"
+                        onClick={() => navigate(`/perfil_usuario/${historiaActiva.id_usuario}`)}
+                        aria-label={`Ver perfil de ${historiaActiva.usuario || 'este usuario'}`}
+                      >
+                        <img
+                          src={fotoPerfilHistoriaActiva}
+                          alt=""
+                          className="story-header-avatar"
+                        />
+                      </button>
+                    )}
                     <div className="story-header-info">
                       <span>{historiaActiva.usuario || `Usuario #${historiaActiva.id_usuario}`}</span>
                       <time dateTime={historiaActiva.fecha_creacion || undefined}>
