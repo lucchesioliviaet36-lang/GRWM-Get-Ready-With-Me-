@@ -150,14 +150,15 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
 
   return (
     <div className='crear-historia-container'>
-      <button className='btn-cerrar' onClick={onVolver}>✕</button>
+      <div className='captura-titulo'>Crear historia</div>
+      <button className='btn-cerrar' type='button' onClick={onVolver} aria-label='Cerrar'>✕</button>
 
       {fotoCapturada ? (
         <div className='vista-previa'>
           <img src={fotoCapturada} alt='Historia previa' />
           <div className='acciones-previa'>
-            <button onClick={() => setFotoCapturada(null)}>Repetir / Elegir otra</button>
-            <button className='btn-subir' onClick={guardarHistoria} disabled={subiendo}>
+            <button type='button' onClick={() => setFotoCapturada(null)}>Elegir otra</button>
+            <button className='btn-subir' type='button' onClick={guardarHistoria} disabled={subiendo}>
               {subiendo ? 'Subiendo...' : 'Compartir historia 🚀'}
             </button>
           </div>
@@ -169,7 +170,12 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
 
           <div className='controles-inferiores'>
             <label className='btn-fototeca'>
-              📁 Galería
+              <svg className='icono-galeria' viewBox='0 0 24 24' aria-hidden='true' fill='none' stroke='currentColor' strokeWidth='1.8' strokeLinecap='round' strokeLinejoin='round'>
+                <rect x='3' y='4' width='18' height='16' rx='3' />
+                <circle cx='8.5' cy='9' r='1.5' />
+                <path d='m21 15-5-5L5 20' />
+              </svg>
+              <span>Elegir foto</span>
               <input
                 type='file'
                 accept='image/*'
@@ -178,7 +184,7 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
               />
             </label>
 
-            <button className='btn-disparador' onClick={tomarFoto}></button>
+            <button className='btn-disparador' type='button' onClick={tomarFoto} aria-label='Tomar foto'></button>
           </div>
         </div>
       )}

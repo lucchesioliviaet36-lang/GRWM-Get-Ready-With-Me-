@@ -594,24 +594,29 @@ export default function Feed() {
                 </div>
               )}
               <div
-                className="story-item"
-                onClick={() => {
-                  if (miGrupoHistoria) {
-                    abrirHistoria(miGrupoHistoria.historias[0], 0, miGrupoHistoria.historias);
-                  } else {
-                    setMostrarCrearHistoria(true);
-                  }
-                }}
+                className={`story-item${!tieneMiHistoria ? ' story-item-add' : ''}`}
               >
-                <div className="avatar-ring user-story">
-                  <img
-                    src={obtenerAvatarUsuario(fotoPerfilHeader || miGrupoHistoria?.foto_perfil)}
-                    alt="Tu historia"
-                  />
-
-                  {!tieneMiHistoria && <span className="badge-mas">+</span>}
-                </div>
-                <span>Tu historia</span>
+                <button
+                  className="story-open-button"
+                  type="button"
+                  aria-label={tieneMiHistoria ? 'Abrir tu historia' : 'Crear una historia'}
+                  onClick={() => {
+                    if (miGrupoHistoria) {
+                      abrirHistoria(miGrupoHistoria.historias[0], 0, miGrupoHistoria.historias);
+                    } else {
+                      setMostrarCrearHistoria(true);
+                    }
+                  }}
+                >
+                  <div className={`avatar-ring user-story${!tieneMiHistoria ? ' user-story-empty' : ''}`}>
+                    <img
+                      src={obtenerAvatarUsuario(fotoPerfilHeader || miGrupoHistoria?.foto_perfil)}
+                      alt=""
+                    />
+                    {!tieneMiHistoria && <span className="badge-mas">+</span>}
+                  </div>
+                  <span>Tu historia</span>
+                </button>
               </div>
 
               {gruposHistorias
@@ -732,16 +737,37 @@ export default function Feed() {
                           : ''}
                       </time>
                     </div>
-                    {historiaActivaEsPropia && (
+                    <div className="story-header-actions">
+                      {historiaActivaEsPropia && (
+                        <>
+                          <button
+                            type="button"
+                            className="story-add-btn"
+                            onClick={() => {
+                              setHistoriaActiva(null);
+                              setMostrarCrearHistoria(true);
+                            }}
+                          >
+                            + Agregar
+                          </button>
+                          <button
+                            type="button"
+                            className="story-delete-btn"
+                            onClick={eliminarHistoriaActiva}
+                          >
+                            Eliminar
+                          </button>
+                        </>
+                      )}
                       <button
                         type="button"
-                        className="story-delete-btn"
-                        onClick={eliminarHistoriaActiva}
+                        className="story-close-btn"
+                        onClick={() => setHistoriaActiva(null)}
+                        aria-label="Cerrar historia"
                       >
-                        Eliminar
+                        ✕
                       </button>
-                    )}
-                    <button className="story-close-btn" onClick={() => setHistoriaActiva(null)}>✕</button>
+                    </div>
                   </div>
 
                   <div
