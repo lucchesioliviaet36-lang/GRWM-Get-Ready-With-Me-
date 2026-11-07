@@ -1,12 +1,16 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const usuarioDAO = require("../dao/usuarioDAO.js");
 const crypto = require("crypto");
+const usuarioDAO = require("../dao/usuarioDAO.js");
+const Usuario = require("../models/usuarioModels");
 const emailService = require("./emailService.js");
+const digitoVerificadorService = require("./digitoVerificadorService");
+const bitacoraService = require("./bitacoraService");
 
 const MAX_INTENTOS = 5;
 const TIEMPO_BLOQUEO_MINUTOS = 30;
 
+// REGISTRAR USUARIO
 const registrar = async (datos) => {
     const {
         nombre,
@@ -17,34 +21,40 @@ const registrar = async (datos) => {
     } = datos;
 
     if (!nombre || !apellido || !username || !contraseña || !mail) {
-        throw new Error("Todos los campos deben completarse");
+        throw new Error(
+            "Todos los campos deben completarse"
+        );
     }
 
     const usuarioUsername = await usuarioDAO.buscarPorUsername(username);
-
     if (usuarioUsername) {
-        throw new Error("Este Username ya esta registrado");
+        throw new Error(
+            "Este Username ya esta registrado"
+        );
     }
 
     const usuarioMail = await usuarioDAO.buscarPorMail(mail);
-
     if (usuarioMail) {
-        throw new Error("Este mail ya esta registrado");
+        throw new Error(
+            "Este mail ya esta registrado"
+        );
     }
 
     const contraseñaHash = await bcrypt.hash(contraseña, 10);
+    const nuevoUsuario =
+        await usuarioDAO.crear({
+            nombre,
+            apellido,
+            username,
+            contraseña: contraseñaHash,
+            mail,
+            descripcion: null,
+            fecha_registro: new Date(),
+            DVH: null
+        }
+    );
 
-    const nuevoUsuario = await usuarioDAO.crear({
-        nombre,
-        apellido,
-        username,
-        contraseña: contraseñaHash,
-        mail,
-        descripcion: null,
-        fecha_registro: new Date(),
-        DVH: null
-    });
-
+    // DVH + DVV
     await digitoVerificadorService.recalcularRegistroYTabla(
         Usuario,
         "Usuario",
@@ -52,6 +62,7 @@ const registrar = async (datos) => {
         nuevoUsuario.id_usuario
     );
 
+    // BITACORA
     await bitacoraService.registrar({
         idUsuario: nuevoUsuario.id_usuario,
         descripcion: "Registro de usuario",
@@ -63,6 +74,7 @@ const registrar = async (datos) => {
     return nuevoUsuario;
 };
 
+// INICIAR SESION
 const iniciar_sesion = async (identificador, contraseña) => {
     if (!identificador || !contraseña) {
         throw new Error(
@@ -73,12 +85,14 @@ const iniciar_sesion = async (identificador, contraseña) => {
     const usuario = await usuarioDAO.buscarParaInicioSesion(identificador);
 
     if (!usuario) {
-        throw new Error("Usuario, mail o contraseña incorrectos");
+        throw new Error(
+            "Usuario, mail o contraseña incorrectos"
+        );
     }
 
     const ahora = new Date();
 
-    // 1. Comprobar si la cuenta está bloqueada.
+    // COMPROBAR BLOQUEO
     if (usuario.bloqueado_hasta) {
         const fechaDesbloqueo = new Date(usuario.bloqueado_hasta);
 
@@ -88,30 +102,33 @@ const iniciar_sesion = async (identificador, contraseña) => {
             );
         }
 
-        // El bloqueo ya venció: reiniciar los intentos.
         await usuarioDAO.reiniciarIntentos(usuario.id_usuario);
+
+        await digitoVerificadorService.recalcularRegistroYTabla(
+            Usuario,
+            "Usuario",
+            "id_usuario",
+            usuario.id_usuario
+        );
 
         usuario.intentos_fallidos = 0;
         usuario.bloqueado_hasta = null;
     }
 
-    // 2. Comparar la contraseña con el hash guardado.
-    const contraseñaCorrecta = await bcrypt.compare(
-        contraseña,
-        usuario.contraseña
-    );
+    // COMPARAR CONTRASEÑA
+    const contraseñaCorrecta = await bcrypt.compare(contraseña, usuario.contraseña);
 
-    // 3. Si es incorrecta, sumar un intento.
+    // CONTRASEÑA INCORRECTA
     if (!contraseñaCorrecta) {
-        const intentosActuales =
-            Number(usuario.intentos_fallidos || 0) + 1;
-
+        const intentosActuales = Number(usuario.intentos_fallidos || 0) + 1;
         let bloqueadoHasta = null;
 
         if (intentosActuales >= MAX_INTENTOS) {
             bloqueadoHasta = new Date(
                 ahora.getTime() +
-                TIEMPO_BLOQUEO_MINUTOS * 60 * 1000
+                TIEMPO_BLOQUEO_MINUTOS *
+                60 *
+                1000
             );
         }
 
@@ -119,6 +136,13 @@ const iniciar_sesion = async (identificador, contraseña) => {
             usuario.id_usuario,
             intentosActuales,
             bloqueadoHasta
+        );
+
+        await digitoVerificadorService.recalcularRegistroYTabla(
+            Usuario,
+            "Usuario",
+            "id_usuario",
+            usuario.id_usuario
         );
 
         if (intentosActuales >= MAX_INTENTOS) {
@@ -132,10 +156,26 @@ const iniciar_sesion = async (identificador, contraseña) => {
         );
     }
 
-    // 4. Si la contraseña es correcta, reiniciar el contador.
+    // LOGIN CORRECTO
     await usuarioDAO.reiniciarIntentos(usuario.id_usuario);
 
-    // 5. Crear el JWT.
+    await digitoVerificadorService.recalcularRegistroYTabla(
+        Usuario,
+        "Usuario",
+        "id_usuario",
+        usuario.id_usuario
+    );
+
+    // BITACORA LOGIN
+    await bitacoraService.registrar({
+        idUsuario: usuario.id_usuario,
+        descripcion: "Inicio de sesión exitoso",
+        accion: "LOGIN",
+        tablaAfectada: "Usuario",
+        usuarioAfectado: usuario.id_usuario
+    });
+
+    // CREAR JWT
     if (!process.env.JWT_SECRET) {
         throw new Error(
             "Falta configurar JWT_SECRET en el archivo .env"
@@ -154,7 +194,6 @@ const iniciar_sesion = async (identificador, contraseña) => {
         }
     );
 
-    // 6. Devolver el token y los datos públicos.
     return {
         token,
         usuario: {
@@ -168,9 +207,12 @@ const iniciar_sesion = async (identificador, contraseña) => {
     };
 };
 
+// SOLICITAR RECUPERACION
 const solicitarRecuperacion = async (mail) => {
     if (!mail) {
-        throw new Error("Debés ingresar tu mail");
+        throw new Error(
+            "Debés ingresar tu mail"
+        );
     }
 
     const usuario = await usuarioDAO.buscarPorMail(mail.trim());
@@ -188,28 +230,51 @@ const solicitarRecuperacion = async (mail) => {
 
     const fechaExpiracion = new Date(Date.now() + 15 * 60 * 1000);
 
-    await usuarioDAO.guardarTokenRecuperacion(usuario.id_usuario, tokenHash,fechaExpiracion);
+    await usuarioDAO.guardarTokenRecuperacion(
+        usuario.id_usuario,
+        tokenHash,
+        fechaExpiracion
+    );
+
+    // CAMBIÓ EL USUARIO
+    await digitoVerificadorService.recalcularRegistroYTabla(
+        Usuario,
+        "Usuario",
+        "id_usuario",
+        usuario.id_usuario
+    );
 
     try {
         await emailService.enviarRecuperacionContrasena(
             usuario.mail,
             token
         );
+
     } catch (error) {
         console.error(
             "Error enviando mail de recuperación:",
             error
         );
 
-        throw new Error("No se pudo enviar el correo de recuperación");
+        throw new Error(
+            "No se pudo enviar el correo de recuperación"
+        );
     }
 
+    await bitacoraService.registrar({
+        idUsuario: usuario.id_usuario,
+        descripcion: "Recuperación solicitada",
+        accion: "PASSWORD_RESET_REQUEST",
+        tablaAfectada: "Usuario",
+        usuarioAfectado: usuario.id_usuario
+    });
+
     return {
-        mensaje:
-            "Si existe una cuenta con ese mail, recibirás un enlace para recuperar tu contraseña."
+        mensaje:"Si existe una cuenta con ese mail, recibirás un enlace para recuperar tu contraseña."
     };
 };
 
+// RESTABLECER CONTRASEÑA
 const restablecerContrasena = async (token, nuevaContraseña) => {
     if (!token || !nuevaContraseña) {
         throw new Error(
@@ -228,16 +293,41 @@ const restablecerContrasena = async (token, nuevaContraseña) => {
     const usuario = await usuarioDAO.buscarPorTokenRecuperacion(tokenHash);
 
     if (!usuario) {
-        throw new Error("El enlace es inválido o ya venció");
+        throw new Error(
+            "El enlace es inválido o ya venció"
+        );
     }
 
     const contraseñaHash = await bcrypt.hash(nuevaContraseña, 10);
 
-    await usuarioDAO.actualizarContrasenaRecuperada(usuario.id_usuario, contraseñaHash);
+    await usuarioDAO.actualizarContrasenaRecuperada(
+        usuario.id_usuario,
+        contraseñaHash
+    );
+
+    await digitoVerificadorService.recalcularRegistroYTabla(
+        Usuario,
+        "Usuario",
+        "id_usuario",
+        usuario.id_usuario
+    );
+
+    await bitacoraService.registrar({
+        idUsuario: usuario.id_usuario,
+        descripcion: "Contraseña recuperada",
+        accion: "PASSWORD_RESET",
+        tablaAfectada: "Usuario",
+        usuarioAfectado: usuario.id_usuario
+    });
 
     return {
-        mensaje: "Contraseña actualizada correctamente"
+        mensaje:"Contraseña actualizada correctamente"
     };
 };
 
-module.exports = {registrar, iniciar_sesion,solicitarRecuperacion, restablecerContrasena};
+module.exports = {
+    registrar,
+    iniciar_sesion,
+    solicitarRecuperacion,
+    restablecerContrasena
+};
