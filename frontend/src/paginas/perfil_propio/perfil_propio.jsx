@@ -4,6 +4,7 @@ import './perfil_propio.css';
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
 import ModalSeguimiento from "../../paginas/modal_seguimiento/modal_seguimiento";
+import { CrearHistoria } from "../crear_historia/crear_historia";
 const API_URL = "http://localhost:3000";
 
 function PerfilPropio() {
@@ -11,6 +12,7 @@ function PerfilPropio() {
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
 
   const [modalSeguimiento, setModalSeguimiento] = useState(null);
+  const [mostrarCrearHistoria, setMostrarCrearHistoria] = useState(false);
 
   const token = localStorage.getItem('token');
 
@@ -559,7 +561,14 @@ function PerfilPropio() {
           </div>
 
           <div className="datos-perfil">
-            <div className="avatar" style={{ backgroundColor: '#f3e8ee' }}>
+            <button
+              type="button"
+              className="avatar avatar-clickable"
+              style={{ backgroundColor: '#f3e8ee' }}
+              onClick={() => setMostrarCrearHistoria(true)}
+              aria-label="Crear una historia"
+              title="Crear una historia"
+            >
               {fotoPerfil ? (<img
                 src={obtenerImagen(fotoPerfil)}
                 alt={`Avatar de ${nombreMostrar}`}
@@ -579,7 +588,7 @@ function PerfilPropio() {
                   <circle cx="12" cy="7" r="4" />
                 </svg>
               )}
-            </div>
+            </button>
 
             <div className="nombre-y-descripcion">
               <h1>{nombreMostrar}</h1>
@@ -959,6 +968,10 @@ function PerfilPropio() {
                   navigate(`/perfil_usuario/${id}`);
               }}
           />
+      )}
+
+      {mostrarCrearHistoria && (
+        <CrearHistoria onVolver={() => setMostrarCrearHistoria(false)} />
       )}
 
     </div>

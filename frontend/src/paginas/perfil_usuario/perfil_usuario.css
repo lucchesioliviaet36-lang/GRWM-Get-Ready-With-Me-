@@ -70,6 +70,85 @@
     display: block;
 }
 
+.avatar-perfil-ampliable {
+    overflow: visible;
+}
+
+.avatar-perfil-usuario-boton {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: zoom-in;
+    overflow: hidden;
+}
+
+.avatar-perfil-usuario-boton img {
+    transition: transform 0.2s ease;
+}
+
+.avatar-perfil-usuario-boton:hover img {
+    transform: scale(1.06);
+}
+
+.avatar-perfil-usuario-boton:focus-visible {
+    outline: 3px solid #bd4e7b;
+    outline-offset: 3px;
+}
+
+.foto-perfil-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(15, 10, 14, 0.78);
+    backdrop-filter: blur(7px);
+}
+
+.foto-perfil-ampliada-contenedor {
+    position: relative;
+    width: min(440px, 88vw);
+    height: min(440px, 78vh);
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
+}
+
+.foto-perfil-ampliada-contenedor > img {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit: contain;
+}
+
+.foto-perfil-cerrar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+    width: 38px;
+    height: 38px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.45);
+    color: #ffffff;
+    font-size: 25px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.foto-perfil-cerrar:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
 /* NOMBRE Y DESCRIPCIÓN */
 
 .nombre-perfil-usuario {

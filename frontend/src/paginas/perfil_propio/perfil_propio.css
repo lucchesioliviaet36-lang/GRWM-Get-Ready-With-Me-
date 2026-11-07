@@ -69,6 +69,23 @@ body {
   overflow: hidden;
 }
 
+.avatar-clickable {
+  padding: 0;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.avatar-clickable:hover {
+  transform: scale(1.04);
+  box-shadow: 0 4px 14px rgba(112, 52, 92, 0.2);
+}
+
+.avatar-clickable:focus-visible {
+  outline: 3px solid #bd4e7b;
+  outline-offset: 3px;
+}
+
 .avatar img {
   width: 100%;
   height: 100%;

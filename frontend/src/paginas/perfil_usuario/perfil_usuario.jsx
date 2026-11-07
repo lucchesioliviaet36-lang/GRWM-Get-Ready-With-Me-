@@ -12,6 +12,7 @@ function PerfilUsuario() {
     const { id } = useParams();
 
     const [modalSeguimiento, setModalSeguimiento] = useState(null);
+    const [mostrarFotoAmpliada, setMostrarFotoAmpliada] = useState(false);
 
     const token = localStorage.getItem('token');
 
@@ -263,13 +264,20 @@ function PerfilUsuario() {
                     <div className="datos-perfil-usuario">
 
                         {/* FOTO DE PERFIL */}
-                        <div className="avatar-perfil-usuario">
+                        <div className={`avatar-perfil-usuario${fotoPerfil ? ' avatar-perfil-ampliable' : ''}`}>
 
                             {fotoPerfil ? (
-                                <img
-                                    src={obtenerImagen(fotoPerfil)}
-                                    alt={`Foto de ${nombreMostrar}`}
-                                />
+                                <button
+                                    type="button"
+                                    className="avatar-perfil-usuario-boton"
+                                    onClick={() => setMostrarFotoAmpliada(true)}
+                                    aria-label={`Ampliar foto de ${nombreMostrar}`}
+                                >
+                                    <img
+                                        src={obtenerImagen(fotoPerfil)}
+                                        alt={`Foto de ${nombreMostrar}`}
+                                    />
+                                </button>
                             ) : (
                                 <svg
                                     width="42"
@@ -442,6 +450,32 @@ function PerfilUsuario() {
                         navigate(`/perfil_usuario/${idUsuario}`);
                     }}
                 />
+            )}
+
+            {mostrarFotoAmpliada && fotoPerfil && (
+                <div
+                    className="foto-perfil-overlay"
+                    role="presentation"
+                    onClick={() => setMostrarFotoAmpliada(false)}
+                >
+                    <div
+                        className="foto-perfil-ampliada-contenedor"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label={`Foto de perfil de ${nombreMostrar}`}
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <button
+                            type="button"
+                            className="foto-perfil-cerrar"
+                            onClick={() => setMostrarFotoAmpliada(false)}
+                            aria-label="Cerrar foto ampliada"
+                        >
+                            ×
+                        </button>
+                        <img src={obtenerImagen(fotoPerfil)} alt={`Foto de ${nombreMostrar}`} />
+                    </div>
+                </div>
             )}
 
         </div>
