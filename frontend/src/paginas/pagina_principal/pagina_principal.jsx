@@ -177,7 +177,7 @@ export default function Feed() {
         }
         return usuariosSugeridos;
       })
-      .then(setSugerencias)
+      .then(setSugerencias)//corregir
       .catch((error) => {
         if (error.name === 'AbortError') return;
         console.error('Error al cargar sugerencias:', error);
@@ -187,7 +187,7 @@ export default function Feed() {
         if (!controller.signal.aborted) setCargandoSugerencias(false);
       });
 
-    return () => controller.abort();
+    return () => controller.abort();//verificar
   }, []);
 
   useEffect(() => {
@@ -665,7 +665,7 @@ export default function Feed() {
                       <button
                         type="button"
                         className="image-container"
-                        onClick={() => navigate(`/publicacion/${publicacionId}`)}
+                        onClick={() => navigate(`/publicacion/${publicacionId}`, { state: { desdePaginaPrincipal: true } })}
                         aria-label={`Ver publicación de ${autor?.username || 'un usuario'}`}
                       >
                         <img

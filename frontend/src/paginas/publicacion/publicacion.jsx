@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import Header from "../../componentes/header/header"
 import './publicacion.css'
 
@@ -20,6 +20,9 @@ const obtenerImagenPerfil = (imagen) => {
 
 function Publicacion() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const desdePaginaPrincipal = location.state?.desdePaginaPrincipal === true;
+  const desdePerfilPropio = location.state?.desdePerfilPropio === true;
   const { id } = useParams();
   const idPublicacion = Number(id);
 
@@ -515,8 +518,20 @@ function Publicacion() {
 
       <main className="contenido-publicacion">
         
-        <button className="volver" type="button" onClick={() => navigate('/perfil_propio')}>
-          ← Volver a mi perfil
+        <button
+          className="volver"
+          type="button"
+          onClick={() => {
+            if (desdePaginaPrincipal) navigate('/paginaPrincipal');
+            else if (desdePerfilPropio) navigate('/perfil_propio');
+            else navigate(-1);
+          }}
+        >
+          ← {desdePaginaPrincipal
+            ? 'Volver a página principal'
+            : desdePerfilPropio
+              ? 'Volver a mi perfil'
+              : 'Volver'}
         </button>
 
         <section className="publicacion-card">

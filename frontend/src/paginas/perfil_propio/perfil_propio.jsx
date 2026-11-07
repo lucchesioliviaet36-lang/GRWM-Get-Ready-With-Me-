@@ -668,7 +668,7 @@ function PerfilPropio() {
                   key={post.id}
                   className="post"
                   type="button"
-                  onClick={() => navigate(`/publicacion/${post.id}`)}
+                  onClick={() => navigate(`/publicacion/${post.id}`, { state: { desdePerfilPropio: true } })}
                 >
                   <div className="foto-post">
                     <img
@@ -711,7 +711,7 @@ function PerfilPropio() {
                     key={fav.id_favorito || idPost}
                     className="post"
                     type="button"
-                    onClick={() => navigate(`/publicacion/${idPost}`)}
+                    onClick={() => navigate(`/publicacion/${idPost}`, { state: { desdePerfilPropio: true } })}
                   >
                     <div className="foto-post">
                       <img
