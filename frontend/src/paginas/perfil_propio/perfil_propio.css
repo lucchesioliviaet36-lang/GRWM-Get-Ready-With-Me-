@@ -73,12 +73,13 @@ body {
   padding: 0;
   color: inherit;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 4px solid #ffffff;
+  box-shadow: 0 0 0 2px rgba(189, 78, 123, 0.28), 0 5px 16px rgba(112, 52, 92, 0.12);
+  transition: box-shadow 0.2s ease;
 }
 
 .avatar-clickable:hover {
-  transform: scale(1.04);
-  box-shadow: 0 4px 14px rgba(112, 52, 92, 0.2);
+  box-shadow: 0 0 0 3px rgba(189, 78, 123, 0.38), 0 6px 18px rgba(112, 52, 92, 0.18);
 }
 
 .avatar-clickable:focus-visible {
