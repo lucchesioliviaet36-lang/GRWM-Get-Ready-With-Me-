@@ -51,19 +51,30 @@ const obtenerHistorias = async (req, res) => {
 const crearHistoria = async (req, res) => {
     try {
         const imagen_url = req.file ? `/uploads/historias/${req.file.filename}` : null;
-        const id_usuario = req.user?.id_usuario ?? req.body.id_usuario;
+        const id_usuario = Number(req.user?.id_usuario ?? req.user?.id);
 
         if (!imagen_url) {
             return res.status(400).json({ error: 'La imagen es obligatoria para la historia' });
         }
 
-        if (!Number.isInteger(Number(id_usuario))) {
-            return res.status(400).json({ error: 'No se pudo identificar al usuario de la historia' });
+        if (!Number.isInteger(id_usuario) || id_usuario <= 0) {
+            await fs.unlink(req.file.path);
+            return res.status(401).json({ error: 'No se pudo identificar al usuario. Iniciá sesión nuevamente.' });
+        }
+
+        const usuario = await Usuario.findByPk(id_usuario, {
+            attributes: ['id_usuario', 'username']
+        });
+        if (!usuario) {
+            await fs.unlink(req.file.path);
+            return res.status(401).json({
+                error: 'La sesión pertenece a un usuario que ya no existe. Cerrá sesión e iniciá de nuevo.'
+            });
         }
 
         const nuevaHistoria = await Historia.create({
             imagen_url,
-            id_usuario: Number(id_usuario)
+            id_usuario
         });
 
         res.status(201).json({
@@ -71,10 +82,19 @@ const crearHistoria = async (req, res) => {
             message: 'Historia creada con éxito',
             historia: {
                 ...nuevaHistoria.get({ plain: true }),
-                usuario: req.user?.username || `Usuario #${id_usuario}`
+                usuario: req.user?.username || usuario.username || `Usuario #${id_usuario}`
             }
         });
     } catch (error) {
+        if (req.file?.path) {
+            try {
+                await fs.unlink(req.file.path);
+            } catch (cleanupError) {
+                if (cleanupError.code !== 'ENOENT') {
+                    console.error('Error al limpiar la imagen de historia no guardada:', cleanupError);
+                }
+            }
+        }
         console.error("Error al crear historia:", error);
         res.status(500).json({ error: 'Error al crear la historia' });
     }

@@ -13,7 +13,6 @@ const Prenda = require("./models/prenda.js");
 const usuarioRoutes = require("./routes/usuarioRoutes");
 const publicacionRoutes = require("./routes/publicacionRoutes");
 const historiaRoutes = require('./routes/historiaRoutes');
-const historiaDestacadaRoutes = require('./routes/historiaDestacadaRoutes');
 const productoRoutes = require("./routes/productoRoutes");
 const iaOutfitRoutes = require("./routes/iaOutfitRoutes");
 const chatRoutes = require("./routes/chat");
@@ -35,7 +34,6 @@ app.use("/api/productos", productoRoutes);
 app.use( "/api/ai", iaOutfitRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/historias", historiaRoutes);
-app.use("/api/historias-destacadas", historiaDestacadaRoutes);
 
 app.get("/", (req, res) => {
     res.json({
