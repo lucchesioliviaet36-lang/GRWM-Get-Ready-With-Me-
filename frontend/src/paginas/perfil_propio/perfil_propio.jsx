@@ -4,7 +4,10 @@ import './perfil_propio.css';
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
 import ModalSeguimiento from "../../paginas/modal_seguimiento/modal_seguimiento";
+// NUEVO: permite crear historias desde el perfil propio.
 import { CrearHistoria } from "../crear_historia/crear_historia";
+// NUEVO: muestra y administra las historias destacadas del perfil.
+import HistoriasDestacadas from "../../componentes/HistoriasDestacadas";
 const API_URL = "http://localhost:3000";
 
 function PerfilPropio() {
@@ -12,6 +15,7 @@ function PerfilPropio() {
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
 
   const [modalSeguimiento, setModalSeguimiento] = useState(null);
+  // NUEVO: controla la apertura del flujo para crear historias desde el avatar.
   const [mostrarCrearHistoria, setMostrarCrearHistoria] = useState(false);
 
   const token = localStorage.getItem('token');
@@ -561,6 +565,7 @@ function PerfilPropio() {
           </div>
 
           <div className="datos-perfil">
+            {/* NUEVO: tocar el avatar abre el proceso de creación de una historia. */}
             <button
               type="button"
               className="avatar avatar-clickable"
@@ -647,6 +652,12 @@ function PerfilPropio() {
             </div>
           </div>
         </section>
+
+        {/* NUEVO: fila de historias destacadas y opción para gestionarlas. */}
+        <HistoriasDestacadas
+          idUsuario={usuarioSesion?.id_usuario || usuarioSesion?.id}
+          esPropio
+        />
 
         <div className="pestanas">
           <button
@@ -970,6 +981,7 @@ function PerfilPropio() {
           />
       )}
 
+      {/* NUEVO: modal de creación de historia abierto desde el avatar. */}
       {mostrarCrearHistoria && (
         <CrearHistoria onVolver={() => setMostrarCrearHistoria(false)} />
       )}

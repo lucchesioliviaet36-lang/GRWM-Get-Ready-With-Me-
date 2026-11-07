@@ -4,6 +4,7 @@ import './perfil_usuario.css';
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
 import ModalSeguimiento from "../../paginas/modal_seguimiento/modal_seguimiento";
+import HistoriasDestacadas from "../../componentes/HistoriasDestacadas";
 
 const API_URL = "http://localhost:3000";
 
@@ -376,6 +377,8 @@ function PerfilUsuario() {
                     )}
 
                 </section>
+
+                <HistoriasDestacadas idUsuario={id} />
 
                 {/* PESTAÑA DE PUBLICACIONES */}
                 <div className="pestanas-perfil-usuario">
