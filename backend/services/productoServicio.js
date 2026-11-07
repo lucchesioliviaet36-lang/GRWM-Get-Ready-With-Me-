@@ -1,4 +1,6 @@
 const productoDAO = require("../dao/productoDAO.js");
+const digitoVerificadorService = require("./digitoVerificadorService");
+const bitacoraService = require("./bitacoraService");
 
 const agregarProducto = async (idUsuario, datos, archivo) => {
     const {
@@ -9,15 +11,21 @@ const agregarProducto = async (idUsuario, datos, archivo) => {
     } = datos;
 
     if (!nombre || !categoria || !precio) {
-        throw new Error("Nombre, categoría y precio son obligatorios");
+        throw new Error(
+            "Nombre, categoría y precio son obligatorios"
+        );
     }
 
     if (!archivo) {
-        throw new Error("Debe seleccionar una imagen");
+        throw new Error(
+            "Debe seleccionar una imagen"
+        );
     }
 
     if (Number(precio) <= 0) {
-        throw new Error("El precio debe ser mayor a cero");
+        throw new Error(
+            "El precio debe ser mayor a cero"
+        );
     }
 
     const producto = await productoDAO.crear({
@@ -30,6 +38,23 @@ const agregarProducto = async (idUsuario, datos, archivo) => {
         estado_producto: true,
         id_usuario: idUsuario,
         DVH: null
+    });
+
+    const Producto = producto.constructor;
+
+    await digitoVerificadorService.recalcularRegistroYTabla(
+        Producto,
+        "Producto",
+        "id_producto",
+        producto.id_producto
+    );
+
+    await bitacoraService.registrar({
+        idUsuario,
+        descripcion: "Producto agregado",
+        accion: "INSERT",
+        tablaAfectada: "Producto",
+        usuarioAfectado: idUsuario
     });
 
     return producto;
@@ -51,10 +76,30 @@ const eliminarProducto = async (idProducto, idUsuario) => {
     }
 
     if (Number(producto.id_usuario) !== Number(idUsuario)) {
-        throw new Error("No tiene permiso para eliminar este producto");
+        throw new Error(
+            "No tiene permiso para eliminar este producto"
+        );
     }
 
+    const Producto = producto.constructor;
+
     await productoDAO.eliminar(idProducto, idUsuario);
+
+    await digitoVerificadorService.recalcularTabla(
+        Producto,
+        "Producto",
+        "id_producto"
+    );
+
+    await bitacoraService.registrar({
+        idUsuario,
+        descripcion: "Producto eliminado",
+        accion: "DELETE",
+        tablaAfectada: "Producto",
+        usuarioAfectado: idUsuario
+    });
+
+    return true;
 };
 
 module.exports = {
