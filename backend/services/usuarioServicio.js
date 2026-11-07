@@ -4,12 +4,12 @@ const digitoVerificadorService = require("./digitoVerificadorService");
 const bitacoraService = require("./bitacoraService");
 const bcrypt = require("bcrypt");
 
-// 1. Obtener datos del usuario por ID
+// 1. OBTENER DATOS DEL USUARIO POR ID
 const obtenerPorId = async (id_usuario) => {
     return await usuarioDao.buscarPorId(id_usuario);
 };
 
-// 2. Actualizar el perfil en la base de datos
+// 2. ACTUALIZAR PERFIL
 const actualizarPerfil = async (id_usuario, datos) => {
     const usuario = await usuarioDao.buscarPorId(id_usuario);
 
@@ -37,11 +37,9 @@ const actualizarPerfil = async (id_usuario, datos) => {
         datosActualizados.banner = datos.banner;
     }
 
-    await usuarioDao.actualizarUsuario(
-        id_usuario,
-        datosActualizados
-    );
-    
+    await usuarioDao.actualizarUsuario(id_usuario, datosActualizados);
+
+    // ACTUALIZAR DVH Y DVV
     await digitoVerificadorService.recalcularRegistroYTabla(
         Usuario,
         "Usuario",
@@ -49,18 +47,19 @@ const actualizarPerfil = async (id_usuario, datos) => {
         id_usuario
     );
 
+    // BITACORA
     await bitacoraService.registrar({
-        idUsuario,
+        idUsuario: id_usuario,
         descripcion: "Perfil actualizado",
         accion: "UPDATE",
         tablaAfectada: "Usuario",
-        usuarioAfectado: idUsuario
+        usuarioAfectado: id_usuario
     });
 
     return await usuarioDao.buscarPorId(id_usuario);
 };
 
-// 3. Buscar usuarios
+// 3. BUSCAR USUARIOS
 const buscarUsuarios = async (texto, idUsuarioActual) => {
     const busqueda = texto.trim();
 
@@ -68,13 +67,10 @@ const buscarUsuarios = async (texto, idUsuarioActual) => {
         return [];
     }
 
-    return await usuarioDao.buscarUsuarios(
-        busqueda,
-        idUsuarioActual
-    );
+    return await usuarioDao.buscarUsuarios(busqueda, idUsuarioActual);
 };
 
-// 4. Eliminar cuenta
+// 4. ELIMINAR CUENTA
 const eliminarCuenta = async (id_usuario) => {
     const usuario = await usuarioDao.buscarPorId(id_usuario);
 
@@ -82,10 +78,29 @@ const eliminarCuenta = async (id_usuario) => {
         throw new Error("El usuario no existe");
     }
 
-    return await usuarioDao.eliminarUsuario(id_usuario);
+    // BITACORA ANTES DE ELIMINAR
+    await bitacoraService.registrar({
+        idUsuario: id_usuario,
+        descripcion: "Cuenta eliminada",
+        accion: "DELETE",
+        tablaAfectada: "Usuario",
+        usuarioAfectado: id_usuario
+    });
+
+    await usuarioDao.eliminarUsuario(id_usuario);
+
+    // COMO EL USUARIO YA NO EXISTE,
+    // SOLO RECALCULAMOS EL DVV
+    await digitoVerificadorService.recalcularTabla(
+        Usuario,
+        "Usuario",
+        "id_usuario"
+    );
+
+    return true;
 };
 
-// 5. Cambiar la contraseña del usuario autenticado
+// 5. CAMBIAR CONTRASEÑA
 const cambiarContraseña = async (
     id_usuario,
     contraseñaActual,
@@ -101,32 +116,35 @@ const cambiarContraseña = async (
         throw new Error("Usuario no encontrado");
     }
 
-    const contraseñaCorrecta = await bcrypt.compare(
-        contraseñaActual,
-        usuario.contraseña
-    );
+    const contraseñaCorrecta = await bcrypt.compare( contraseñaActual, usuario.contraseña );
 
     if (!contraseñaCorrecta) {
         throw new Error("La contraseña actual es incorrecta");
     }
 
-    const contraseñaHash = await bcrypt.hash(
-        contraseñaNueva,
-        10
+    const contraseñaHash = await bcrypt.hash(contraseñaNueva, 10);
+
+    await usuarioDao.actualizarContraseña(id_usuario, contraseñaHash);
+
+    await digitoVerificadorService.recalcularRegistroYTabla(
+        Usuario,
+        "Usuario",
+        "id_usuario",
+        id_usuario
     );
 
-    await usuarioDao.actualizarContraseña(
-        id_usuario,
-        contraseñaHash
-    );
+    await bitacoraService.registrar({
+        idUsuario: id_usuario,
+        descripcion: "Contraseña modificada",
+        accion: "UPDATE",
+        tablaAfectada: "Usuario",
+        usuarioAfectado: id_usuario
+    });
 
     return true;
 };
 
-
-//SEGUIR Y DEJAR DE SEGUIR
-
-// Seguir a otro usuario
+// SEGUIR USUARIO
 const seguirUsuario = async (id_usuario_seguidor, id_usuario_seguido) => {
     if (Number(id_usuario_seguidor) === Number(id_usuario_seguido)) {
         throw new Error("No podés seguirte a vos mismo");
@@ -135,57 +153,71 @@ const seguirUsuario = async (id_usuario_seguidor, id_usuario_seguido) => {
     const usuario = await usuarioDao.buscarPorId(id_usuario_seguido);
 
     if (!usuario) {
-        throw new Error("El usuario que querés seguir no existe");
+        throw new Error( "El usuario que querés seguir no existe");
     }
 
-    return await usuarioDao.seguirUsuario(
-        id_usuario_seguidor,
-        id_usuario_seguido
-    );
+    const resultado = await usuarioDao.seguirUsuario(id_usuario_seguidor, id_usuario_seguido);
+
+    await bitacoraService.registrar({
+        idUsuario: id_usuario_seguidor,
+        descripcion: "Usuario seguido",
+        accion: "FOLLOW",
+        tablaAfectada: "Seguimiento",
+        usuarioAfectado: id_usuario_seguido
+    });
+
+    return resultado;
 };
 
-// Dejar de seguir a otro usuario
+// DEJAR DE SEGUIR
 const dejarDeSeguir = async (id_usuario_seguidor, id_usuario_seguido) => {
-    return await usuarioDao.dejarDeSeguir(
-        id_usuario_seguidor,
-        id_usuario_seguido
-    );
+    const resultado = await usuarioDao.dejarDeSeguir(id_usuario_seguidor,id_usuario_seguido);
+
+    await bitacoraService.registrar({
+        idUsuario: id_usuario_seguidor,
+        descripcion: "Usuario dejado de seguir",
+        accion: "UNFOLLOW",
+        tablaAfectada: "Seguimiento",
+        usuarioAfectado: id_usuario_seguido
+    });
+
+    return resultado;
 };
 
-// Obtener cantidad de seguidores y seguidos
+// OBTENER ESTADISTICAS
 const obtenerEstadisticasSeguimiento = async (id_usuario) => {
     const seguidores = await usuarioDao.contarSeguidores(id_usuario);
     const seguidos = await usuarioDao.contarSeguidos(id_usuario);
 
-    return { seguidores, seguidos };
+    return {seguidores, seguidos};
 };
 
-// Obtener usuarios que siguen a una persona
+// OBTENER SEGUIDORES
 const obtenerListaSeguidores = async (id_usuario) => {
-    return await usuarioDao.obtenerListaSeguidores(id_usuario);
-};
-
-// Obtener usuarios que sigue una persona
-const obtenerListaSeguidos = async (id_usuario) => {
-    return await usuarioDao.obtenerListaSeguidos(id_usuario);
-};
-
-// Consultar si el usuario actual sigue al perfil visitado
-const obtenerEstadoSeguimiento = async (
-    id_usuario_seguidor,
-    id_usuario_seguido
-) => {
-    const seguimiento = await usuarioDao.obtenerSeguimiento(
-        id_usuario_seguidor,
-        id_usuario_seguido
+    return await usuarioDao.obtenerListaSeguidores(
+        id_usuario
     );
+};
+
+// OBTENER SEGUIDOS
+const obtenerListaSeguidos = async (id_usuario) => {
+    return await usuarioDao.obtenerListaSeguidos(
+        id_usuario
+    );
+};
+
+// ESTADO SEGUIMIENTO
+const obtenerEstadoSeguimiento = async (id_usuario_seguidor, id_usuario_seguido) => {
+    const seguimiento = await usuarioDao.obtenerSeguimiento(id_usuario_seguidor, id_usuario_seguido);
 
     return Boolean(seguimiento);
 };
 
-// Obtener sugerencias aleatorias
+// SUGERENCIAS
 const obtenerSugerencias = async (idUsuarioActual) => {
-    return await usuarioDao.obtenerSugerencias(idUsuarioActual);
+    return await usuarioDao.obtenerSugerencias(
+        idUsuarioActual
+    );
 };
 
 module.exports = {
