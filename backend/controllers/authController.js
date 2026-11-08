@@ -5,7 +5,7 @@ const usuarioServicio = require("../services/usuarioServicio");
 // Cambiar contraseña
 const cambiarContraseña = async (req, res) => {
     try {
-        const id_usuario = req.user.id_usuario || req.user.id;
+        const id_usuario = req.user.id_usuario;
 
         const {
             contraseñaActual,
