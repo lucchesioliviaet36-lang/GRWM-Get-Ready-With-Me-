@@ -1,7 +1,6 @@
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-
 const carpetaUploads = path.join(__dirname, "../uploads/prendas");
 
 if (!fs.existsSync(carpetaUploads)) {

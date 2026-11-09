@@ -1,6 +1,6 @@
 const Historia = require('../models/historiasModel.js'); 
-const HistoriaLike = require('../models/historiaLike.Model.js');
-const HistoriaComentario = require('../models/historiaComentario.Model.js');
+const HistoriaLike = require('../models/historiaLikeModel.js');
+const HistoriaComentario = require('../models/historiaComentarioModel.js');
 const Usuario = require('../models/usuarioModels.js');
 const { Op } = require('sequelize');
 const { sequelize } = require('../config/database.js');
