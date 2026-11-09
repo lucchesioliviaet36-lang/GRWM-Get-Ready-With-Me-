@@ -223,54 +223,6 @@ body {
   transform: translateY(0);
 }
 
-.social-divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  margin: 20px 0;
-  color: #cbb4c2;
-  font-size: 10px;
-}
-
-.social-divider::before,
-.social-divider::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid #f5dee8;
-}
-
-.social-divider span {
-  padding: 0 10px;
-}
-
-.social-buttons {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.btn-social {
-  flex: 1;
-  height: 40px;
-  border: 1px solid #eecddc;
-  border-radius: 11px;
-  background: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #703c5e;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-social:hover {
-  background-color: #fff0f6;
-  border-color: #bd4f80;
-}
-
 .Opcion-InicioSesion {
   display: flex;
   justify-content: center;
