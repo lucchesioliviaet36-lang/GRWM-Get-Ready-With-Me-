@@ -68,6 +68,16 @@ const obtenerProductosGenerales = async () => {
     return await productoDAO.buscarTodosActivos();
 };
 
+const obtenerProductoPorId = async (idProducto) => {
+    const producto = await productoDAO.buscarPorId(idProducto);
+
+    if (!producto) {
+        throw new Error("Producto no encontrado");
+    }
+
+    return producto;
+};
+
 const eliminarProducto = async (idProducto, idUsuario) => {
     const producto = await productoDAO.buscarPorId(idProducto);
 
@@ -106,5 +116,6 @@ module.exports = {
     agregarProducto,
     obtenerProductosUsuario,
     obtenerProductosGenerales,
+    obtenerProductoPorId,
     eliminarProducto
 };

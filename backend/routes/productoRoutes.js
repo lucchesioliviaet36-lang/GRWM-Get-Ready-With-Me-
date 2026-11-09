@@ -8,20 +8,11 @@ const router = express.Router();
 
 router.get("/general", productoController.obtenerProductosGenerales);
 
+router.get("/:id", authMiddleware, productoController.obtenerPorId);
+
 router.get("/", authMiddleware, productoController.obtenerProductos);
 
-router.post(
-  "/",
-  authMiddleware,
-  uploadProducto.single("imagen"),
-  productoController.agregar
-);
-
-router.post(
-  "/:id/comprar",
-  authMiddleware,
-  productoController.comprar
-);
+router.post("/", authMiddleware, uploadProducto.single("imagen"), productoController.agregar);
 
 router.delete("/:id", authMiddleware, productoController.eliminar);
 

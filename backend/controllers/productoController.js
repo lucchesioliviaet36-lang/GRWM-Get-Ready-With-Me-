@@ -64,6 +64,15 @@ const obtenerProductosGenerales = async (req, res) => {
   }
 };
 
+const obtenerPorId = async (req, res) => {
+  try {
+    const producto = await productoService.obtenerProductoPorId(req.params.id);
+    return res.status(200).json({success: true, producto});
+  } catch (error) {
+    return res.status(404).json({success: false, message: error.message});
+  }
+};
+
 const eliminar = async (req, res) => {
   try {
     const idUsuario = req.user.id_usuario;
@@ -114,5 +123,6 @@ module.exports = {
   obtenerProductos,
   eliminar,
   obtenerProductosGenerales,
+  obtenerPorId,
   comprar
 };

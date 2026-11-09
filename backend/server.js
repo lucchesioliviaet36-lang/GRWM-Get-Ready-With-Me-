@@ -18,6 +18,7 @@ const iaOutfitRoutes = require("./routes/iaOutfitRoutes");
 const chatRoutes = require("./routes/chat");
 const Mensaje = require("./models/Mensaje");
 const adminRoutes = require("./routes/adminRoutes");
+const pagoRoutes = require("./routes/pagoRoutes");
 const app = express();
 const PORT = 3000;
 
@@ -35,6 +36,7 @@ app.use( "/api/ai", iaOutfitRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/historias", historiaRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/pagos", pagoRoutes);
 
 app.get("/", (req, res) => {
     res.json({
