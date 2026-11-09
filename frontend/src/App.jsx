@@ -25,7 +25,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/administrador" element={<RutaProtegida rol="administrador"> <Administrador /></RutaProtegida>}/>
-        <Route path="/paginaPrincipal" element={<RutaProtegida rol="usuario"><PaginaPrincipal /></RutaProtegida>}/>
+        <Route path="/paginaPrincipal" element={<PaginaPrincipal />}/>
         <Route path="/IniciarSesion" element={<InicioSesion />} /> 
         <Route path="/recuperar-contrasena" element={<RecuperarContrasena />}/>
         <Route path="/restablecer-contrasena/:token" element={<RestablecerContrasena />}/>
@@ -42,7 +42,7 @@ function App() {
         <Route path="/chat" element={<Chat />} />
         <Route path="/miArmario" element={<MiArmario />} />
         <Route path="/agregar_prenda" element={<AgregarPrenda />} />
-        <Route path="/pago" element={<Pago />} />
+        <Route path="/pago/:id" element={<Pago />}/>
         <Route path="/iaOutfit" element={<AIOutfit />} />
         <Route path="/crear_historia" element={<CrearHistoria />} />
         

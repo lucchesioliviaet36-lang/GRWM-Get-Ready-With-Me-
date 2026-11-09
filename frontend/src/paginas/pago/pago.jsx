@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./pago.css";
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
@@ -8,11 +8,16 @@ import Footer from "../../componentes/footer/footer";
 function Pago() {
 
   const navigate = useNavigate();
-
+  const {id} = useParams();
   const [metodoPago, setMetodoPago] = useState(null); 
   const [pagoConfirmado, setPagoConfirmado] = useState(false); 
   const [quiereEnvio, setQuiereEnvio] = useState(false);
-
+  const [mostrarSaldoModal, setMostrarSaldoModal] = useState(false);
+  const [saldo, setSaldo] = useState(0);
+  const [faltante, setFaltante] = useState(0);
+  const [montoCarga, setMontoCarga] = useState("");
+  const [procesando, setProcesando] = useState(false);
+  const [errorPago, setErrorPago] = useState("");
 
   const etapasEnvio = [
     { id: 1, titulo: "En preparación", status: "Completo", time: "Hoy, 10:00 AM" },
@@ -22,6 +27,99 @@ function Pago() {
     { id: 5, titulo: "Entregado", status: "Pendiente", time: "-" }
   ];
 
+  const comprarConSaldo = async () => {
+  try {
+    setProcesando(true);
+    setErrorPago("");
+
+    const token = localStorage.getItem("token");
+
+    const respuesta = await fetch("http://localhost:3000/api/pagos/comprar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        idProducto: Number(id)
+      })
+    });
+
+    const datos = await respuesta.json();
+
+      if (respuesta.status === 409 && datos.codigo === "SALDO_INSUFICIENTE") {
+        setSaldo(Number(datos.saldo));
+        setFaltante(Number(datos.faltante));
+        setMontoCarga(datos.faltante);
+        setMostrarSaldoModal(true);
+        return;
+      }
+
+      if (!respuesta.ok) {
+        throw new Error(datos.message || "No se pudo realizar el pago");
+      }
+
+      setMostrarSaldoModal(false);
+      setPagoConfirmado(true);
+
+    } catch (error) {
+      setErrorPago(error.message);
+    } finally {
+      setProcesando(false);
+    }
+  };
+
+  const confirmarPago = async () => {
+    if (metodoPago === "tarjeta") {
+      await comprarConSaldo();
+      return;
+    }
+
+    if (metodoPago === "efectivo") {
+      setPagoConfirmado(true);
+    }
+  };
+
+  const cargarSaldo = async () => {
+    try {
+      if (!montoCarga || Number(montoCarga) <= 0) {
+        setErrorPago("Ingresá un monto válido");
+        return;
+      }
+
+      setProcesando(true);
+      setErrorPago("");
+
+      const token = localStorage.getItem("token");
+
+      const respuesta = await fetch("http://localhost:3000/api/pagos/cargar-saldo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          monto: Number(montoCarga)
+        })
+      });
+
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok) {
+        throw new Error(datos.message || "No se pudo cargar saldo");
+      }
+
+      setSaldo(Number(datos.saldo));
+      setMostrarSaldoModal(false);
+
+      await comprarConSaldo();
+
+    } catch (error) {
+      setErrorPago(error.message);
+    } finally {
+      setProcesando(false);
+    }
+  };
 
   return (
 
@@ -143,13 +241,21 @@ function Pago() {
 
 
             {metodoPago && (
+              <>
+                {errorPago && (
+                  <p className="error-pago">
+                    {errorPago}
+                  </p>
+                )}
 
-              <button 
-                className="btn-confirmar-pago"
-                onClick={() => setPagoConfirmado(true)}
-              >
-                Confirmar Pago ✧
-              </button>
+                <button 
+                  className="btn-confirmar-pago"
+                  onClick={confirmarPago}
+                  disabled={procesando}
+                >
+                  {procesando ? "Procesando..." : "Confirmar Pago ✧"}
+                </button>
+              </>
 
             )}
 
@@ -237,6 +343,102 @@ function Pago() {
 
 
       </main>
+
+      {mostrarSaldoModal && (
+
+        <div className="saldo-modal-overlay">
+
+          <div className="saldo-modal">
+
+            <button
+              type="button"
+              className="saldo-modal-cerrar"
+              onClick={() => setMostrarSaldoModal(false)}
+            >
+              ×
+            </button>
+
+            <div className="saldo-modal-icono">
+              $
+            </div>
+
+            <h2>Saldo insuficiente</h2>
+
+            <p className="saldo-modal-texto">
+              No tenés suficiente saldo para completar esta compra.
+            </p>
+
+
+            <div className="saldo-modal-info">
+
+              <div>
+                <span>Tu saldo</span>
+                <strong>
+                  ${saldo.toLocaleString("es-AR")}
+                </strong>
+              </div>
+
+              <div>
+                <span>Te falta</span>
+                <strong>
+                  ${faltante.toLocaleString("es-AR")}
+                </strong>
+              </div>
+
+            </div>
+
+
+            <label className="saldo-modal-label">
+              ¿Cuánto querés agregar?
+            </label>
+
+            <div className="saldo-input-container">
+
+              <span>$</span>
+
+              <input
+                type="number"
+                min="0.01"
+                step="0.01"
+                value={montoCarga}
+                onChange={(e) => setMontoCarga(e.target.value)}
+              />
+
+            </div>
+
+
+            {errorPago && (
+              <p className="error-pago-modal">
+                {errorPago}
+              </p>
+            )}
+
+
+            <button
+              type="button"
+              className="btn-cargar-saldo"
+              onClick={cargarSaldo}
+              disabled={procesando}
+            >
+              {procesando
+                ? "Cargando..."
+                : "Agregar saldo y continuar"}
+            </button>
+
+
+            <button
+              type="button"
+              className="btn-cancelar-saldo"
+              onClick={() => setMostrarSaldoModal(false)}
+            >
+              Cancelar
+            </button>
+
+          </div>
+
+        </div>
+
+      )}
 
 
       <Footer />

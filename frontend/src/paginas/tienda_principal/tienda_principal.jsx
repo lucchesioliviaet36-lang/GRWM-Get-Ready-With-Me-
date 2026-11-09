@@ -217,7 +217,7 @@ function TiendaPrincipal() {
 
                     <button
                       disabled={!producto.estado_producto}
-                      onClick={() => navigate("/pago", { state: { producto } })}
+                      onClick={() => navigate(`/pago/${producto.id_producto}`)}
                     >
                       Comprar
                     </button>
