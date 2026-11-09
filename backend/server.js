@@ -17,11 +17,11 @@ const productoRoutes = require("./routes/productoRoutes");
 const iaOutfitRoutes = require("./routes/iaOutfitRoutes");
 const chatRoutes = require("./routes/chat");
 const Mensaje = require("./models/Mensaje");
+const adminRoutes = require("./routes/adminRoutes");
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
-app.use(express.json());
 app.use(express.json({limit: "10mb"}));
 app.use(express.urlencoded({limit: "10mb", extended: true}));
 app.use("/api/auth", authRoutes);
@@ -34,6 +34,7 @@ app.use("/api/productos", productoRoutes);
 app.use( "/api/ai", iaOutfitRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/historias", historiaRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.get("/", (req, res) => {
     res.json({
