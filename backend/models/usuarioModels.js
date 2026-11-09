@@ -84,6 +84,12 @@ const Usuario = sequelize.define(
             allowNull: true
         },
 
+        saldo: {
+            type: DataTypes.DECIMAL(10, 2),
+            allowNull: false,
+            defaultValue: 0
+        },
+
         DVH: {
             type: DataTypes.INTEGER,
             allowNull: true

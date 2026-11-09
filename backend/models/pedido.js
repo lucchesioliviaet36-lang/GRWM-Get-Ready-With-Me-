@@ -1,36 +1,49 @@
-
-const { DataTypes } = require("sequelize");
-const { sequelize } = require("../config/database.js");
+const {DataTypes} = require("sequelize");
+const {sequelize} = require("../config/database");
 
 const Pedido = sequelize.define(
-  "Pedido",
+  "Pedido", 
   {
     id_pedido: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
+      primaryKey: true, 
       autoIncrement: true
     },
+    
     fecha_pedido: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATEONLY, 
       allowNull: true
     },
+
     estado_pedido: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.INTEGER, 
       allowNull: true
     },
+
+    recibido: {
+      type: DataTypes.BOOLEAN, 
+      allowNull: false, 
+      defaultValue: false
+    },
+
+    fecha_entrega: {
+      type: DataTypes.DATE, 
+      allowNull: true
+    },
+
     DVH: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER, 
       allowNull: true
     },
+
     id_usuario: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER, 
       allowNull: true
     }
-  },
-  {
+    
+}, {
     tableName: "Pedido",
     timestamps: false
-  }
-);
+});
 
 module.exports = Pedido;
