@@ -45,14 +45,14 @@ function InicioSesion() {
       localStorage.setItem("token", datos.token);
 
       // Guardamos datos básicos del usuario
-      localStorage.setItem(
-        "usuario",
-        JSON.stringify(datos.usuario)
-      );
+      localStorage.setItem("token", datos.token);
+      localStorage.setItem("usuario", JSON.stringify(datos.usuario));
 
-      console.log("Inicio de sesión correcto:", datos.usuario);
-
-      navigate("/perfil_propio");
+      if (datos.usuario.rol === "administrador") {
+        navigate("/administrador");
+      } else {
+        navigate("/paginaPrincipal");
+      }
 
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
