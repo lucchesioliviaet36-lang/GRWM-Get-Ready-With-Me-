@@ -25,7 +25,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/administrador" element={<RutaProtegida rol="administrador"> <Administrador /></RutaProtegida>}/>
-        <Route path="/paginaPrincipal" element={<RutaProtegida rol="usuario"><Feed /></RutaProtegida>}/>
+        <Route path="/paginaPrincipal" element={<RutaProtegida rol="usuario"><PaginaPrincipal /></RutaProtegida>}/>
         <Route path="/IniciarSesion" element={<InicioSesion />} /> 
         <Route path="/recuperar-contrasena" element={<RecuperarContrasena />}/>
         <Route path="/restablecer-contrasena/:token" element={<RestablecerContrasena />}/>

@@ -1,0 +1,363 @@
+.admin-page {
+  min-height: 100vh;
+  display: flex;
+  background: white;
+  font-family: Arial, sans-serif;
+  color: #c989a9;
+}
+
+.admin-sidebar {
+  width: 250px;
+  min-height: 100vh;
+  background: #c989a9;
+  color: white;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 45px;
+}
+
+.admin-logo span {
+  font-size: 28px;
+}
+
+.admin-logo h2 {
+  margin-top: 5px;
+  color: white;
+}
+
+.admin-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-menu button,
+.admin-cerrar-sesion {
+  border: none;
+  background: transparent;
+  color: white;
+  text-align: left;
+  padding: 13px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.admin-menu button:hover {
+  background: #9d5b7c;
+}
+
+.admin-cerrar-sesion {
+  margin-top: auto;
+  color: #9d5b7c;
+}
+
+.admin-contenido {
+  flex: 1;
+  padding: 40px;
+}
+
+.admin-header {
+  margin-bottom: 35px;
+}
+
+.admin-header h1 {
+  margin: 5px 0 0;
+  color: black;
+}
+
+.admin-subtitulo {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #9d5b7c;
+}
+
+.admin-inicio h2,
+.admin-panel h2 {
+  color: black;
+}
+
+.admin-cards {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 20px;
+}
+
+.admin-card {
+  border: 1px solid #eadfe6;
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  text-align: left;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.admin-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(50, 29, 44, .08);
+}
+
+.admin-card span {
+  font-size: 28px;
+  color: #9d5b7c;
+}
+
+.admin-card h3 {
+  margin: 15px 0 7px;
+  color: #9d5b7c;
+}
+
+.admin-card p {
+  color: black;
+  margin: 0;
+}
+
+.admin-panel {
+  background: white;
+  border-radius: 18px;
+  padding: 10px;
+}
+
+.admin-panel h2{
+    margin-top: 10px;
+    margin-bottom: 7px;
+}
+
+.admin-panel p{
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.estado-integridad {
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+}
+
+.estado-integridad.correcto {
+  background: #e7f7ee;
+  color: #247447;
+}
+
+.estado-integridad.incorrecto {
+  background: #fff0f0;
+  color: #a73636;
+}
+
+.dvv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 15px;
+}
+
+.dvv-card {
+  border: 1px solid #eadfe6;
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.integridad-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.integridad-fila {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #eadfe6;
+  border-radius: 14px;
+  padding: 20px 24px;
+  box-sizing: border-box;
+}
+
+.integridad-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.integridad-nombre {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 300px;
+}
+
+.integridad-nombre h3 {
+  margin: 0 0 5px;
+  color: #70345c;
+  font-size: 19px;
+}
+
+.integridad-icono {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.integridad-icono.ok {
+  background: #e7f7ee;
+  color: #247447;
+}
+
+.integridad-icono.error {
+  background: #fff0f0;
+  color: #b52b2b;
+}
+
+.estado-ok {
+  color: #247447;
+  font-size: 14px;
+}
+
+.estado-error {
+  color: #b52b2b;
+  font-size: 14px;
+}
+
+.integridad-errores {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.integridad-sin-error {
+  color: #718078;
+  font-size: 14px;
+}
+
+.integridad-error-item {
+  width: 100%;
+  background: #fff5f5;
+  border-left: 4px solid #c83b3b;
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  box-sizing: border-box;
+  color: #a52b2b;
+  font-size: 14px;
+}
+
+.integridad-error-item strong {
+  font-weight: 600;
+}
+
+.integridad-error-item span {
+  color: #8b5b5b;
+}
+
+.estado-integridad {
+  padding: 18px 22px;
+  border-radius: 14px;
+  margin-bottom: 25px;
+}
+
+.estado-integridad h2 {
+  margin: 0;
+}
+
+.estado-integridad.correcto {
+  background: #e7f7ee;
+  color: #247447;
+}
+
+.estado-integridad.incorrecto {
+  background: #fff0f0;
+  color: #a73636;
+}
+
+@media (max-width: 900px) {
+  .integridad-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .integridad-nombre {
+    min-width: 0;
+  }
+
+  .integridad-errores {
+    width: 100%;
+  }
+
+  .integridad-error-item {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+.estado-ok {
+  color: #247447;
+}
+
+.estado-error,
+.integridad-error {
+  color: #a73636;
+}
+
+.dvv-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dvv-card strong {
+  color: #70345c;
+}
+
+.admin-tabla-contenedor {
+  overflow-x: auto;
+}
+
+.admin-tabla-contenedor table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-tabla-contenedor th,
+.admin-tabla-contenedor td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.admin-tabla-contenedor th {
+  color: #70345c;
+}
+
+.admin-error {
+  background: #fff0f0;
+  color: #a73636;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.boton-admin-principal {
+  background: #c989a9;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+}

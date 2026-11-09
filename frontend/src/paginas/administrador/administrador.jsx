@@ -6,34 +6,34 @@ const API_URL = "http://localhost:3000";
 
 function Administrador() {
   const navigate = useNavigate();
-  const [resultadoIntegridad, setResultadoIntegridad] = useState(null);
+  const [integridad, setIntegridad] = useState(null);
   const [bitacora, setBitacora] = useState([]);
   const [dvv, setDvv] = useState([]);
+  const [seccion, setSeccion] = useState("inicio");
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
 
-  const obtenerHeaders = () => {
+  const headers = () => {
     const token = localStorage.getItem("token");
-    return {Authorization: `Bearer ${token}`};
+    return { Authorization: `Bearer ${token}` };
   };
 
-  // VERIFICAR INTEGRIDAD
   const verificarIntegridad = async () => {
     try {
       setCargando(true);
       setError("");
 
       const respuesta = await fetch(`${API_URL}/api/admin/integridad`, {
-        headers: obtenerHeaders()
+        headers: headers()
       });
 
       const datos = await respuesta.json();
 
-      if (!respuesta.ok) {
-        throw new Error(datos.message || "No se pudo verificar la integridad");
-      }
+      if (!respuesta.ok) throw new Error(datos.message || "No se pudo verificar la integridad");
 
-      setResultadoIntegridad(datos);
+      setIntegridad(datos);
+      setSeccion("integridad");
+
     } catch (error) {
       setError(error.message);
     } finally {
@@ -41,23 +41,22 @@ function Administrador() {
     }
   };
 
-  // OBTENER BITACORA
-  const obtenerBitacora = async () => {
+  const cargarBitacora = async () => {
     try {
       setCargando(true);
       setError("");
 
       const respuesta = await fetch(`${API_URL}/api/admin/bitacora`, {
-        headers: obtenerHeaders()
+        headers: headers()
       });
 
       const datos = await respuesta.json();
 
-      if (!respuesta.ok) {
-        throw new Error(datos.message || "No se pudo obtener la bitácora");
-      }
+      if (!respuesta.ok) throw new Error(datos.message || "No se pudo cargar la bitácora");
 
       setBitacora(datos.bitacora || []);
+      setSeccion("bitacora");
+
     } catch (error) {
       setError(error.message);
     } finally {
@@ -65,23 +64,22 @@ function Administrador() {
     }
   };
 
-  // OBTENER DVV
-  const obtenerDVV = async () => {
+  const cargarDVV = async () => {
     try {
       setCargando(true);
       setError("");
 
       const respuesta = await fetch(`${API_URL}/api/admin/dvv`, {
-        headers: obtenerHeaders()
+        headers: headers()
       });
 
       const datos = await respuesta.json();
 
-      if (!respuesta.ok) {
-        throw new Error(datos.message || "No se pudieron obtener los DVV");
-      }
+      if (!respuesta.ok) throw new Error(datos.message || "No se pudieron cargar los DVV");
 
       setDvv(datos.dvv || []);
+      setSeccion("dvv");
+
     } catch (error) {
       setError(error.message);
     } finally {
@@ -97,45 +95,114 @@ function Administrador() {
 
   return (
     <div className="admin-page">
-      <header className="admin-header">
-        <div>
-          <span>✧ GRWM</span>
-          <h1>Panel de Administración</h1>
+
+      <aside className="admin-sidebar">
+        <div className="admin-logo">
+          <span>✧</span>
+          <h2>GRWM Admin</h2>
         </div>
-        <button onClick={cerrarSesion}>Cerrar sesión</button>
-      </header>
+
+        <nav className="admin-menu">
+          <button onClick={() => setSeccion("inicio")}>Inicio</button>
+          <button onClick={verificarIntegridad}>Integridad BD</button>
+          <button onClick={cargarBitacora}>Bitácora</button>
+          <button onClick={cargarDVV}>Dígitos verificadores</button>
+          <button onClick={() => setSeccion("backup")}>Backup</button>
+        </nav>
+
+        <button className="admin-cerrar-sesion" onClick={cerrarSesion}>Cerrar sesión</button>
+      </aside>
 
       <main className="admin-contenido">
-        <section className="admin-acciones">
-          <button onClick={verificarIntegridad}>Verificar integridad</button>
-          <button onClick={obtenerBitacora}>Ver bitácora</button>
-          <button onClick={obtenerDVV}>Ver dígitos verificadores</button>
-          <button disabled>Generar backup</button>
-        </section>
 
-        {cargando && <p>Procesando...</p>}
+        <div className="admin-header">
+          <div>
+            <span className="admin-subtitulo">ADMINISTRACIÓN</span>
+            <h1>Panel de Administración</h1>
+          </div>
+        </div>
+
         {error && <div className="admin-error">{error}</div>}
+        {cargando && <p>Cargando...</p>}
 
-        {resultadoIntegridad && (
-          <section className="admin-panel">
-            <h2>Integridad de la base de datos</h2>
-            <p>{resultadoIntegridad.valido ? "✓ La base de datos es íntegra" : "⚠ Se encontraron errores"}</p>
+        {seccion === "inicio" && (
+          <section className="admin-inicio">
+            <h2>Bienvenido al panel de administración</h2>
+            <p>Desde acá podés controlar la seguridad e integridad del sistema.</p>
 
-            {resultadoIntegridad.tablas?.map((tabla) => (
-              <div key={tabla.tabla} className="admin-integridad-item">
-                <strong>{tabla.tabla}</strong>
-                <span>{tabla.valido ? "Correcta" : "Con errores"}</span>
-                {tabla.errores?.map((error, index) => (
-                  <p key={index}>{error.error} {error.id ? `- ID ${error.id}` : ""}</p>
-                ))}
-              </div>
-            ))}
+            <div className="admin-cards">
+              <button className="admin-card" onClick={verificarIntegridad}>
+                <span>✓</span>
+                <h3>Integridad</h3>
+                <p>Verificar DVH y DVV de la base de datos.</p>
+              </button>
+
+              <button className="admin-card" onClick={cargarBitacora}>
+                <span>☷</span>
+                <h3>Bitácora</h3>
+                <p>Consultar las acciones realizadas en el sistema.</p>
+              </button>
+
+              <button className="admin-card" onClick={cargarDVV}>
+                <span>#</span>
+                <h3>DVV</h3>
+                <p>Consultar los dígitos verificadores verticales.</p>
+              </button>
+
+              <button className="admin-card" onClick={() => setSeccion("backup")}>
+                <span>↧</span>
+                <h3>Backup</h3>
+                <p>Generar una copia de seguridad de la base de datos.</p>
+              </button>
+            </div>
           </section>
         )}
 
-        {bitacora.length > 0 && (
+        {seccion === "integridad" && integridad && (
+          <section className="admin-panel">
+            <div className={`estado-integridad ${integridad.valido ? "correcto" : "incorrecto"}`}>
+              <h2>{integridad.valido ? "✓ Base de datos íntegra" : "⚠ Se encontraron problemas"}</h2>
+            </div>
+
+            <div className="integridad-lista">
+              {integridad.tablas?.map((tabla) => (
+                <div className="integridad-fila" key={tabla.tabla}>
+                  <div className="integridad-info">
+                    <div className="integridad-nombre">
+                      <span className={`integridad-icono ${tabla.valido ? "ok" : "error"}`}>
+                        {tabla.valido ? "✓" : "!"}
+                      </span>
+                      <div>
+                        <h3>{tabla.tabla}</h3>
+                        <span className={tabla.valido ? "estado-ok" : "estado-error"}>
+                          {tabla.valido ? "Integridad correcta" : "Se encontraron errores"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="integridad-errores">
+                      {tabla.valido ? (
+                        <span className="integridad-sin-error">No se encontraron problemas</span>
+                      ) : (
+                        tabla.errores?.map((error, index) => (
+                          <div className="integridad-error-item" key={index}>
+                            <strong>{error.error}</strong>
+                            {error.id && <span>Registro afectado: {error.id}</span>}
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {seccion === "bitacora" && (
           <section className="admin-panel">
             <h2>Bitácora</h2>
+
             <div className="admin-tabla-contenedor">
               <table>
                 <thead>
@@ -148,6 +215,7 @@ function Administrador() {
                     <th>Fecha</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {bitacora.map((registro) => (
                     <tr key={registro.id_bitacora}>
@@ -165,17 +233,30 @@ function Administrador() {
           </section>
         )}
 
-        {dvv.length > 0 && (
+        {seccion === "dvv" && (
           <section className="admin-panel">
-            <h2>Dígitos verificadores</h2>
-            {dvv.map((registro) => (
-              <div key={registro.id_dvv} className="admin-dvv-item">
-                <strong>{registro.nombre_tabla}</strong>
-                <span>{registro.DVH}</span>
-              </div>
-            ))}
+            <h2>Dígitos Verificadores Verticales</h2>
+
+            <div className="dvv-grid">
+              {dvv.map((registro) => (
+                <div className="dvv-card" key={registro.id_dvv}>
+                  <span>{registro.nombre_tabla}</span>
+                  <strong>{registro.DVH}</strong>
+                  <small>{registro.fecha_actualizacion || "Sin fecha"}</small>
+                </div>
+              ))}
+            </div>
           </section>
         )}
+
+        {seccion === "backup" && (
+          <section className="admin-panel">
+            <h2>Backup de la base de datos</h2>
+            <p>Esta función la conectamos en el siguiente paso.</p>
+            <button className="boton-admin-principal" disabled>Generar backup</button>
+          </section>
+        )}
+
       </main>
     </div>
   );

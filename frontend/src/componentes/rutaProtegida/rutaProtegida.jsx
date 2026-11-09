@@ -11,6 +11,7 @@ function RutaProtegida({rol, children}) {
   }
 
   if (!token) return <Navigate to="/IniciarSesion" replace />;
+
   if (rol && usuario.rol !== rol) {
     return <Navigate to={usuario.rol === "administrador" ? "/administrador" : "/paginaPrincipal"} replace />;
   }
