@@ -70,21 +70,12 @@ body {
 }
 
 .avatar-clickable {
+  margin-top: 5px;
   padding: 0;
   color: inherit;
   cursor: pointer;
   border: 4px solid #ffffff;
-  box-shadow: 0 0 0 2px rgba(189, 78, 123, 0.28), 0 5px 16px rgba(112, 52, 92, 0.12);
-  transition: box-shadow 0.2s ease;
-}
-
-.avatar-clickable:hover {
-  box-shadow: 0 0 0 3px rgba(189, 78, 123, 0.38), 0 6px 18px rgba(112, 52, 92, 0.18);
-}
-
-.avatar-clickable:focus-visible {
-  outline: 3px solid #bd4e7b;
-  outline-offset: 3px;
+  box-shadow: 0 0 0 2px rgba(225, 83, 140, 0.28), 0 5px 16px rgba(112, 52, 92, 0.12);
 }
 
 .avatar img {

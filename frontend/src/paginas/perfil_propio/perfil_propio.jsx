@@ -4,18 +4,12 @@ import './perfil_propio.css';
 import Header from "../../componentes/header/header";
 import Footer from "../../componentes/footer/footer";
 import ModalSeguimiento from "../../paginas/modal_seguimiento/modal_seguimiento";
-// NUEVO: permite crear historias desde el perfil propio.
-import { CrearHistoria } from "../crear_historia/crear_historia";
 const API_URL = "http://localhost:3000";
 
 function PerfilPropio() {
   const navigate = useNavigate();
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
-
   const [modalSeguimiento, setModalSeguimiento] = useState(null);
-  // NUEVO: controla la apertura del flujo para crear historias desde el avatar.
-  const [mostrarCrearHistoria, setMostrarCrearHistoria] = useState(false);
-
   const token = localStorage.getItem('token');
 
 
@@ -568,9 +562,7 @@ function PerfilPropio() {
               type="button"
               className="avatar avatar-clickable"
               style={{ backgroundColor: '#f3e8ee' }}
-              onClick={() => setMostrarCrearHistoria(true)}
-              aria-label="Crear una historia"
-              title="Crear una historia"
+
             >
               {fotoPerfil ? (<img
                 src={obtenerImagen(fotoPerfil)}
@@ -971,11 +963,6 @@ function PerfilPropio() {
                   navigate(`/perfil_usuario/${id}`);
               }}
           />
-      )}
-
-      {/* NUEVO: modal de creación de historia abierto desde el avatar. */}
-      {mostrarCrearHistoria && (
-        <CrearHistoria onVolver={() => setMostrarCrearHistoria(false)} />
       )}
 
     </div>
