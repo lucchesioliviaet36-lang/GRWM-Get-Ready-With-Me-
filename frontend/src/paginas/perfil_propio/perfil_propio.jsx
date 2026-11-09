@@ -557,10 +557,8 @@ function PerfilPropio() {
           </div>
 
           <div className="datos-perfil">
-            {/* NUEVO: tocar el avatar abre el proceso de creación de una historia. */}
-            <button
-              type="button"
-              className="avatar avatar-clickable"
+            <div
+              className="avatar "
               style={{ backgroundColor: '#f3e8ee' }}
 
             >
@@ -583,7 +581,7 @@ function PerfilPropio() {
                   <circle cx="12" cy="7" r="4" />
                 </svg>
               )}
-            </button>
+            </div>
 
             <div className="nombre-y-descripcion">
               <h1>{nombreMostrar}</h1>
