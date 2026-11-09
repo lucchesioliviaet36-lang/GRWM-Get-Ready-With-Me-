@@ -1,32 +1,28 @@
+
 const productoService = require("../services/productoServicio");
+const compraServicio = require("../services/compraServicio");
 
 const agregar = async (req, res) => {
   try {
-
     const idUsuario = req.user.id_usuario;
 
-    const producto =
-      await productoService.agregarProducto(
-        idUsuario,
-        req.body,
-        req.file
-      );
+    const producto = await productoService.agregarProducto(
+      idUsuario,
+      req.body,
+      req.file
+    );
 
     return res.status(201).json({
       success: true,
       producto
     });
-
   } catch (error) {
-
     return res.status(400).json({
       success: false,
       message: error.message
     });
-
   }
 };
-
 
 const obtenerProductos = async (req, res) => {
   try {
@@ -68,33 +64,55 @@ const obtenerProductosGenerales = async (req, res) => {
   }
 };
 
-
 const eliminar = async (req, res) => {
   try {
-
     const idUsuario = req.user.id_usuario;
-
     const { id } = req.params;
 
-    await productoService.eliminarProducto(
-      id,
-      idUsuario
-    );
+    await productoService.eliminarProducto(id, idUsuario);
 
     return res.status(200).json({
       success: true,
       message: "Producto eliminado correctamente"
     });
-
   } catch (error) {
-
     return res.status(404).json({
       success: false,
       message: error.message
     });
-
   }
 };
 
+// NUEVA FUNCIÓN: comprar un producto
+const comprar = async (req, res) => {
+  try {
+    const idUsuario = req.user.id_usuario;
+    const { id } = req.params;
+    const { metodo } = req.body;
 
-module.exports = { agregar, obtenerProductos, eliminar, obtenerProductosGenerales };
+    const compra = await compraServicio.realizarCompra(
+      id,
+      idUsuario,
+      metodo
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: "Compra registrada correctamente",
+      compra
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+module.exports = {
+  agregar,
+  obtenerProductos,
+  eliminar,
+  obtenerProductosGenerales,
+  comprar
+};
