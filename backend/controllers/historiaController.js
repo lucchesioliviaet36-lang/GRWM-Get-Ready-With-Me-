@@ -1,4 +1,4 @@
-const Historia = require('../models/historias.Model.js'); 
+const Historia = require('../models/historiasModel.js'); 
 const HistoriaLike = require('../models/historiaLike.Model.js');
 const HistoriaComentario = require('../models/historiaComentario.Model.js');
 const Usuario = require('../models/usuarioModels.js');

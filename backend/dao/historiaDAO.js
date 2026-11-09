@@ -1,4 +1,4 @@
-const Historia = require('../models/historias.Model.js'); 
+const Historia = require('../models/historiasModel.js'); 
 
 class HistoriaDAO {
     async crear(datosHistoria) {
