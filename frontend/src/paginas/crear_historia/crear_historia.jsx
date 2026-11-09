@@ -159,7 +159,7 @@ export function CrearHistoria({ onVolver, onHistoriaCreada }) {
           <div className='acciones-previa'>
             <button type='button' onClick={() => setFotoCapturada(null)}>Elegir otra</button>
             <button className='btn-subir' type='button' onClick={guardarHistoria} disabled={subiendo}>
-              {subiendo ? 'Subiendo...' : 'Compartir historia 🚀'}
+              {subiendo ? 'Subiendo...' : 'Compartir historia ↗ '}
             </button>
           </div>
         </div>

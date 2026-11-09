@@ -806,7 +806,7 @@ export default function Feed() {
                       className={`story-like-btn ${liked ? 'liked' : ''}`}
                       onClick={() => setLiked(!liked)}
                     >
-                      {liked ? '❤️' : '🤍'}
+                      {liked ? '❤' : '♡'}
                     </button>
                   </div>
                 </div>
