@@ -13,4 +13,6 @@ router.get("/dvv", adminController.obtenerDVV);
 
 router.get("/integridad", adminController.verificarIntegridad);
 
+router.post("/backup", adminController.generarBackup);
+
 module.exports = router;

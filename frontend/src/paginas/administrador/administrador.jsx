@@ -12,6 +12,7 @@ function Administrador() {
   const [seccion, setSeccion] = useState("inicio");
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
+  const [mensaje, setMensaje] = useState("");
 
   const headers = () => {
     const token = localStorage.getItem("token");
@@ -79,6 +80,49 @@ function Administrador() {
 
       setDvv(datos.dvv || []);
       setSeccion("dvv");
+
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const generarBackup = async () => {
+    try {
+      setCargando(true);
+      setError("");
+      setMensaje("");
+
+      const respuesta = await fetch(`${API_URL}/api/admin/backup`, {
+        method: "POST",
+        headers: headers()
+      });
+
+      if (!respuesta.ok) {
+        let datos = {};
+        try {
+          datos = await respuesta.json();
+        } catch {
+          datos = {};
+        }
+
+        throw new Error(datos.message || "No se pudo generar el backup");
+      }
+
+      const archivo = await respuesta.blob();
+      const url = window.URL.createObjectURL(archivo);
+      const enlace = document.createElement("a");
+      const fecha = new Date().toISOString().slice(0, 10);
+
+      enlace.href = url;
+      enlace.download = `backup-grwm-${fecha}.sql`;
+      document.body.appendChild(enlace);
+      enlace.click();
+      enlace.remove();
+      window.URL.revokeObjectURL(url);
+
+      setMensaje("Backup generado correctamente");
 
     } catch (error) {
       setError(error.message);
@@ -250,10 +294,42 @@ function Administrador() {
         )}
 
         {seccion === "backup" && (
-          <section className="admin-panel">
+          <section className="admin-panel backup-panel">
+            <div className="backup-icono">↧</div>
+
             <h2>Backup de la base de datos</h2>
-            <p>Esta función la conectamos en el siguiente paso.</p>
-            <button className="boton-admin-principal" disabled>Generar backup</button>
+
+            <p className="backup-descripcion">
+              Generá una copia de seguridad completa de la base de datos GRWM.
+              El archivo se descargará en formato SQL.
+            </p>
+
+            <div className="backup-info">
+              <div>
+                <span>Formato</span>
+                <strong>.SQL</strong>
+              </div>
+
+              <div>
+                <span>Base de datos</span>
+                <strong>GRWM</strong>
+              </div>
+
+              <div>
+                <span>Contenido</span>
+                <strong>Backup completo</strong>
+              </div>
+            </div>
+
+            <button
+              className="boton-admin-principal"
+              onClick={generarBackup}
+              disabled={cargando}
+            >
+              {cargando ? "Generando backup..." : "Generar backup"}
+            </button>
+
+            {mensaje && <div className="backup-exito">✓ {mensaje}</div>}
           </section>
         )}
 

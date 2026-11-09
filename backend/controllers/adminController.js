@@ -28,8 +28,24 @@ const verificarIntegridad = async (req, res) => {
     }
 };
 
+const generarBackup = async (req, res) => {
+    try {
+        const idUsuario = req.user.id_usuario;
+        const backup = await adminService.generarBackup(idUsuario);
+
+        return res.download(backup.ruta, backup.nombreArchivo);
+    } catch (error) {
+        console.error("Error generando backup:", error.message);
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 module.exports = {
     obtenerBitacora,
     obtenerDVV,
-    verificarIntegridad
+    verificarIntegridad,
+    generarBackup
 };
