@@ -57,7 +57,7 @@ export default function Feed() {
   const fotoPerfilHeader = obtenerFotoPerfil();
 
   const obtenerAvatarUsuario = (fotoPerfil) => {
-    if (!fotoPerfil) return `${API_URL}/uploads/default-avatar.png`;
+    if (!fotoPerfil) return "";
     if (fotoPerfil.startsWith('http')) return fotoPerfil;
     return `${API_URL}/${fotoPerfil.replace(/^\/+/, '')}`;
   };
