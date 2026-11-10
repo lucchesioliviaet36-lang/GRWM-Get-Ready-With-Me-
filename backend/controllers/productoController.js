@@ -73,6 +73,25 @@ const obtenerPorId = async (req, res) => {
   }
 };
 
+const obtenerProductosPerfil = async (req, res) => {
+  try {
+    const productos = await productoService.obtenerProductosPerfil(
+      req.params.id
+    );
+
+    return res.status(200).json({
+      success: true,
+      productos
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
 const eliminar = async (req, res) => {
   try {
     const idUsuario = req.user.id_usuario;
@@ -124,5 +143,6 @@ module.exports = {
   eliminar,
   obtenerProductosGenerales,
   obtenerPorId,
+  obtenerProductosPerfil,
   comprar
 };

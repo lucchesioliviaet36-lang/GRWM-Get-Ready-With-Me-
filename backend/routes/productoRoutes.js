@@ -1,12 +1,12 @@
-
 const express = require("express");
 const productoController = require("../controllers/productoController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const uploadProducto = require("../middlewares/uploadProducto");
-
 const router = express.Router();
 
 router.get("/general", productoController.obtenerProductosGenerales);
+
+router.get("/usuario/:id", authMiddleware, productoController.obtenerProductosPerfil);
 
 router.get("/:id", authMiddleware, productoController.obtenerPorId);
 

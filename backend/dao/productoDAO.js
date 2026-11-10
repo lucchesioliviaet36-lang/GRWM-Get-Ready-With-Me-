@@ -1,3 +1,5 @@
+const {QueryTypes} = require("sequelize");
+const {sequelize} = require("../config/database.js");
 const Producto = require("../models/producto.js");
 
 // Buscar productos por nombre
@@ -40,6 +42,35 @@ const buscarTodosActivos = async () => {
   });
 };
 
+// PRODUCTOS PARA MOSTRAR EN UN PERFIL
+const buscarProductosPerfil = async (id_usuario) => {
+  return await sequelize.query(`
+    SELECT
+      p.*,
+
+      COALESCE((
+        SELECT ROUND(AVG(c.puntuacion), 1)
+        FROM Calificacion c
+        WHERE c.id_producto = p.id_producto
+      ), 0) AS promedio_calificacion,
+
+      (
+        SELECT COUNT(*)
+        FROM Calificacion c
+        WHERE c.id_producto = p.id_producto
+      ) AS cantidad_calificaciones
+
+    FROM Producto p
+
+    WHERE p.id_usuario = :id_usuario
+
+    ORDER BY p.fecha DESC, p.id_producto DESC
+  `, {
+    replacements: {id_usuario},
+    type: QueryTypes.SELECT
+  });
+};
+
 // Crear producto
 const crear = async (producto) => {
   return await Producto.create(producto);
@@ -61,6 +92,7 @@ module.exports = {
   buscarPorId,
   buscarPorUsuario,
   buscarTodosActivos,
+  buscarProductosPerfil,
   crear,
   eliminar
 };

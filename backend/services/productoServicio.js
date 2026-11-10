@@ -78,6 +78,10 @@ const obtenerProductoPorId = async (idProducto) => {
     return producto;
 };
 
+const obtenerProductosPerfil = async (idUsuario) => {
+    return await productoDAO.buscarProductosPerfil(idUsuario);
+};
+
 const eliminarProducto = async (idProducto, idUsuario) => {
     const producto = await productoDAO.buscarPorId(idProducto);
 
@@ -117,5 +121,6 @@ module.exports = {
     obtenerProductosUsuario,
     obtenerProductosGenerales,
     obtenerProductoPorId,
+    obtenerProductosPerfil,
     eliminarProducto
 };
