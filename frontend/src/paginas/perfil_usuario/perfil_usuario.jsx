@@ -13,21 +13,22 @@ function PerfilUsuario() {
 
     const [modalSeguimiento, setModalSeguimiento] = useState(null);
     const [mostrarFotoAmpliada, setMostrarFotoAmpliada] = useState(false);
-
     const token = localStorage.getItem('token');
-
     const [usuario, setUsuario] = useState(null);
     const [publicaciones, setPublicaciones] = useState([]);
-
     const [seguidores, setSeguidores] = useState(0);
     const [seguidos, setSeguidos] = useState(0);
-
     const [loSigo, setLoSigo] = useState(false);
     const [errorSeguimiento, setErrorSeguimiento] = useState('');
     const [seguimientoDisponible, setSeguimientoDisponible] = useState(true);
     const [cargando, setCargando] = useState(true);
     const [procesando, setProcesando] = useState(false);
     const [error, setError] = useState('');
+    const [pestanaActiva, setPestanaActiva] = useState("publicaciones");
+    const [productosPerfil, setProductosPerfil] = useState([]);
+    const [cargandoProductos, setCargandoProductos] = useState(false);
+    const [errorProductos, setErrorProductos] = useState("");
+
 
     // Obtener URL de imágenes
     const obtenerImagen = (imagen) => {
@@ -159,6 +160,58 @@ function PerfilUsuario() {
         return () => controller.abort();
 
     }, [id, token]);
+
+    // CARGAR PRODUCTOS DEL USUARIO
+    useEffect(() => {
+
+    if (pestanaActiva !== "productos" || !id || !token) {
+        return;
+    }
+
+    const cargarProductos = async () => {
+        try {
+        setCargandoProductos(true);
+        setErrorProductos("");
+
+        const response = await fetch(
+            `${API_URL}/api/productos/usuario/${id}`,
+            {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+            data.message ||
+            "No se pudieron cargar los productos"
+            );
+        }
+
+        setProductosPerfil(
+            data.productos || []
+        );
+
+        } catch (error) {
+        console.error(
+            "Error cargando productos:",
+            error
+        );
+
+        setErrorProductos(
+            error.message
+        );
+
+        } finally {
+        setCargandoProductos(false);
+        }
+    };
+
+    cargarProductos();
+    }, [pestanaActiva, id, token]);
 
     // Seguir o dejar de seguir
     const alternarSeguimiento = async () => {
@@ -379,62 +432,189 @@ function PerfilUsuario() {
 
                 {/* PESTAÑA DE PUBLICACIONES */}
                 <div className="pestanas-perfil-usuario">
-                    <button className="activa">
-                        Publicaciones
+                    <button className={pestanaActiva === "publicaciones" ? "activa" : ""}
+                        onClick={() => setPestanaActiva("publicaciones")}
+                    >Publicaciones
                     </button>
+
+                    <button className={ pestanaActiva === "productos" ? "activa" : ""}
+                        onClick={() => setPestanaActiva("productos")}
+                    >Productos
+                    </button>
+
                 </div>
 
                 {/* PUBLICACIONES */}
-                <section className="grid-perfil-usuario">
+                {pestanaActiva === "publicaciones" && (
+                    <section className="grid-perfil-usuario">
+                        {publicaciones.length === 0 ? (
+                            <p className="sin-contenido-perfil-usuario">
+                                Este usuario todavía no tiene publicaciones.
+                            </p>
+                        ) : (
+                            publicaciones.map(post => (
+                                <button
+                                    key={post.id_publicacion}
+                                    className="post-perfil-usuario"
+                                    type="button"
+                                    onClick={() => navigate( `/publicacion/${post.id_publicacion}`)}
+                                    >
+                                    <div className="foto-post-perfil-usuario">
+                                        {post.imagen_url && (
+                                            <img
+                                                src={obtenerImagen(post.imagen_url)}
+                                                alt={`Publicación de ${usuario.username}`}
+                                            />
+                                        )}
 
-                    {publicaciones.length === 0 ? (
+                                        {!post.imagen_url && (
+                                            <span className="post-sin-imagen-perfil-usuario">
+                                                Sin imagen
+                                            </span>
+                                        )}
+                                    </div>
 
-                        <p className="sin-contenido-perfil-usuario">
-                            Este usuario todavía no tiene publicaciones.
-                        </p>
 
-                    ) : (
-
-                        publicaciones.map(post => (
-
-                            <button
-                                key={post.id_publicacion}
-                                className="post-perfil-usuario"
-                                type="button"
-                                onClick={() =>
-                                    navigate(`/publicacion/${post.id_publicacion}`)
-                                }
-                            >
-
-                                <div className="foto-post-perfil-usuario">
-
-                                    {post.imagen_url && (
-                                        <img
-                                            src={obtenerImagen(post.imagen_url)}
-                                            alt={`Publicación de ${usuario.username}`}
-                                        />
-                                    )}
-                                    {!post.imagen_url && (
-                                        <span className="post-sin-imagen-perfil-usuario">
-                                            Sin imagen
+                                    <div className="pie-post-perfil-usuario">
+                                        <span>
+                                            {post.descripcion || ""}
                                         </span>
+                                    </div>
+
+                                </button>
+
+                            ))
+
+                        )}
+
+                    </section>
+                )}
+
+                {pestanaActiva === "productos" && (
+
+                    <section className="grid-productos-perfil">
+                        {cargandoProductos ? (
+                            <p className="sin-contenido-perfil-usuario">
+                                Cargando productos...
+                            </p>
+                        ) : errorProductos ? (
+
+                            <p className="sin-contenido-perfil-usuario">
+                                {errorProductos}
+                            </p>
+
+                        ) : productosPerfil.length === 0 ? (
+
+                            <p className="sin-contenido-perfil-usuario">
+                                Este usuario todavía no tiene productos publicados.
+                            </p>
+
+                        ) : (
+
+                        productosPerfil.map((producto) => {
+                            const disponible = Boolean(producto.estado_producto) &&  Number(producto.stock) > 0;
+                            const promedio = Number(producto.promedio_calificacion || 0);
+                            const estrellas = Math.round(promedio);
+
+                            return (
+                                <article
+                                    className={`producto-perfil-card ${
+                                    !disponible
+                                        ? "producto-perfil-agotado"
+                                        : ""
+                                    }`}
+                                    key={producto.id_producto}
+                                >
+
+                                    <div className="producto-perfil-imagen">
+
+                                    {producto.imagen ? (
+
+                                        <img
+                                        src={obtenerImagen(
+                                            producto.imagen
+                                        )}
+                                        alt={producto.nombre}
+                                        />
+
+                                    ) : (
+
+                                        <div className="producto-perfil-sin-imagen">
+                                        Sin imagen
+                                        </div>
+
                                     )}
 
-                                </div>
 
-                                <div className="pie-post-perfil-usuario">
-                                    <span>
-                                        {post.descripcion || ''}
-                                    </span>
-                                </div>
+                                    {!disponible && (
 
-                            </button>
+                                        <div className="producto-overlay-stock">
 
-                        ))
+                                        <span>
+                                            Sin stock
+                                        </span>
 
-                    )}
+                                        </div>
 
-                </section>
+                                    )}
+
+                                    </div>
+
+                                    <div className="producto-perfil-info">
+                                        <span className="producto-perfil-categoria">
+                                            {producto.categoria}
+                                        </span>
+                                        <h3>
+                                            {producto.nombre}
+                                        </h3>
+
+                                        <div className="producto-perfil-footer">
+                                            <strong className="producto-perfil-precio">
+                                            $
+                                            {Number( producto.precio ).toLocaleString("es-AR")}
+                                            </strong>
+                                            {disponible ? (
+                                            <button
+                                                type="button"
+                                                className="btn-comprar-producto-perfil"
+                                                onClick={() => navigate( `/pago/${producto.id_producto}`)}
+                                            >Comprar
+                                            </button>
+                                            ) : (
+                                            <div className="producto-rating">
+                                                <div className="producto-estrellas">
+                                                    {[1, 2, 3, 4, 5].map((estrella) => (
+                                                        <span
+                                                            key={estrella}
+                                                            className={
+                                                            estrella <= estrellas
+                                                                ? "estrella-rating pintada"
+                                                                : "estrella-rating"
+                                                            }
+                                                        >★</span>
+                                                        
+                                                    ))}
+                                                </div>
+
+                                                <span className="producto-promedio">
+                                                    {Number(
+                                                        producto.cantidad_calificaciones
+                                                    ) > 0
+                                                        ? `${promedio.toFixed(1)} / 5`
+                                                        : "Sin calificar"}
+                                                </span>
+                                            </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </article>
+                            );
+                        })
+
+                        )}
+                    </section>
+
+                )}
 
             </main>
 

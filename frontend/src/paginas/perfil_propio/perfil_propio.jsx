@@ -10,8 +10,27 @@ function PerfilPropio() {
   const navigate = useNavigate();
   const [pestanaActiva, setPestanaActiva] = useState('publicaciones');
   const [modalSeguimiento, setModalSeguimiento] = useState(null);
+  const [listaPublicaciones, setListaPublicaciones] = useState([]);
+  const [publicacionesFavoritas, setPublicacionesFavoritas] = useState([]);
+  const [seguidores, setSeguidores] = useState(0);
+  const [seguidos, setSeguidos] = useState(0);
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [imagenArchivo, setImagenArchivo] = useState(null);
+  const [imagenPreview, setImagenPreview] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [publicando, setPublicando] = useState(false);
+  const [busquedaMusica, setBusquedaMusica] = useState('');
+  const [resultadosMusica, setResultadosMusica] = useState([]);
+  const [musicaSeleccionada, setMusicaSeleccionada] = useState(null);
+  const [buscandoMusica, setBuscandoMusica] = useState(false);
+  const [busquedaUsuario, setBusquedaUsuario] = useState('');
+  const [resultadosUsuarios, setResultadosUsuarios] = useState([]);
+  const [usuariosEtiquetados, setUsuariosEtiquetados] = useState([]);
+  const [buscandoUsuarios, setBuscandoUsuarios] = useState(false);
+  const [productosPerfil, setProductosPerfil] = useState([]);
+  const [cargandoProductos, setCargandoProductos] = useState(false);
+  const [errorProductos, setErrorProductos] = useState("");
   const token = localStorage.getItem('token');
-
 
     // OBTENER URL DE IMAGEN
   const obtenerImagen = (imagen) => {
@@ -50,28 +69,6 @@ function PerfilPropio() {
   const descripcionMostrar = usuarioSesion.descripcion || '';
   const fotoPerfil = usuarioSesion.foto_perfil || null;
   const bannerImg = usuarioSesion.banner || null;
-
-  const [listaPublicaciones, setListaPublicaciones] = useState([]);
-  const [publicacionesFavoritas, setPublicacionesFavoritas] = useState([]);
-
-  const [seguidores, setSeguidores] = useState(0);
-  const [seguidos, setSeguidos] = useState(0);
-
-  const [mostrarModal, setMostrarModal] = useState(false);
-  const [imagenArchivo, setImagenArchivo] = useState(null);
-  const [imagenPreview, setImagenPreview] = useState('');
-  const [descripcion, setDescripcion] = useState('');
-  const [publicando, setPublicando] = useState(false);
-
-  const [busquedaMusica, setBusquedaMusica] = useState('');
-  const [resultadosMusica, setResultadosMusica] = useState([]);
-  const [musicaSeleccionada, setMusicaSeleccionada] = useState(null);
-  const [buscandoMusica, setBuscandoMusica] = useState(false);
-
-  const [busquedaUsuario, setBusquedaUsuario] = useState('');
-  const [resultadosUsuarios, setResultadosUsuarios] = useState([]);
-  const [usuariosEtiquetados, setUsuariosEtiquetados] = useState([]);
-  const [buscandoUsuarios, setBuscandoUsuarios] = useState(false);
 
   const buscarUsuario = async (texto) => {
     setBusquedaUsuario(texto);
@@ -501,6 +498,65 @@ function PerfilPropio() {
     }
   };
 
+  // CARGAR PRODUCTOS DEL PERFIL
+  useEffect(() => {
+    const idUsuario = usuarioSesion?.id_usuario || usuarioSesion?.id;
+
+    if (
+      pestanaActiva !== "productos" ||
+      !idUsuario ||
+      !token
+    ) {
+      return;
+    }
+
+    const cargarProductos = async () => {
+      try {
+        setCargandoProductos(true);
+        setErrorProductos("");
+
+        const response = await fetch(
+          `${API_URL}/api/productos/usuario/${idUsuario}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.message ||
+            "No se pudieron cargar los productos"
+          );
+        }
+
+        setProductosPerfil(data.productos || []);
+
+      } catch (error) {
+        console.error(
+          "Error cargando productos:",
+          error
+        );
+
+        setErrorProductos(error.message);
+
+      } finally {
+        setCargandoProductos(false);
+      }
+    };
+
+    cargarProductos();
+
+  }, [
+    pestanaActiva,
+    usuarioSesion?.id_usuario,
+    usuarioSesion?.id,
+    token
+  ]);
+
   const cerrarModal = () => {
     if (publicando) return;
 
@@ -642,18 +698,19 @@ function PerfilPropio() {
         </section>
 
         <div className="pestanas">
-          <button
-            className={pestanaActiva === 'publicaciones' ? 'activa' : ''}
-            onClick={() => setPestanaActiva('publicaciones')}
-          >
-            Publicaciones
+          <button className={pestanaActiva === "publicaciones" ? "activa" : ""}
+            onClick={() => setPestanaActiva("publicaciones")}
+          >Publicaciones
           </button>
 
-          <button
-            className={pestanaActiva === 'favoritos' ? 'activa' : ''}
-            onClick={() => setPestanaActiva('favoritos')}
-          >
-            Favoritos
+          <button className={pestanaActiva === "favoritos" ? "activa" : ""}
+            onClick={() => setPestanaActiva("favoritos")}
+          >Favoritos
+          </button>
+
+          <button className={pestanaActiva === "productos" ? "activa" : ""}
+            onClick={() => setPestanaActiva("productos")}
+          >Productos
           </button>
         </div>
 
@@ -730,6 +787,113 @@ function PerfilPropio() {
               })
             )
           )}
+
+          {pestanaActiva === "productos" && (
+            <div className="productos-perfil-contenedor">
+              {cargandoProductos ? (
+                <p className="sin-contenido">
+                  Cargando productos...
+                </p>
+              ) : errorProductos ? (
+                <p className="sin-contenido">
+                  {errorProductos}
+                </p>
+              ) : productosPerfil.length === 0 ? (
+
+                <p className="sin-contenido">
+                  Todavía no tenés productos publicados.
+                </p>
+
+              ) : (
+                <div className="grid-productos-perfil">
+                  {productosPerfil.map((producto) => {
+
+                    const disponible = Boolean(producto.estado_producto) && Number(producto.stock) > 0;
+                    const promedio = Number(producto.promedio_calificacion || 0);
+                    const estrellas = Math.round(promedio);
+
+                    return (
+                      <article
+                        className={`producto-perfil-card ${
+                          !disponible
+                            ? "producto-perfil-agotado"
+                            : ""
+                        }`}
+                        key={producto.id_producto}
+                      >
+                        <div className="producto-perfil-imagen">
+                          {producto.imagen ? (
+                            <img
+                              src={obtenerImagen(producto.imagen)}
+                              alt={producto.nombre}
+                            />
+                          ) : (
+                            <div className="producto-perfil-sin-imagen">Sin imagen</div>
+                          )}
+
+                          {!disponible && (
+                            <div className="producto-overlay-stock">
+                              <span>Sin stock</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="producto-perfil-info">
+                          <span className="producto-perfil-categoria">
+                            {producto.categoria}
+                          </span>
+                          <h3>
+                            {producto.nombre}
+                          </h3>
+                          <div className="producto-perfil-footer">
+                            <strong className="producto-perfil-precio">
+                              $
+                              {Number(
+                                producto.precio
+                              ).toLocaleString("es-AR")}
+                            </strong>
+
+                            {disponible ? (
+                              <span className="producto-perfil-propio-disponible">
+                                A la venta
+                              </span>
+                            ) : (
+                              <div className="producto-rating">
+                                <div className="producto-estrellas">
+                                  {[1, 2, 3, 4, 5].map(
+                                    (estrella) => (
+                                      <span
+                                        key={estrella}
+                                        className={
+                                          estrella <= estrellas
+                                            ? "estrella-rating pintada"
+                                            : "estrella-rating"
+                                        }
+                                      >
+                                        ★
+                                      </span>
+
+                                    )
+                                  )}
+                                </div>
+
+                                <span className="producto-promedio">
+                                  {Number(producto.cantidad_calificaciones) > 0
+                                    ? `${promedio.toFixed(1)} / 5`
+                                    : "Sin calificar"}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
         </section>
       </main>
 
