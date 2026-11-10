@@ -106,7 +106,7 @@ function HistorialCompras() {
             </p>
             <button
               type="button"
-              onClick={() => navigate("/Tienda")}
+              onClick={() => navigate("/tienda_principal")}
             >Ir a la tienda
             </button>
           </div>
