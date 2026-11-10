@@ -11,21 +11,13 @@ function Pago() {
   const {id} = useParams();
   const [metodoPago, setMetodoPago] = useState(null); 
   const [pagoConfirmado, setPagoConfirmado] = useState(false); 
-  const [quiereEnvio, setQuiereEnvio] = useState(false);
   const [mostrarSaldoModal, setMostrarSaldoModal] = useState(false);
   const [saldo, setSaldo] = useState(0);
   const [faltante, setFaltante] = useState(0);
   const [montoCarga, setMontoCarga] = useState("");
   const [procesando, setProcesando] = useState(false);
   const [errorPago, setErrorPago] = useState("");
-
-  const etapasEnvio = [
-    { id: 1, titulo: "En preparación", status: "Completo", time: "Hoy, 10:00 AM" },
-    { id: 2, titulo: "Listo", status: "En Proceso", time: "Pendiente" },
-    { id: 3, titulo: "En manos del repartidor", status: "Pendiente", time: "-" },
-    { id: 4, titulo: "En camino", status: "Pendiente", time: "-" },
-    { id: 5, titulo: "Entregado", status: "Pendiente", time: "-" }
-  ];
+  const [pedido, setPedido] = useState(null);
 
   const comprarConSaldo = async () => {
   try {
@@ -59,6 +51,7 @@ function Pago() {
         throw new Error(datos.message || "No se pudo realizar el pago");
       }
 
+      setPedido(datos.pedido);
       setMostrarSaldoModal(false);
       setPagoConfirmado(true);
 
@@ -113,6 +106,43 @@ function Pago() {
       setMostrarSaldoModal(false);
 
       await comprarConSaldo();
+
+    } catch (error) {
+      setErrorPago(error.message);
+    } finally {
+      setProcesando(false);
+    }
+  };
+
+  const confirmarLlegada = async () => {
+    try {
+      if (!pedido?.id_pedido) {
+        setErrorPago("No se encontró el pedido");
+        return;
+      }
+
+      setProcesando(true);
+      setErrorPago("");
+
+      const token = localStorage.getItem("token");
+
+      const respuesta = await fetch(
+        `http://localhost:3000/api/pedidos/${pedido.id_pedido}/recibido`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok) {
+        throw new Error(datos.message || "No se pudo confirmar la entrega");
+      }
+
+      navigate(`/calificar/${pedido.id_pedido}`);
 
     } catch (error) {
       setErrorPago(error.message);
@@ -268,74 +298,72 @@ function Pago() {
           <section className="seccion-envio animate-fade-in">
 
             <div className="mensaje-exito-pago">
-              <h2>¡Pago confirmado con éxito! </h2>
-            </div>
-            
-
-            <div className="envio-toggle">
-
-              <label>
-
-                <input 
-                  type="checkbox" 
-                  checked={quiereEnvio} 
-                  onChange={(e) => setQuiereEnvio(e.target.checked)} 
-                />
-
-                ¿Querés que te lo enviemos? 
-
-              </label>
-
+              <h2>¡Pago confirmado con éxito!</h2>
+              <p>Tu compra fue registrada correctamente.</p>
             </div>
 
 
-            {/* PROCESO DE ENVÍO */}
+            <div className="pedido-en-camino">
 
-            {quiereEnvio && (
-
-              <div className="stepper-container-pago">
-
-                <h3>Estado de tu Pedido</h3>
-
-                <div className="stepper-box">
-
-                  {etapasEnvio.map((etapa) => (
-
-                    <div 
-                      key={etapa.id} 
-                      className={`stepper-step stepper-${etapa.status.toLowerCase()}`}
-                    >
-
-                      <div className="stepper-line"></div>
-
-                      <div className="stepper-circle">
-                        {etapa.status === "Completo" ? "✓" : etapa.id}
-                      </div>
-
-                      <div className="stepper-content">
-                        <div className="stepper-title">{etapa.titulo}</div>
-                        <div className="stepper-status">{etapa.status}</div>
-                        <div className="stepper-time">{etapa.time}</div>
-                      </div>
-
-                    </div>
-
-                  ))}
-
-                </div>
-
+              <div className="pedido-camino-icono">
+                ♡
               </div>
 
+              <div className="pedido-camino-info">
+                <span className="pedido-estado-label">
+                  ESTADO DEL PEDIDO
+                </span>
+
+                <h2>Tu pedido está en camino</h2>
+
+                <p>
+                  El vendedor ya está preparando tu compra.
+                  Cuando la recibas, confirmá la entrega.
+                </p>
+              </div>
+
+              <span className="estado-en-camino">
+                En camino
+              </span>
+
+            </div>
+
+
+            <div className="confirmar-entrega-box">
+
+              <h3>¿Ya te llegó tu pedido?</h3>
+
+              <p>
+                Confirmá solamente cuando tengas el producto en tus manos.
+              </p>
+
+              <button
+                type="button"
+                className="btn-pedido-recibido"
+                onClick={confirmarLlegada}
+                disabled={procesando}
+              >
+                {procesando
+                  ? "Confirmando..."
+                  : "Sí, ya me llegó ✓"}
+              </button>
+
+            </div>
+
+
+            {errorPago && (
+              <p className="error-pago">
+                {errorPago}
+              </p>
             )}
 
 
             <button 
-              className="btn-confirmar-pago" 
+              className="btn-volver-pedido" 
               onClick={() => navigate("/paginaPrincipal")}
             >
               Volver al Inicio
             </button>
-
 
           </section>
 

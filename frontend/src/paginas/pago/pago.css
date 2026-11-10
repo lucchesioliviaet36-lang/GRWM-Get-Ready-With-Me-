@@ -369,6 +369,14 @@ input[type="text"] {
   margin-bottom: 25px; 
 }
 
+.mensaje-exito-pago h2 {
+  color: #93386e;
+}
+
+.mensaje-exito-pago p {
+  color: #bd4f80;
+}
+
 /* =========================================================
    MODAL SALDO INSUFICIENTE
 ========================================================= */
@@ -559,5 +567,123 @@ input[type="text"] {
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
+  }
+}
+
+/* =========================================================
+   ESTADO DEL PEDIDO
+========================================================= */
+
+.pedido-en-camino {
+  width: 100%;
+  margin-top: 30px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid #f0d2df;
+  border-radius: 20px;
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  text-align: left;
+  box-shadow: 0 8px 25px rgba(139, 63, 104, 0.08);
+}
+
+.pedido-camino-icono {
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff85a2, #bd4f80);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.pedido-camino-info {
+  flex: 1;
+}
+
+.pedido-camino-info h2 {
+  margin: 5px 0;
+  color: #a84672;
+}
+
+.pedido-camino-info p {
+  margin: 0;
+  color: #8d7180;
+}
+
+.pedido-estado-label {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #bd4f8098;
+  font-weight: bold;
+}
+
+.estado-en-camino {
+  background: #fff0f6;
+  color: #bd4f80;
+  padding: 9px 15px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.confirmar-entrega-box {
+  margin-top: 25px;
+  background: white;
+  border: 1px solid #f4d8e5;
+  border-radius: 20px;
+  padding: 25px;
+  text-align: center;
+}
+
+.confirmar-entrega-box h3 {
+  color: #973c65;
+  margin: 0 0 8px;
+}
+
+.confirmar-entrega-box p {
+  color: #bd4f8087;
+  margin-bottom: 20px;
+}
+
+.btn-pedido-recibido {
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  background: #bd4f80;
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.btn-pedido-recibido:hover {
+  background: #8b3f68;
+  transform: translateY(-2px);
+}
+
+.btn-pedido-recibido:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.btn-volver-pedido {
+  margin-top: 15px;
+  border: none;
+  background: transparent;
+  color: #9c6d85;
+  cursor: pointer;
+}
+
+@media (max-width: 650px) {
+  .pedido-en-camino {
+    flex-direction: column;
+    text-align: center;
   }
 }
