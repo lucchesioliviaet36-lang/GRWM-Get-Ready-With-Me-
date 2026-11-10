@@ -1,4 +1,5 @@
 const PublicacionFavorito = require("../models/favoritoModel.js");
+const Publicacion = require("../models/publicacion.js");
 
 // Buscar un favorito
 const obtenerFavorito = async (id_usuario, id_publicacion) => {
@@ -24,9 +25,27 @@ const eliminarFavorito = async (id_usuario, id_publicacion) => {
 
 // Obtener los favoritos de un usuario
 const obtenerFavoritosPorUsuario = async (id_usuario) => {
-    return await PublicacionFavorito.findAll({
+    const favoritos = await PublicacionFavorito.findAll({
         where: { id_usuario }
     });
+
+    const resultado = [];
+
+    for (const favorito of favoritos) {
+        const publicacion = await Publicacion.findByPk(
+            favorito.id_publicacion
+        );
+
+        if (publicacion) {
+            resultado.push({
+                ...favorito.toJSON(),
+                imagen_url: publicacion.imagen_url,
+                descripcion: publicacion.descripcion
+            });
+        }
+    }
+
+    return resultado;
 };
 
 module.exports = {
