@@ -139,13 +139,22 @@ function Pago() {
       const datos = await respuesta.json();
 
       if (!respuesta.ok) {
-        throw new Error(datos.message || "No se pudo confirmar la entrega");
+        throw new Error(
+          datos.message ||
+          "No se pudo confirmar la llegada del pedido"
+        );
       }
 
       navigate(`/calificar/${pedido.id_pedido}`);
 
     } catch (error) {
+      console.error(
+        "Error confirmando pedido:",
+        error
+      );
+
       setErrorPago(error.message);
+
     } finally {
       setProcesando(false);
     }
