@@ -1,6 +1,8 @@
 const {QueryTypes} = require("sequelize");
 const {sequelize} = require("../config/database.js");
 const Producto = require("../models/producto.js");
+const { Op } = require("sequelize");
+
 
 // Buscar productos por nombre
 const buscarPorNombre = async (nombre) => {
@@ -32,11 +34,14 @@ const buscarPorUsuario = async (id_usuario) => {
   });
 };
 
-// Buscar todos los productos activos
-const buscarTodosActivos = async () => {
+// Buscar productos activos que no sean del usuario
+const buscarTodosActivos = async (idUsuario) => {
   return await Producto.findAll({
     where: {
-      estado_producto: true
+      estado_producto: true,
+      id_usuario: {
+        [Op.ne]: idUsuario
+      }
     },
     order: [["fecha", "DESC"]]
   });

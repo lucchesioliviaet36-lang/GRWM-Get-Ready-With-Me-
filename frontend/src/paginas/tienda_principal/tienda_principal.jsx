@@ -29,7 +29,14 @@ function TiendaPrincipal() {
   useEffect(() => {
     const obtenerProductos = async () => {
       try {
-        const respuesta = await fetch(`${API_URL}/api/productos/general`);
+        const token = localStorage.getItem("token");
+
+        const respuesta = await fetch(`${API_URL}/api/productos/general`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
 
         if (!respuesta.ok) {
           throw new Error("No se pudieron cargar los productos.");

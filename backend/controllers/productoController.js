@@ -49,8 +49,10 @@ const obtenerProductos = async (req, res) => {
 
 const obtenerProductosGenerales = async (req, res) => {
   try {
+    const idUsuario = req.user.id_usuario;
+
     const productos =
-      await productoService.obtenerProductosGenerales();
+      await productoService.obtenerProductosGenerales(idUsuario);
 
     return res.status(200).json({
       success: true,

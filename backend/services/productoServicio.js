@@ -64,8 +64,8 @@ const obtenerProductosUsuario = async (idUsuario) => {
     return await productoDAO.buscarPorUsuario(idUsuario);
 };
 
-const obtenerProductosGenerales = async () => {
-    return await productoDAO.buscarTodosActivos();
+const obtenerProductosGenerales = async (idUsuario) => {
+  return await productoDAO.buscarTodosActivos(idUsuario);
 };
 
 const obtenerProductoPorId = async (idProducto) => {
