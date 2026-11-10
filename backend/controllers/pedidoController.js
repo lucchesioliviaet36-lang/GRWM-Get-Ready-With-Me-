@@ -20,6 +20,26 @@ const obtenerPedido = async (req, res) => {
     }
 };
 
+const obtenerHistorialCompras = async (req, res) => {
+    try {
+        const compras =
+            await pedidoService.obtenerHistorialCompras(
+                req.user.id_usuario
+            );
+
+        return res.status(200).json({
+            success: true,
+            compras
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 const confirmarRecepcion = async (req, res) => {
     try {
         const resultado = await pedidoService.confirmarRecepcion(
@@ -43,5 +63,6 @@ const confirmarRecepcion = async (req, res) => {
 
 module.exports = {
     obtenerPedido,
+    obtenerHistorialCompras,
     confirmarRecepcion
 };
