@@ -57,6 +57,130 @@ const cargarSaldo = async (idUsuario, monto) => {
     return nuevoSaldo;
 };
 
+const comprarEnEfectivo = async (idUsuario, idProducto) => {
+    const resultado = await sequelize.transaction(async (transaction) => {
+
+        const producto = await pagoDAO.buscarProducto(
+            idProducto,
+            transaction,
+            true
+        );
+
+        if (!producto || !producto.estado_producto) {
+            throw new Error("Producto no disponible");
+        }
+
+        if (Number(producto.id_usuario) === Number(idUsuario)) {
+            throw new Error("No podés comprar tu propio producto");
+        }
+
+        const stockActual = Number(producto.stock || 0);
+
+        if (stockActual <= 0) {
+            throw new Error("Producto sin stock");
+        }
+
+        const precio = aCentavos(producto.precio);
+
+        const pedido = await pagoDAO.crearPedido({
+            fecha_pedido: new Date(),
+            estado_pedido: 1,
+            recibido: false,
+            fecha_entrega: null,
+            id_usuario: idUsuario,
+            DVH: null
+        }, transaction);
+
+        const detalle = await pagoDAO.crearDetalle({
+            cantidad: 1,
+            sub_total: aDecimal(precio),
+            codigo_seguimiento: crypto.randomInt(
+                100000,
+                999999
+            ),
+            id_pedido: pedido.id_pedido,
+            id_producto: producto.id_producto,
+            DVH: null
+        }, transaction);
+
+        const pago = await pagoDAO.crearPago({
+            metodo: "efectivo",
+            codigo_transaccion: crypto.randomInt(
+                100000000,
+                999999999
+            ),
+            monto: aDecimal(precio),
+            fecha_pago: new Date(),
+            estado_pago: true,
+            id_pedido: pedido.id_pedido,
+            DVH: null
+        }, transaction);
+
+        const nuevoStock =
+            stockActual - 1;
+
+        await pagoDAO.actualizarProducto(
+            producto.id_producto,
+            {
+                stock: String(nuevoStock),
+                estado_producto:
+                    nuevoStock > 0
+            },
+            transaction
+        );
+
+        return {
+            pedido,
+            detalle,
+            pago,
+            producto
+        };
+    });
+
+
+    await digitoVerificadorService.recalcularRegistroYTabla(
+        Producto,
+        "Producto",
+        "id_producto",
+        resultado.producto.id_producto
+    );
+
+    await digitoVerificadorService.recalcularRegistroYTabla(
+        Pedido,
+        "Pedido",
+        "id_pedido",
+        resultado.pedido.id_pedido
+    );
+
+    await digitoVerificadorService.recalcularRegistroYTabla(
+        DetallePedido,
+        "Detalle_Pedido",
+        "id_detalle",
+        resultado.detalle.id_detalle
+    );
+
+    await digitoVerificadorService.recalcularRegistroYTabla(
+        Pago,
+        "Pago",
+        "id_pago",
+        resultado.pago.id_pago
+    );
+
+
+    await bitacoraService.registrar({
+        idUsuario,
+        descripcion: "Compra en efectivo",
+        accion: "INSERT",
+        tablaAfectada: "Pedido",
+        usuarioAfectado: idUsuario
+    });
+
+
+    return {
+        pedido: resultado.pedido
+    };
+};
+
 // COMPRAR PRODUCTO
 const comprarProducto = async (idUsuario, idProducto) => {
     const resultado = await sequelize.transaction(async (transaction) => {
@@ -163,5 +287,6 @@ const comprarProducto = async (idUsuario, idProducto) => {
 module.exports = {
     obtenerSaldo,
     cargarSaldo,
+    comprarEnEfectivo,
     comprarProducto
 };

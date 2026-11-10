@@ -18,6 +18,29 @@ const cargarSaldo = async (req, res) => {
     }
 };
 
+const comprarEnEfectivo = async (req, res) => {
+    try {
+        const resultado =
+            await pagoService.comprarEnEfectivo(
+                req.user.id_usuario,
+                req.body.idProducto
+            );
+
+        return res.status(201).json({
+            success: true,
+            message:
+                "Compra en efectivo registrada correctamente",
+            ...resultado
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 const comprarProducto = async (req, res) => {
     try {
         const resultado = await pagoService.comprarProducto(
@@ -53,5 +76,6 @@ const comprarProducto = async (req, res) => {
 module.exports = {
     obtenerSaldo,
     cargarSaldo,
+    comprarEnEfectivo,
     comprarProducto
 };

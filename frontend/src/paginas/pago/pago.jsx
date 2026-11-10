@@ -62,6 +62,52 @@ function Pago() {
     }
   };
 
+    const comprarEnEfectivo = async () => {
+    try {
+      setProcesando(true);
+      setErrorPago("");
+
+      const token = localStorage.getItem("token");
+
+      const respuesta = await fetch(
+        "http://localhost:3000/api/pagos/comprar-efectivo",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            idProducto: Number(id)
+          })
+        }
+      );
+
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok) {
+        throw new Error(
+          datos.message ||
+          "No se pudo registrar la compra"
+        );
+      }
+
+      setPedido(datos.pedido);
+      setPagoConfirmado(true);
+
+    } catch (error) {
+      console.error(
+        "Error comprando en efectivo:",
+        error
+      );
+
+      setErrorPago(error.message);
+
+    } finally {
+      setProcesando(false);
+    }
+  };
+
   const confirmarPago = async () => {
     if (metodoPago === "tarjeta") {
       await comprarConSaldo();
@@ -69,7 +115,7 @@ function Pago() {
     }
 
     if (metodoPago === "efectivo") {
-      setPagoConfirmado(true);
+      await comprarEnEfectivo();
     }
   };
 
