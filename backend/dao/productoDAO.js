@@ -23,13 +23,9 @@ const buscarPorId = async (id_producto) => {
   return await Producto.findByPk(id_producto);
 };
 
-// Buscar productos activos de un usuario
 const buscarPorUsuario = async (id_usuario) => {
   return await Producto.findAll({
-    where: {
-      id_usuario,
-      estado_producto: true
-    },
+    where: {id_usuario},
     order: [["fecha", "DESC"]]
   });
 };

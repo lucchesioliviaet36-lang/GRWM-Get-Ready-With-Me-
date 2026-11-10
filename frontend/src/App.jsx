@@ -14,6 +14,7 @@ import Chat from './paginas/chat/chat'
 import MiArmario from './paginas/miArmario/miArmario'
 import AgregarPrenda from './paginas/agregar_prenda/agregar_prenda'
 import Pago from './paginas/pago/pago'
+import CalificarProducto from "./paginas/calificarProducto/calificarProducto";
 import PerfilUsuario from './paginas/perfil_usuario/perfil_usuario'
 import AIOutfit from './paginas/iaOutfit/iaOutfit'
 import Administrador from './paginas/administrador/administrador'
@@ -43,6 +44,7 @@ function App() {
         <Route path="/miArmario" element={<MiArmario />} />
         <Route path="/agregar_prenda" element={<AgregarPrenda />} />
         <Route path="/pago/:id" element={<Pago />}/>
+        <Route path="/calificar/:idPedido" element={<CalificarProducto />}/>
         <Route path="/iaOutfit" element={<AIOutfit />} />
         <Route path="/crear_historia" element={<CrearHistoria />} />
         
