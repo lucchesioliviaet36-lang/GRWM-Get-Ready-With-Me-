@@ -1,0 +1,273 @@
+.detalle-pedido-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  background:
+    radial-gradient(
+      circle at 15% 10%,
+      rgba(255,214,229,.75),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      #fff7fa 0%,
+      #ffe9f1 100%
+    );
+}
+
+.detalle-pedido-contenido {
+  width: 100%;
+  max-width: 900px;
+  flex: 1;
+  margin: 35px auto;
+  padding: 0 20px 50px;
+}
+
+.detalle-volver {
+  margin-bottom: 25px;
+  border: none;
+  background: transparent;
+  color: #a16683;
+  cursor: pointer;
+}
+
+.detalle-producto {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  margin-bottom: 25px;
+  padding: 15px;
+
+  background: rgba(255,255,255,.8);
+  border: 1px solid #f0d6e2;
+  border-radius: 17px;
+}
+
+.detalle-producto img {
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.detalle-producto span {
+  color: #b27795;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+.detalle-producto h2 {
+  margin: 3px 0;
+  font-size: 18px;
+  color: #70345c;
+}
+
+.detalle-producto strong {
+  color: #9b5075;
+}
+
+.pedido-en-camino {
+  width: 100%;
+  margin-top: 20px;
+  padding: 25px;
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  background: rgba(255,255,255,.78);
+  border: 1px solid #f0d2df;
+  border-radius: 20px;
+
+  box-shadow:
+    0 8px 25px
+    rgba(139,63,104,.08);
+}
+
+.pedido-camino-icono {
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff85a2,
+      #bd4f80
+    );
+
+  color: white;
+  font-size: 28px;
+}
+
+.pedido-camino-info {
+  flex: 1;
+}
+
+.pedido-camino-info h2 {
+  margin: 5px 0;
+  color: #8b3f68;
+}
+
+.pedido-camino-info p {
+  margin: 0;
+  color: #8d7180;
+}
+
+.pedido-estado-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #bd4f80;
+  font-weight: bold;
+}
+
+.estado-en-camino {
+  padding: 9px 15px;
+  border-radius: 20px;
+  background: #fff0f6;
+  color: #bd4f80;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.confirmar-entrega-box {
+  margin-top: 25px;
+  padding: 25px;
+
+  background: white;
+  border: 1px solid #f4d8e5;
+  border-radius: 20px;
+
+  text-align: center;
+}
+
+.confirmar-entrega-box h3 {
+  margin: 0 0 7px;
+  color: #8b3f68;
+}
+
+.confirmar-entrega-box p {
+  color: #947685;
+}
+
+.btn-pedido-recibido,
+.btn-calificar-pedido {
+  margin-top: 10px;
+  padding: 13px 25px;
+
+  border: none;
+  border-radius: 13px;
+
+  background: #bd4f80;
+  color: white;
+
+  font-weight: bold;
+  cursor: pointer;
+
+  transition: .2s ease;
+}
+
+.btn-pedido-recibido:hover,
+.btn-calificar-pedido:hover {
+  background: #8b3f68;
+  transform: translateY(-2px);
+}
+
+.pedido-entregado-box {
+  margin-top: 25px;
+  padding: 35px;
+
+  background: rgba(255,255,255,.85);
+  border: 1px solid #efd8e3;
+  border-radius: 22px;
+
+  text-align: center;
+}
+
+.pedido-entregado-icono {
+  width: 62px;
+  height: 62px;
+
+  display: grid;
+  place-items: center;
+
+  margin: 0 auto 12px;
+
+  border-radius: 50%;
+  background: #edf8f1;
+  color: #47785b;
+
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.pedido-entregado-box > span {
+  color: #b27292;
+  font-size: 9px;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.pedido-entregado-box h2 {
+  margin: 7px 0;
+  color: #70345c;
+}
+
+.pedido-entregado-box p {
+  color: #987489;
+}
+
+.detalle-calificacion {
+  margin-top: 20px;
+  padding: 18px;
+
+  background: #fff5f9;
+  border-radius: 14px;
+}
+
+.detalle-calificacion div span {
+  color: #ead2df;
+  font-size: 22px;
+}
+
+.detalle-calificacion div span.activa {
+  color: #bd4f80;
+}
+
+.detalle-calificacion strong {
+  display: block;
+  margin-top: 5px;
+  color: #80405f;
+}
+
+.detalle-calificacion p {
+  margin-bottom: 0;
+}
+
+.detalle-error {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #fff0f3;
+  color: #aa4968;
+}
+
+.detalle-pedido-cargando {
+  flex: 1;
+  min-height: 400px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  color: #936d82;
+}

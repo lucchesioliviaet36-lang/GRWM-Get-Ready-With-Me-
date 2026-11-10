@@ -14,12 +14,14 @@ import Chat from './paginas/chat/chat'
 import MiArmario from './paginas/miArmario/miArmario'
 import AgregarPrenda from './paginas/agregar_prenda/agregar_prenda'
 import Pago from './paginas/pago/pago'
-import CalificarProducto from "./paginas/calificarProducto/calificarProducto";
+import CalificarProducto from './paginas/calificarProducto/calificarProducto'
+import HistorialCompras from './paginas/HistorialCompras/HistorialCompras'
+import DetallePedido from './paginas/detallePedido/detallePedido'
 import PerfilUsuario from './paginas/perfil_usuario/perfil_usuario'
 import AIOutfit from './paginas/iaOutfit/iaOutfit'
 import Administrador from './paginas/administrador/administrador'
 import RutaProtegida from './componentes/rutaProtegida/rutaProtegida'
-import { CrearHistoria } from './paginas/crear_historia/crear_historia';
+import {CrearHistoria} from './paginas/crear_historia/crear_historia';
 
 function App() {
   return (
@@ -45,6 +47,8 @@ function App() {
         <Route path="/agregar_prenda" element={<AgregarPrenda />} />
         <Route path="/pago/:id" element={<Pago />}/>
         <Route path="/calificar/:idPedido" element={<CalificarProducto />}/>
+        <Route path="/historial-compras" element={<HistorialCompras />}/>
+        <Route path="/pedido/:idPedido" element={<DetallePedido />}/>
         <Route path="/iaOutfit" element={<AIOutfit />} />
         <Route path="/crear_historia" element={<CrearHistoria />} />
         

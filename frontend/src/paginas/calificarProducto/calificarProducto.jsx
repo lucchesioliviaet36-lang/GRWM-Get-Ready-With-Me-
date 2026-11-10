@@ -82,7 +82,7 @@ function CalificarProducto() {
         throw new Error(datos.message || "No se pudo guardar la calificación");
       }
 
-      navigate("/paginaPrincipal");
+      navigate("/historial-compras");
 
     } catch (error) {
       setError(error.message);

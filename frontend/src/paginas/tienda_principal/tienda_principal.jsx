@@ -102,8 +102,31 @@ function TiendaPrincipal() {
           </p>
         </div>
       </section>
+        <div className="acceso-historial">
+          <button
+            type="button"
+            className="btn-historial-tienda"
+            onClick={() => navigate("/historial-compras")}
+          >
+            <div className="historial-tienda-icono">
+              ♡
+            </div>
+            <div className="historial-tienda-texto">
+              <strong>
+                Historial de compras
+              </strong>
+              <span>
+                Revisá tus pedidos, entregas y calificaciones
+              </span>
+            </div>
+            <span className="historial-tienda-flecha">
+              →
+            </span>
+          </button>
+        </div>
 
       <main className="contenido-tienda-principal">
+
         <aside className="sidebar-tienda">
           <h3>Categorías</h3>
 

@@ -59,7 +59,7 @@ function HistorialCompras() {
         <button
           type="button"
           className="historial-volver"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/tienda_principal")}
         >
           ← Volver a la tienda
         </button>
