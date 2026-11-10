@@ -20,6 +20,7 @@ const Mensaje = require("./models/Mensaje");
 const adminRoutes = require("./routes/adminRoutes");
 const pagoRoutes = require("./routes/pagoRoutes");
 const pedidoRoutes = require("./routes/pedidoRoutes");
+const calificacionRoutes = require("./routes/calificacionRoutes");
 const app = express();
 const PORT = 3000;
 
@@ -39,6 +40,7 @@ app.use("/api/historias", historiaRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/pagos", pagoRoutes);
 app.use("/api/pedidos", pedidoRoutes);
+app.use("/api/calificaciones", calificacionRoutes);
 
 app.get("/", (req, res) => {
     res.json({
