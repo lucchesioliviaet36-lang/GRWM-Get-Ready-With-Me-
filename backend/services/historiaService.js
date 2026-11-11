@@ -6,7 +6,6 @@ const bitacoraService = require("./bitacoraService");
 const registrarHistoria = async (datos) => {
     try {
         const nuevaHistoria = await historiaDAO.crear(datos);
-
         const Historia = nuevaHistoria.constructor;
 
         await digitoVerificadorService.recalcularRegistroYTabla(

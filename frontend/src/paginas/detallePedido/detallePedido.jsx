@@ -16,7 +16,6 @@ function DetallePedido() {
   const [procesando, setProcesando] = useState(false);
   const [error, setError] = useState("");
 
-
   const cargarPedido = async () => {
     try {
       setCargando(true);

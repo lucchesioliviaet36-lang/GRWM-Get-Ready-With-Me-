@@ -6,7 +6,6 @@ const bitacoraService = require("./bitacoraService");
 
 const crearCalificacion = async (idUsuario, datos) => {
     const {idPedido, puntuacion, comentario} = datos;
-
     const pedido = await pedidoDAO.buscarPedidoComprador(idPedido, idUsuario);
 
     if (!pedido) throw new Error("Pedido no encontrado");

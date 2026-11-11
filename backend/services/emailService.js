@@ -48,4 +48,4 @@ const enviarRecuperacionContrasena = async (mail, token) => {
     });
 };
 
-module.exports = { enviarRecuperacionContrasena};
+module.exports = {enviarRecuperacionContrasena};
