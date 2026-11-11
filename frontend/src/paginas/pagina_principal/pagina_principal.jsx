@@ -665,7 +665,7 @@ export default function Feed() {
                 const autor = publicacion.usuario;
                 const imagenAutor = autor?.foto_perfil
                   ? obtenerImagenHistoria(autor.foto_perfil)
-                  : `${API_URL}/uploads/default-avatar.png`;
+                  : "";
 
                 return (
                   <article className="post-card" key={publicacionId}>
