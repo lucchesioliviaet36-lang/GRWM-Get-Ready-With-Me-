@@ -52,24 +52,6 @@ function EditarPerfil() {
     website: usuarioSesion.website || ''
   });
 
-  const availableStyles = [ 
-    { id: "vintage", label: "Vintage", active: true }, 
-    { id: "urban", label: "Urban", active: true }, 
-    { id: "minimal", label: "Minimal", active: false }, 
-    { id: "aesthetic", label: "Aesthetic", active: true }, 
-    { id: "boho", label: "Boho", active: false }, 
-    { id: "streetwear", label: "Streetwear", active: false }, 
-    { id: "y2k", label: "Y2K", active: false }, 
-  ];
-
-  const [styles, setStyles] = useState(availableStyles);
-
-  const toggleStyle = (id) => { 
-    setStyles( 
-      styles.map((style) => style.id === id ? { ...style, active: !style.active } : style ) 
-    ); 
-  };
-
   const handleChange = (e) => { 
     setFormData({ ...formData, [e.target.name]: e.target.value }); 
     if (camposConError[e.target.name]) { 
