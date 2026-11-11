@@ -2,6 +2,7 @@ const favoritoDao = require("../dao/favoritoDAO.js");
 const digitoVerificadorService = require("./digitoVerificadorService");
 const bitacoraService = require("./bitacoraService");
 
+//alternar el estado de favorito.
 const toggleFavorito = async (id_usuario, id_publicacion) => {
     const existe = await favoritoDao.obtenerFavorito(id_usuario, id_publicacion);
 
