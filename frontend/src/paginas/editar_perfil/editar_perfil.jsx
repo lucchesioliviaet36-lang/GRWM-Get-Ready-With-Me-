@@ -1,4 +1,4 @@
-import { useState } from "react"; 
+import { useState, useEffect } from "react"; 
 import { useNavigate } from "react-router-dom"; 
 import "./editar_perfil.css"; 
 import Header from "../../componentes/header/header"; 
@@ -51,6 +51,51 @@ function EditarPerfil() {
     tiktok: usuarioSesion.tiktok || '',
     website: usuarioSesion.website || ''
   });
+
+    useEffect(() => {
+      const cargarPerfil = async () => {
+          try {
+              const token = localStorage.getItem("token");
+
+              const response = await fetch(`${API_URL}/api/usuarios/perfil`, {
+                  headers: {
+                      Authorization: `Bearer ${token}`
+                  }
+              });
+
+              const data = await response.json();
+
+              if (!response.ok) {
+                  throw new Error("No se pudieron cargar los datos del perfil.");
+              }
+
+              const usuario = data.usuario;
+
+              setFormData({
+                  nombre: usuario.nombre || "",
+                  apellido: usuario.apellido || "",
+                  username: usuario.username
+                      ? usuario.username.replace("@", "")
+                      : "",
+                  descripcion: usuario.descripcion || "",
+                  email: usuario.mail || usuario.email || "",
+                  telefono: usuario.telefono || "",
+                  instagram: usuario.instagram || "",
+                  tiktok: usuario.tiktok || "",
+                  website: usuario.website || ""
+              });
+
+              setAvatarImg(usuario.foto_perfil || null);
+              setBannerImg(usuario.banner || null);
+
+          } catch (error) {
+              console.error("Error al cargar el perfil:", error);
+              setError(error.message);
+          }
+      };
+
+      cargarPerfil();
+  }, []);
 
   const handleChange = (e) => { 
     setFormData({ ...formData, [e.target.name]: e.target.value }); 

@@ -9,7 +9,16 @@ const obtenerPerfil = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            usuario
+            usuario: {
+                id_usuario: usuario.id_usuario,
+                nombre: usuario.nombre,
+                apellido: usuario.apellido,
+                username: usuario.username,
+                mail: usuario.mail,
+                descripcion: usuario.descripcion,
+                foto_perfil: usuario.foto_perfil,
+                banner: usuario.banner
+            }
         });
 
     } catch (error) {
