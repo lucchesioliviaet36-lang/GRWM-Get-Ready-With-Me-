@@ -30,6 +30,7 @@ function PerfilPropio() {
   const [productosPerfil, setProductosPerfil] = useState([]);
   const [cargandoProductos, setCargandoProductos] = useState(false);
   const [errorProductos, setErrorProductos] = useState("");
+  
   const token = localStorage.getItem('token');
 
     // OBTENER URL DE IMAGEN
@@ -612,16 +613,15 @@ function PerfilPropio() {
             )}
           </div>
 
-          <div className="datos-perfil">
-            <div
-              className="avatar "
-              style={{ backgroundColor: '#f3e8ee' }}
+          <div className="datos-perfil-usuario">
 
-            >
-              {fotoPerfil ? (<img
-                src={obtenerImagen(fotoPerfil)}
-                alt={`Avatar de ${nombreMostrar}`}
-              />
+            {/* FOTO DE PERFIL */}
+            <div className="avatar-perfil-usuario">
+              {fotoPerfil ? (
+                <img
+                  src={obtenerImagen(fotoPerfil)}
+                  alt={`Foto de ${nombreMostrar}`}
+                />
               ) : (
                 <svg
                   width="42"
@@ -639,39 +639,46 @@ function PerfilPropio() {
               )}
             </div>
 
-            <div className="nombre-y-descripcion">
+            {/* NOMBRE Y DESCRIPCIÓN */}
+            <div className="nombre-perfil-usuario">
               <h1>{nombreMostrar}</h1>
-              <p className="usuario">{usuarioTag}</p>
+
+              <p className="usuario-perfil-usuario">{usuarioTag}</p>
+
               {descripcionMostrar && (
-                <p className="descripcion">{descripcionMostrar}</p>
+                <p className="descripcion-perfil-usuario">
+                  {descripcionMostrar}
+                </p>
               )}
             </div>
 
-            <div className="estadisticas">
+            {/* ESTADÍSTICAS Y BOTONES */}
+            <div className="estadisticas-perfil-usuario">
+
               <div>
                 <strong>{listaPublicaciones.length}</strong>
                 <span>Publicaciones</span>
               </div>
 
               <button
-                  type="button"
-                  className="estadistica-seguimiento"
-                  onClick={() => setModalSeguimiento('seguidores')}
+                type="button"
+                className="estadistica-seguimiento"
+                onClick={() => setModalSeguimiento('seguidores')}
               >
-                  <strong>{seguidores}</strong>
-                  <span>Seguidores</span>
+                <strong>{seguidores}</strong>
+                <span>Seguidores</span>
               </button>
 
               <button
-                  type="button"
-                  className="estadistica-seguimiento"
-                  onClick={() => setModalSeguimiento('seguidos')}
+                type="button"
+                className="estadistica-seguimiento"
+                onClick={() => setModalSeguimiento('seguidos')}
               >
-                  <strong>{seguidos}</strong>
-                  <span>Siguiendo</span>
+                <strong>{seguidos}</strong>
+                <span>Siguiendo</span>
               </button>
 
-              <div className="botones">
+              <div className="botones-perfil-usuario">
                 <button
                   className="btn-editar"
                   onClick={() => navigate('/editar_perfil')}
@@ -693,6 +700,7 @@ function PerfilPropio() {
                   + Publicar
                 </button>
               </div>
+
             </div>
           </div>
         </section>
