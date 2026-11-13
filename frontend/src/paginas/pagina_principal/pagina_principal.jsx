@@ -363,7 +363,7 @@ export default function Feed() {
         },
         body: JSON.stringify({
           destinatarioId,
-          contenido: `Respondió a tu historia: ${contenido}`
+          contenido: `Reaccionaste a su historia: ${contenido}`
         })
       });
 
