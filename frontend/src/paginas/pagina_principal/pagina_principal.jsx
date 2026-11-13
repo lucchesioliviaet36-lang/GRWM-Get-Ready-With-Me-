@@ -21,7 +21,8 @@ export default function Feed() {
   const [historiaActiva, setHistoriaActiva] = useState(null);
   const [historiasDelVisor, setHistoriasDelVisor] = useState([]);
   const [comentario, setComentario] = useState('');
-  const [liked, setLiked] = useState(false);
+  const [enviandoRespuestaHistoria, setEnviandoRespuestaHistoria] = useState(false);
+  const [errorRespuestaHistoria, setErrorRespuestaHistoria] = useState('');
   const [publicaciones, setPublicaciones] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [errorPublicaciones, setErrorPublicaciones] = useState('');
@@ -87,8 +88,8 @@ export default function Feed() {
       setHistoriaActiva(historiasDelVisor[siguienteIndex]);
       tiempoRestanteHistoria.current = DURACION_HISTORIA;
       setProgreso(0);
-      setLiked(false);
       setComentario('');
+      setErrorRespuestaHistoria('');
     } else {
       cerrarHistoria();
     }
@@ -262,8 +263,8 @@ export default function Feed() {
     tiempoRestanteHistoria.current = DURACION_HISTORIA;
     setProgreso(0);
     setPaused(false);
-    setLiked(false);
     setComentario('');
+    setErrorRespuestaHistoria('');
   };
 
   const anteriorHistoria = () => {
@@ -273,8 +274,8 @@ export default function Feed() {
       setHistoriaActiva(historiasDelVisor[anteriorIndex]);
       tiempoRestanteHistoria.current = DURACION_HISTORIA;
       setProgreso(0);
-      setLiked(false);
       setComentario('');
+      setErrorRespuestaHistoria('');
     }
   };
 
@@ -338,11 +339,54 @@ export default function Feed() {
     if (mantenerPresionadoTimer.current) clearTimeout(mantenerPresionadoTimer.current);
   }, []);
 
-  const handleEnviarComentario = (e) => {
+  const handleEnviarComentario = async (e) => {
     e.preventDefault();
-    if (!comentario.trim()) return;
-    alert(`Mensaje enviado a ${historiaActiva?.usuario ?? 'usuario'}`);
-    setComentario('');
+    const contenido = comentario.trim();
+    const destinatarioId = Number(historiaActiva?.id_usuario);
+    if (!contenido || !destinatarioId || enviandoRespuestaHistoria) return;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/IniciarSesion');
+      return;
+    }
+
+    setEnviandoRespuestaHistoria(true);
+    setErrorRespuestaHistoria('');
+
+    try {
+      const respuesta = await fetch(`${API_URL}/api/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          destinatarioId,
+          contenido: `Respondió a tu historia: ${contenido}`
+        })
+      });
+
+      let data = {};
+      try {
+        data = await respuesta.json();
+      } catch {
+        data = {};
+      }
+
+      if (!respuesta.ok) {
+        throw new Error(data.error || 'No se pudo enviar la respuesta.');
+      }
+
+      setComentario('');
+      setHistoriaActiva(null);
+      navigate(`/chat?usuarioId=${destinatarioId}`);
+    } catch (error) {
+      console.error('Error al responder la historia:', error);
+      setErrorRespuestaHistoria(error.message || 'No se pudo enviar la respuesta.');
+    } finally {
+      setEnviandoRespuestaHistoria(false);
+    }
   };
 
   const toggleLike = (id) => {
@@ -434,8 +478,8 @@ export default function Feed() {
     tiempoRestanteHistoria.current = DURACION_HISTORIA;
     setProgreso(0);
     setPaused(false);
-    setLiked(false);
     setComentario('');
+    setErrorRespuestaHistoria('');
     setErrorHistorias('');
     setMostrarCrearHistoria(false);
   };
@@ -789,26 +833,31 @@ export default function Feed() {
                     <img src={obtenerImagenHistoria(historiaActiva.imagen_url)} alt="Historia" />
                   </div>
 
-                  <div className="story-footer">
-                    <form className="story-comment-form" onSubmit={handleEnviarComentario}>
-                      <input
-                        type="text"
-                        placeholder={`Enviar mensaje a ${historiaActiva.usuario || 'usuario'}...`}
-                        value={comentario}
-                        onChange={(e) => setComentario(e.target.value)}
-                      />
-                      {comentario.trim() && (
-                        <button type="submit" className="story-send-btn">Enviar</button>
+                  {!historiaActivaEsPropia && historiaActiva.id_usuario && (
+                    <div className="story-footer">
+                      <form className="story-comment-form" onSubmit={handleEnviarComentario}>
+                        <input
+                          type="text"
+                          placeholder={`Responder a ${historiaActiva.usuario || 'usuario'}...`}
+                          value={comentario}
+                          onChange={(e) => setComentario(e.target.value)}
+                          disabled={enviandoRespuestaHistoria}
+                        />
+                        {comentario.trim() && (
+                          <button
+                            type="submit"
+                            className="story-send-btn"
+                            disabled={enviandoRespuestaHistoria}
+                          >
+                            {enviandoRespuestaHistoria ? 'Enviando...' : 'Enviar'}
+                          </button>
+                        )}
+                      </form>
+                      {errorRespuestaHistoria && (
+                        <p className="story-reply-error" role="alert">{errorRespuestaHistoria}</p>
                       )}
-                    </form>
-
-                    <button
-                      className={`story-like-btn ${liked ? 'liked' : ''}`}
-                      onClick={() => setLiked(!liked)}
-                    >
-                      {liked ? '❤' : '♡'}
-                    </button>
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
