@@ -304,15 +304,38 @@ function PerfilUsuario() {
                 {/* TARJETA DEL PERFIL */}
                 <section className="tarjeta-perfil-usuario">
 
-                    {/* BANNER */}
-                    <div
-                        className="portada-perfil-usuario"
-                        style={{
-                          backgroundImage: bannerImg
+                {/* BANNER */}
+                <div
+                    className="portada-perfil-usuario"
+                    style={{
+                        backgroundImage: bannerImg
                             ? `url("${obtenerImagen(bannerImg)}")`
                             : 'linear-gradient(135deg, #f8eaf1 0%, #e9cbdc 100%)',
-                        }}
-                    />
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center center',
+                        backgroundRepeat: 'no-repeat',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}
+                >
+                    {!bannerImg && (
+                        <svg
+                            width="64"
+                            height="64"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#8b5274"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            style={{ opacity: 0.35 }}
+                        >
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                    )}
+                </div>
 
                     <div className="datos-perfil-usuario">
 
