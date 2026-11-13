@@ -617,48 +617,49 @@ function Publicacion() {
                     navigate(`/chat?usuarioId=${postEncontrado.id_usuario}`);
                   }}
                   style={{ border: 'none', borderRadius: '18px', padding: '8px 14px', background: '#8b3f68', color: 'white', cursor: 'pointer' }}
-                >Contactar</button>
+                >Ver perfil</button>
               )}
 
-              {/* Botón de 3 puntitos */}
-              <div className="opciones-publicacion" style={{ position: 'relative' }}>
-                <button 
-                  type="button" 
-                  onClick={() => setMenuOpciones(!menuOpciones)}
-                  style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#703c5e' }}
-                >
-                  ⋮
-                </button>
+              {Number(postEncontrado?.id_usuario) === Number(idUsuarioActual) && (
+                  <div className="opciones-publicacion" style={{ position: 'relative' }}>
+                      <button
+                          type="button"
+                          onClick={() => setMenuOpciones(!menuOpciones)}
+                          style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#703c5e' }}
+                      >
+                          ⋮
+                      </button>
 
-                {menuOpciones && (
-                  <div className="dropdown-opciones" style={{
-                    position: 'absolute',
-                    right: 0,
-                    top: '30px',
-                    background: 'white',
-                    border: '1px solid #efd5e0',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                    zIndex: 10
-                  }}>
-                    <button 
-                      type="button" 
-                      onClick={handleEliminarPublicacion}
-                      style={{
-                        padding: '10px 15px',
-                        background: 'none',
-                        border: 'none',
-                        color: '#d93838',
-                        fontWeight: 'bold',
-                        cursor: 'pointer',
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      🗑 Eliminar publicación
-                    </button>
+                      {menuOpciones && (
+                          <div className="dropdown-opciones" style={{
+                              position: 'absolute',
+                              right: 0,
+                              top: '30px',
+                              background: 'white',
+                              border: '1px solid #efd5e0',
+                              borderRadius: '8px',
+                              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                              zIndex: 10
+                          }}>
+                              <button
+                                  type="button"
+                                  onClick={handleEliminarPublicacion}
+                                  style={{
+                                      padding: '10px 15px',
+                                      background: 'none',
+                                      border: 'none',
+                                      color: '#d93838',
+                                      fontWeight: 'bold',
+                                      cursor: 'pointer',
+                                      whiteSpace: 'nowrap'
+                                  }}
+                              >
+                                  🗑 Eliminar publicación
+                              </button>
+                          </div>
+                      )}
                   </div>
-                )}
-              </div>
+              )}
             </div>
 
             {/* Descripción */}
