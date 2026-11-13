@@ -63,6 +63,29 @@ export default function Feed() {
     return `${API_URL}/${fotoPerfil.replace(/^\/+/, '')}`;
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const idUsuario = usuarioGuardado?.id_usuario;
+
+    if (!token || !idUsuario) return;
+
+    fetch(`${API_URL}/api/usuarios/${idUsuario}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const usuarioActual = data.usuario || data;
+
+        setUsuarioGuardado(usuarioActual);
+        localStorage.setItem('usuario', JSON.stringify(usuarioActual));
+      })
+      .catch((error) => {
+        console.error('Error al actualizar los datos del usuario:', error);
+      });
+  }, []);
+
   const obtenerImagenHistoria = (imagenUrl) => {
     if (!imagenUrl) {
       return 'http://localhost:3000/uploads/default-story.png';
@@ -592,9 +615,16 @@ export default function Feed() {
                         <img src={obtenerAvatarUsuario(persona.foto_perfil)} alt="" />
                       ) : (
                         <span className="suggestion-avatar-placeholder" aria-hidden="true">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                            <circle cx="12" cy="8" r="4" />
-                            <path d="M5 21c0-4 3-7 7-7s7 3 7 7" />
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#8b5274"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
                           </svg>
                         </span>
                       )}
@@ -661,13 +691,31 @@ export default function Feed() {
                     }
                   }}
                 >
-                  <div className={`avatar-ring user-story${!tieneMiHistoria ? ' user-story-empty' : ''}`}>
+                <div className={`avatar-ring user-story${!tieneMiHistoria ? ' user-story-empty' : ''}`}>
+                  {fotoPerfilHeader || miGrupoHistoria?.foto_perfil ? (
                     <img
                       src={obtenerAvatarUsuario(fotoPerfilHeader || miGrupoHistoria?.foto_perfil)}
                       alt=""
                     />
-                    {!tieneMiHistoria && <span className="badge-mas">+</span>}
-                  </div>
+                  ) : (
+                    <div className="mini-avatar">
+                      <svg
+                        width="34"
+                        height="34"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#8b5274"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                    </div>
+                  )}
+                  {!tieneMiHistoria && <span className="badge-mas">+</span>}
+                </div>
                   <span>Tu historia</span>
                 </button>
               </div>
@@ -684,12 +732,28 @@ export default function Feed() {
                       key={historiaId}
                       onClick={() => abrirHistoria(historia, 0, grupo.historias)}
                     >
-                      <div className="avatar-ring">
-                        <img
-                          src={obtenerAvatarUsuario(grupo.foto_perfil)}
-                          alt={historia.usuario || 'Historia'}
-                        />
-                      </div>
+                    <div className="avatar-ring">
+                        {grupo.foto_perfil ? (
+                            <img
+                                src={obtenerAvatarUsuario(grupo.foto_perfil)}
+                                alt={historia.usuario || 'Historia'}
+                            />
+                        ) : (
+                            <svg
+                                width="22"
+                                height="22"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#8b5274"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                        )}
+                    </div>
                       <span>{historia.usuario || `Usuario #${historia.id_usuario}`}</span>
                     </div>
                   );
@@ -715,7 +779,29 @@ export default function Feed() {
                   <article className="post-card" key={publicacionId}>
                     <div className="post-header">
                       <div className="user-info">
-                        <img className="user-avatar" src={imagenAutor} alt="" />
+                        {autor?.foto_perfil ? (
+                          <img
+                            className="user-avatar"
+                            src={obtenerAvatarUsuario(autor.foto_perfil)}
+                            alt=""
+                          />
+                        ) : (
+                          <div className="user-avatar user-avatar-placeholder">
+                            <svg
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#8b5274"
+                              strokeWidth="1.8"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                              <circle cx="12" cy="7" r="4" />
+                            </svg>
+                          </div>
+                        )}
                         <strong>{autor?.username || `Usuario #${publicacion.id_usuario}`}</strong>
                       </div>
                     </div>
@@ -763,11 +849,28 @@ export default function Feed() {
                   </div>
                   <div className="story-header">
                     {historiaActivaEsPropia || !historiaActiva.id_usuario ? (
-                      <img
-                        src={fotoPerfilHistoriaActiva}
-                        alt={historiaActivaEsPropia ? 'Tu foto de perfil' : (historiaActiva.usuario || 'Historia')}
-                        className="story-header-avatar"
-                      />
+                      fotoPerfilHistoriaActiva ? (
+                        <img
+                          src={fotoPerfilHistoriaActiva}
+                          alt={historiaActivaEsPropia ? 'Tu foto de perfil' : (historiaActiva.usuario || 'Historia')}
+                          className="story-header-avatar"
+                        />
+                      ) : (
+                        <svg
+                          width="22"
+                          height="22"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#8b5274"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="story-header-avatar"
+                        >
+                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                          <circle cx="12" cy="7" r="4" />
+                        </svg>
+                      )
                     ) : (
                       <button
                         type="button"
@@ -775,11 +878,28 @@ export default function Feed() {
                         onClick={() => navigate(`/perfil_usuario/${historiaActiva.id_usuario}`)}
                         aria-label={`Ver perfil de ${historiaActiva.usuario || 'este usuario'}`}
                       >
-                        <img
-                          src={fotoPerfilHistoriaActiva}
-                          alt=""
-                          className="story-header-avatar"
-                        />
+                        {fotoPerfilHistoriaActiva ? (
+                          <img
+                            src={fotoPerfilHistoriaActiva}
+                            alt=""
+                            className="story-header-avatar"
+                          />
+                        ) : (
+                          <svg
+                            width="22"
+                            height="22"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#8b5274"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="story-header-avatar"
+                          >
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                          </svg>
+                        )}
                       </button>
                     )}
                     <div className="story-header-info">

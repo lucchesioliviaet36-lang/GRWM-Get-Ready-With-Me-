@@ -232,13 +232,14 @@ body {
 .suggestion-avatar-placeholder {
   width: 38px;
   height: 38px;
-  display: grid;
+  display: flex;
   flex: 0 0 38px;
-  place-items: center;
-  border: 1px solid #f0d7e2;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ecd3df;
   border-radius: 50%;
-  background: linear-gradient(145deg, #fff4f8, #f3dbe6);
-  color: #b64e79;
+  background: #f3e8ee;
+  color: #8b5274;
 }
 
 .suggestion-avatar-placeholder svg {
@@ -325,7 +326,7 @@ body {
 
   padding: 14px 28px 35px 20px;
 
-  overflow: hidden;
+  overflow: visible;
 }
 
 .messages-fab {
@@ -369,18 +370,17 @@ body {
 
 .stories-bar {
   width: 100%;
+  position: relative;
+  z-index: 5;
 
   display: flex;
   align-items: flex-start;
 
   gap: 23px;
-
   padding: 2px 5px;
-
   margin-bottom: 17px;
-
   overflow-x: auto;
-
+  overflow-y: visible;
   scrollbar-width: none;
 }
 
@@ -392,16 +392,7 @@ body {
 
 /* Historia */
 
-.story-item {
-  min-width: 76px;
 
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-
-  gap: 7px;
-}
 
 .story-open-button {
   display: flex;
@@ -417,15 +408,19 @@ body {
   transition: transform 0.2s ease;
 }
 
-.story-open-button:hover {
-  transform: translateY(-2px);
+.story-open-button {
+  transition: opacity 0.2s ease;
 }
 
+.story-open-button:hover {
+  opacity: 0.85;
+}
 .story-open-button:focus-visible {
   outline: 2px solid #bd4e7b;
   outline-offset: 3px;
   border-radius: 12px;
 }
+
 
 /* Círculo */
 
@@ -472,9 +467,9 @@ body {
 }
 
 .avatar-ring.user-story-empty {
-  padding: 3px;
-  background: linear-gradient(145deg, #f3c6d8, #bd4e7b 58%, #8f3d64);
-  box-shadow: 0 5px 16px rgba(151, 59, 101, 0.2);
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .user-story-empty img {
@@ -499,6 +494,32 @@ body {
   line-height: 1;
   box-shadow: 0 3px 8px rgba(99, 45, 70, 0.3);
 }
+
+.avatar-ring .mini-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #f3e8ee;
+  border: 1px solid #ecd3df;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.user-avatar-placeholder {
+  background: #f3e8ee;
+  border: 1px solid #ecd3df;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+
+
+
 
 
 /* Nombre */
@@ -1150,6 +1171,7 @@ body {
 }
 
 
+
 /* =====================================================
    FOOTER GENERAL
 ===================================================== */
@@ -1434,4 +1456,14 @@ body {
     gap: 13px;
   }
 
+}
+
+
+.avatar-ring .mini-avatar {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.avatar-ring .mini-avatar:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 0 1px #f0cddd;
 }
