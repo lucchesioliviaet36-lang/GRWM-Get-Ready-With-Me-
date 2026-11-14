@@ -168,7 +168,7 @@ function MiTienda() {
       // Agregamos inmediatamente el nuevo producto a la tienda
       setProductos((productosActuales) => [
         datos.producto,
-        ...productosActuales
+        ...productosActuales //"..." Spread Operator
       ]);
 
 
