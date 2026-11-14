@@ -103,9 +103,14 @@ function PerfilUsuario() {
                     consultarJson(`${API_URL}/api/usuarios/${id}`),
                     consultarJson(`${API_URL}/api/publicaciones`)
                 ]);
-                const listaPublicaciones = Array.isArray(datosPublicaciones)
-                    ? datosPublicaciones
-                    : datosPublicaciones?.publicaciones;
+                
+                let listaPublicaciones;
+
+                if (Array.isArray(datosPublicaciones)) {
+                    listaPublicaciones = datosPublicaciones;
+                } else if (datosPublicaciones) {
+                    listaPublicaciones = datosPublicaciones.publicaciones;
+                }
 
                 if (!Array.isArray(listaPublicaciones)) {
                     throw new Error("El servidor devolvió un formato de publicaciones no válido.");
