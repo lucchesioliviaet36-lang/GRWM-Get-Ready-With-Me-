@@ -589,7 +589,7 @@ function PerfilUsuario() {
                                         <div className="producto-overlay-stock">
 
                                         <span>
-                                            Sin stock
+                                            Producto Vendido
                                         </span>
 
                                         </div>
