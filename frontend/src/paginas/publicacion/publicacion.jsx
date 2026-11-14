@@ -164,8 +164,8 @@ function Publicacion() {
 
   const idVideoYouTube = obtenerIdVideoYouTube(musicaUrl);
 
-  const reproducirPausarMusica = () => {
-  const reproductor = reproductorRef.current;
+  function reproducirPausarMusica() {
+    const reproductor = reproductorRef.current;
 
   if (!reproductor) return;
 
