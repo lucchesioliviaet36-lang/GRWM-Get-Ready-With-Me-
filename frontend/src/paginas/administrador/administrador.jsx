@@ -19,6 +19,43 @@ function Administrador() {
     return { Authorization: `Bearer ${token}` };
   };
 
+  const inicializarIntegridad = async () => {
+    try {
+      setCargando(true);
+      setError("");
+      setMensaje("");
+
+      const respuesta = await fetch(
+        `${API_URL}/api/admin/integridad/inicializar`,
+        {
+          method: "POST",
+          headers: headers()
+        }
+      );
+
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok) {
+        throw new Error(
+          datos.message ||
+          "No se pudo inicializar la integridad"
+        );
+      }
+
+      setMensaje(
+        "Integridad inicializada correctamente"
+      );
+
+      await verificarIntegridad();
+
+    } catch (error) {
+      setError(error.message);
+
+    } finally {
+      setCargando(false);
+    }
+  };
+
   const verificarIntegridad = async () => {
     try {
       setCargando(true);
@@ -206,6 +243,20 @@ function Administrador() {
           <section className="admin-panel">
             <div className={`estado-integridad ${integridad.valido ? "correcto" : "incorrecto"}`}>
               <h2>{integridad.valido ? "✓ Base de datos íntegra" : "⚠ Se encontraron problemas"}</h2>
+            </div>
+
+            <div className="integridad-acciones">
+
+              <button type="button" className="boton-admin-principal"
+                onClick={inicializarIntegridad} disabled={cargando}
+              >
+                {cargando
+                  ? "Inicializando..."
+                  : "Inicializar integridad"}
+              </button>
+
+              <p> Usar solamente para establecer la integridad inicial de la base de datos. </p>
+
             </div>
 
             <div className="integridad-lista">

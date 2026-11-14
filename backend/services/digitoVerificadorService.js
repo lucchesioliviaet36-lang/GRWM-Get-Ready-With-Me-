@@ -102,17 +102,25 @@ const recalcularRegistroYTabla = async ( Modelo, nombreTabla, idCampo, idRegistr
 };
 
 // VERIFICAR INTEGRIDAD DE UNA TABLA
-const verificarTabla = async ( Modelo, nombreTabla, idCampo ) => {
+const verificarTabla = async (Modelo, nombreTabla, idCampo) => {
     const registros = await Modelo.findAll({
         order: [[idCampo, "ASC"]]
     });
 
     const errores = [];
+    const DVHsCalculados = [];
 
+    // VERIFICAR DVH DE CADA REGISTRO
     for (const registro of registros) {
         const DVHCalculado = calcularDVH(registro);
 
-        if (registro.DVH !== DVHCalculado) {
+        DVHsCalculados.push(DVHCalculado);
+
+        if (
+            registro.DVH === null ||
+            registro.DVH === undefined ||
+            Number(registro.DVH) !== Number(DVHCalculado)
+        ) {
             errores.push({
                 id: registro[idCampo],
                 error: "DVH incorrecto"
@@ -120,20 +128,31 @@ const verificarTabla = async ( Modelo, nombreTabla, idCampo ) => {
         }
     }
 
-    const DVVCalculado = calcularDVV(registros);
+    // CALCULAR EL DVV QUE DEBERÍA TENER LA TABLA
+    const cadenaDVV = DVHsCalculados.join("|");
+    const DVVCalculado = generarHashNumerico(cadenaDVV);
 
+    // BUSCAR EL DVV GUARDADO
     const DVVGuardado = await DVV.findOne({
-        where: {nombre_tabla: nombreTabla}
+        where: {
+            nombre_tabla: nombreTabla
+        }
     });
 
-    if ( !DVVGuardado ||  DVVGuardado.DVH !== DVVCalculado ) {
+    if (
+        !DVVGuardado ||
+        Number(DVVGuardado.DVH) !== Number(DVVCalculado)
+    ) {
         errores.push({
             tabla: nombreTabla,
             error: "DVV incorrecto"
         });
     }
 
-    return { valido: errores.length === 0,  errores };
+    return {
+        valido: errores.length === 0,
+        errores
+    };
 };
 
 module.exports = {

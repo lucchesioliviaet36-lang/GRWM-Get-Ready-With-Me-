@@ -17,6 +17,10 @@ const obtenerDVV = async () => {
     });
 };
 
+const inicializarIntegridad = async () => {
+    return await integridadService.inicializarIntegridad();
+};
+
 const verificarIntegridad = async () => {
     return await integridadService.verificarIntegridad();
 };
@@ -38,6 +42,7 @@ const generarBackup = async (idUsuario) => {
 module.exports = {
     obtenerBitacora,
     obtenerDVV,
+    inicializarIntegridad,
     verificarIntegridad,
     generarBackup
 };

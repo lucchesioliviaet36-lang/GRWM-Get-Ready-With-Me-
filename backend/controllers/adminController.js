@@ -18,6 +18,31 @@ const obtenerDVV = async (req, res) => {
     }
 };
 
+const inicializarIntegridad = async (req, res) => {
+    try {
+        const resultado =
+            await adminService.inicializarIntegridad();
+
+        return res.status(200).json({
+            success: true,
+            message:
+                "Integridad inicializada correctamente",
+            ...resultado
+        });
+
+    } catch (error) {
+        console.error(
+            "Error inicializando integridad:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 const verificarIntegridad = async (req, res) => {
     try {
         const resultado = await adminService.verificarIntegridad();
@@ -46,6 +71,7 @@ const generarBackup = async (req, res) => {
 module.exports = {
     obtenerBitacora,
     obtenerDVV,
+    inicializarIntegridad,
     verificarIntegridad,
     generarBackup
 };

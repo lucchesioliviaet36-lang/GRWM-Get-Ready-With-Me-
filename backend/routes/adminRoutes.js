@@ -11,6 +11,8 @@ router.get("/bitacora", adminController.obtenerBitacora);
 
 router.get("/dvv", adminController.obtenerDVV);
 
+router.post("/integridad/inicializar", adminController.inicializarIntegridad);
+
 router.get("/integridad", adminController.verificarIntegridad);
 
 router.post("/backup", adminController.generarBackup);
