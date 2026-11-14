@@ -24,7 +24,6 @@ function Publicacion() {
   const desdePaginaPrincipal = location.state?.desdePaginaPrincipal === true;
   const desdePerfilPropio = location.state?.desdePerfilPropio === true;
   const { id } = useParams();
-  const idPublicacion = Number(id);
 
   const reproductorRef = useRef(null);
   const [reproduciendo, setReproduciendo] = useState(false);
