@@ -85,7 +85,7 @@ router.get("/favoritos/usuario/:id_usuario", authMiddleware, (req, res) => {
 });
 
 // --- COMENTARIOS ---
-router.get("/:id_publicacion/comentarios", (req, res) => {
+router.get("/:id_publicacion/comentarios", authMiddleware, (req, res) => {
     comentarioController.obtenerComentarios(req, res);
 });
 

@@ -31,6 +31,11 @@ const obtenerComentariosPorPublicacion = async (id_publicacion) => {
     return comentariosConUsuario;
 };
 
+// Buscar un comentario por su ID
+const buscarPorId = async (id_comentario) => {
+    return await PublicacionComentario.findByPk(id_comentario);
+};
+
 // Crear un comentario
 const crearComentario = async (
     id_publicacion,
@@ -57,5 +62,6 @@ const eliminarComentario = async (id_comentario, id_usuario) => {
 module.exports = {
     obtenerComentariosPorPublicacion,
     crearComentario,
-    eliminarComentario
+    eliminarComentario,
+    buscarPorId
 };

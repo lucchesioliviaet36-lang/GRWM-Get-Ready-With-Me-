@@ -257,7 +257,14 @@ function Publicacion() {
       );
 
       if (response.ok) {
-        const resComentarios = await fetch(`http://localhost:3000/api/publicaciones/${id}/comentarios`);
+        const resComentarios = await fetch(
+          `http://localhost:3000/api/publicaciones/${id}/comentarios`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
         if (resComentarios.ok) {
           const data = await resComentarios.json();
           setComentarios(data);
@@ -275,7 +282,11 @@ function Publicacion() {
     const cargarComentariosBD = async () => {
       if (!id) return;
       try {
-        const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/comentarios`);
+        const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/comentarios`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
         if (response.ok) {
           const data = await response.json();
           setComentarios(data);
@@ -448,7 +459,14 @@ function Publicacion() {
 
       if (response.ok) {
         setNuevoComentario('');
-        const resComentarios = await fetch(`http://localhost:3000/api/publicaciones/${id}/comentarios`);
+        const resComentarios = await fetch(
+          `http://localhost:3000/api/publicaciones/${id}/comentarios`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
         if (resComentarios.ok) {
           const data = await resComentarios.json();
           setComentarios(data);
