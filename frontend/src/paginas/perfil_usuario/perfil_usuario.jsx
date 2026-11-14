@@ -103,7 +103,7 @@ function PerfilUsuario() {
                     consultarJson(`${API_URL}/api/usuarios/${id}`),
                     consultarJson(`${API_URL}/api/publicaciones`)
                 ]);
-                
+
                 let listaPublicaciones;
 
                 if (Array.isArray(datosPublicaciones)) {
@@ -225,8 +225,14 @@ function PerfilUsuario() {
         try {
             setProcesando(true);
 
-            const metodo = loSigo ? 'DELETE' : 'POST';
+            let metodo;
 
+            if (loSigo) {
+                metodo = 'DELETE';
+            } else {
+                metodo = 'POST';
+            }
+            
             const response = await fetch(
                 `${API_URL}/api/usuarios/${id}/seguir`,
                 {
