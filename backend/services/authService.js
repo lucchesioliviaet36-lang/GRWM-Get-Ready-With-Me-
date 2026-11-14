@@ -40,6 +40,12 @@ const registrar = async (datos) => {
         );
     }
 
+    if (contraseña.length < 7) {
+        throw new Error(
+            "La contraseña debe tener al menos 7 caracteres"
+        );
+    }
+
     const contraseñaHash = await bcrypt.hash(contraseña, 10);
     const nuevoUsuario =
         await usuarioDAO.crear({
@@ -282,9 +288,9 @@ const restablecerContrasena = async (token, nuevaContraseña) => {
         );
     }
 
-    if (nuevaContraseña.length < 8) {
+    if (nuevaContraseña.length < 7) {
         throw new Error(
-            "La contraseña debe tener al menos 8 caracteres"
+            "La contraseña debe tener al menos 7 caracteres"
         );
     }
 
