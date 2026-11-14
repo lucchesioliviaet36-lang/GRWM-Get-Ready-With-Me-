@@ -516,7 +516,12 @@ function Publicacion() {
       <Header />
 
       <main className="contenido-publicacion">
-        
+
+        {cargandoPublicacion ? (
+          <p className="mensaje-cargando">Cargando publicación...</p>
+        ) : (
+          <>
+
         <button
           className="volver"
           type="button"
@@ -822,6 +827,10 @@ function Publicacion() {
 
           </div>
         </section>
+
+      </>
+    )}
+
       </main>
     </div>
   );
