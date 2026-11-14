@@ -200,9 +200,10 @@ function Publicacion() {
   );
 
   // 🧹 LIMPIEZA SEGURA DEL NOMBRE
-  const nomStr = Array.isArray(usuarioSesion.nombre) ? usuarioSesion.nombre : String(usuarioSesion.nombre || '');
-  const apeStr = Array.isArray(usuarioSesion.apellido) ? usuarioSesion.apellido.join(' ') : String(usuarioSesion.apellido || '');
-  const textoNombre = `${nomStr} ${apeStr}`.replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
+  const nomStr = String(usuarioSesion.nombre || '');
+  const apeStr = String(usuarioSesion.apellido || '');
+
+  const textoNombre = `${nomStr} ${apeStr}`.trim();
 
   const palabrasNombre = [];
   textoNombre.split(' ').forEach(p => {
