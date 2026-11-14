@@ -86,12 +86,14 @@ function Publicacion() {
 
   useEffect(() => {
     const autorId = postEncontrado?.id_usuario;
-    if (!autorId) return;
-    fetch(`http://localhost:3000/api/usuarios/${autorId}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).then(response => response.ok ? response.json() : null)
-      .then(data => setAutorPublicacion(data?.usuario || null))
-      .catch(error => console.error("Error al cargar el autor de la publicación:", error));
+      if (!autorId) return;
+
+      fetch(`http://localhost:3000/api/usuarios/${autorId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(response => response.ok ? response.json() : null)
+        .then(data => setAutorPublicacion(data?.usuario || null))
+        .catch(error => console.error("Error al cargar el autor de la publicación:", error));
+
   }, [postEncontrado?.id_usuario]);
 
   // Cargar usuarios etiquetados en la publicación
