@@ -550,7 +550,7 @@ function PerfilUsuario() {
                         ) : (
 
                         productosPerfil.map((producto) => {
-                            const disponible = Boolean(producto.estado_producto) &&  Number(producto.stock) > 0;
+                            const disponible = Boolean(producto.estado_producto);
                             const promedio = Number(producto.promedio_calificacion || 0);
                             const estrellas = Math.round(promedio);
 
