@@ -23,7 +23,7 @@ function ModalSeguimiento({
                 setError('');
 
                 const respuesta = await fetch(
-                    `${API_URL}/api/usuarios/${idUsuario}/${pestanaActiva}`,
+                    `${API_URL}/api/usuarios/${idUsuario}/${pestanaActiva}`, //idUsuario: el id del perfil que estamos mirando
                     {
                         headers: {
                             Authorization: `Bearer ${token}`
