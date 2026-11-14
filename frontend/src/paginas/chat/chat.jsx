@@ -180,12 +180,28 @@ function Chat() {
         </div>}
         <h3 className="chat-seccion-titulo">Conversaciones</h3>
         <div className="chat-lista-contactos">
-          {contactos.map(c => <button type="button" key={c.id_usuario}
-            className={`chat-contacto-item ${Number(chatActivo?.id_usuario) === Number(c.id_usuario) ? 'activo' : ''}`}
-            onClick={() => seleccionarContacto(c)}>
-            <Avatar path={c.foto_perfil} name={nombre(c)} />
-            <div className="contacto-info"><h4>{nombre(c)}</h4><p>{c.ultimoMensaje}</p></div>
-          </button>)}
+          {contactos.map(c => {
+            const ultimoMensaje = c.ultimoMensaje?.startsWith("Reaccionaste a su historia:")
+              ? c.ultimoMensaje.replace(
+                  "Reaccionaste a su historia:",
+                  Number(c.ultimoRemitenteId) === usuarioActualId
+                    ? "Reaccionaste a su historia:"
+                    : "Reaccionó a tu historia:"
+                )
+              : c.ultimoMensaje;
+
+            return (
+              <button type="button" key={c.id_usuario}
+                className={`chat-contacto-item ${Number(chatActivo?.id_usuario) === Number(c.id_usuario) ? 'activo' : ''}`}
+                onClick={() => seleccionarContacto(c)}>
+                <Avatar path={c.foto_perfil} name={nombre(c)} />
+                <div className="contacto-info">
+                  <h4>{nombre(c)}</h4>
+                  <p>{ultimoMensaje}</p>
+                </div>
+              </button>
+            );
+          })}
           {!contactos.length && !cargando && <p className="sin-contenido">No tienes conversaciones todavía.</p>}
         </div>
       </aside>
@@ -200,9 +216,14 @@ function Chat() {
             {!cargandoMensajes && !mensajes.length && <p className="sin-contenido">Inicia la conversación con {nombre(chatActivo)}.</p>}
             {mensajes.map(m => {
               const esMio = Number(m.remitenteId) === usuarioActualId;
+              const contenidoMensaje = m.contenido?.startsWith('Reaccionaste a su historia:')
+              ? m.contenido.replace('Reaccionaste a su historia:', esMio
+                  ? 'Reaccionaste a su historia:'
+                  : 'Reaccionó a tu historia:')
+              : m.contenido;
               return <div key={m.id} className={`mensaje-burbuja ${esMio ? 'mio' : 'suyo'}`}>
                 {!esMio && <Avatar path={chatActivo.foto_perfil} name={nombre(chatActivo)} className="avatar-msg" />}
-                <div className="burbuja-contenido"><p>{m.contenido}</p><span className="mensaje-hora">{new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span></div>
+                <div className="burbuja-contenido"><p>{contenidoMensaje}</p><span className="mensaje-hora">{new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span></div>
                 {esMio && <Avatar path={usuarioActual.foto_perfil || localStorage.getItem("grwm_foto_perfil")} name={nombre(usuarioActual)} className="avatar-msg" />}
               </div>;
             })}<div ref={mensajesFinRef} />
