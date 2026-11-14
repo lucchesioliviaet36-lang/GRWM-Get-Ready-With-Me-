@@ -849,28 +849,29 @@ export default function Feed() {
                   </div>
                   <div className="story-header">
                     {historiaActivaEsPropia || !historiaActiva.id_usuario ? (
-                      fotoPerfilHistoriaActiva ? (
-                        <img
-                          src={fotoPerfilHistoriaActiva}
-                          alt={historiaActivaEsPropia ? 'Tu foto de perfil' : (historiaActiva.usuario || 'Historia')}
-                          className="story-header-avatar"
-                        />
-                      ) : (
-                        <svg
-                          width="22"
-                          height="22"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="#8b5274"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="story-header-avatar"
-                        >
-                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                          <circle cx="12" cy="7" r="4" />
-                        </svg>
-                      )
+                      <div className="story-header-avatar-wrapper">
+                        {fotoPerfilHistoriaActiva ? (
+                          <img
+                            src={fotoPerfilHistoriaActiva}
+                            alt="Foto de perfil"
+                            className="story-header-avatar"
+                          />
+                        ) : (
+                          <div className="story-header-avatar story-header-avatar-placeholder">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#8b5274"
+                              strokeWidth="1.8"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                              <circle cx="12" cy="7" r="4" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
                     ) : (
                       <button
                         type="button"
@@ -885,23 +886,23 @@ export default function Feed() {
                             className="story-header-avatar"
                           />
                         ) : (
-                          <svg
-                            width="22"
-                            height="22"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#8b5274"
-                            strokeWidth="1.8"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="story-header-avatar"
-                          >
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                            <circle cx="12" cy="7" r="4" />
-                          </svg>
+                          <div className="story-header-avatar story-header-avatar-placeholder">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#8b5274"
+                              strokeWidth="1.8"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                              <circle cx="12" cy="7" r="4" />
+                            </svg>
+                          </div>
                         )}
                       </button>
                     )}
+
                     <div className="story-header-info">
                       <span>{historiaActiva.usuario || `Usuario #${historiaActiva.id_usuario}`}</span>
                       <time dateTime={historiaActiva.fecha_creacion || undefined}>
@@ -910,6 +911,7 @@ export default function Feed() {
                           : ''}
                       </time>
                     </div>
+
                     <div className="story-header-actions">
                       {historiaActivaEsPropia && (
                         <>
