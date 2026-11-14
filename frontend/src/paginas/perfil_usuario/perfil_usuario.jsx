@@ -232,7 +232,7 @@ function PerfilUsuario() {
             } else {
                 metodo = 'POST';
             }
-            
+
             const response = await fetch(
                 `${API_URL}/api/usuarios/${id}/seguir`,
                 {
@@ -253,8 +253,12 @@ function PerfilUsuario() {
             setLoSigo(!loSigo);
 
             // Actualizar la cantidad de seguidores
-            setSeguidores(prev => prev + (loSigo ? -1 : 1));
-
+            if (loSigo) {
+                setSeguidores(prev => prev - 1);
+            } else {
+                setSeguidores(prev => prev + 1);
+            }
+            
         } catch (error) {
             console.error("Error al modificar seguimiento:", error);
             alert(error.message);
