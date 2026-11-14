@@ -319,7 +319,14 @@ function Administrador() {
                       <td>{registro.descripcion}</td>
                       <td>{registro.tabla_afectada}</td>
                       <td>{registro.usuario_afectado}</td>
-                      <td>{registro.fecha ? new Date(registro.fecha).toLocaleString("es-AR") : "Sin fecha"}</td>
+                      <td>{new Date(registro.fecha).toLocaleString("es-AR", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true
+                      })}</td>
                     </tr>
                   ))}
                 </tbody>

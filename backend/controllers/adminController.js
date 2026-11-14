@@ -20,8 +20,7 @@ const obtenerDVV = async (req, res) => {
 
 const inicializarIntegridad = async (req, res) => {
     try {
-        const resultado =
-            await adminService.inicializarIntegridad();
+        const resultado = await adminService.inicializarIntegridad();
 
         return res.status(200).json({
             success: true,
