@@ -7,7 +7,7 @@ const bitacoraService = require("./bitacoraService");
 const obtenerBitacora = async () => {
     return await Bitacora.findAll({
         order: [["id_bitacora", "DESC"]],
-        limit: 100
+        limit: 9999999999
     });
 };
 

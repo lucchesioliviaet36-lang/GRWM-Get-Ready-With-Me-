@@ -43,15 +43,17 @@ const toggleFavorito = async (id_usuario, id_publicacion) => {
             "id_favorito",
             nuevoFavorito.id_favorito
         );
+
+        await bitacoraService.registrar({
+            idUsuario: id_usuario,
+            descripcion: "Favorito agregado",
+            accion: "INSERT",
+            tablaAfectada: "Favorito",
+            usuarioAfectado: id_usuario
+        });
     }
 
-    await bitacoraService.registrar({
-        idUsuario: id_usuario,
-        descripcion: "Favorito agregado",
-        accion: "INSERT",
-        tablaAfectada: "Favorito",
-        usuarioAfectado: id_usuario
-    });
+    
 
     return {
         esFavorito: true

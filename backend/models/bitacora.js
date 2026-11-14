@@ -31,8 +31,9 @@ const Bitacora = sequelize.define(
         },
 
         fecha: {
-            type: DataTypes.DATEONLY,
-            allowNull: true
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW
         },
 
         DVH: {
@@ -47,7 +48,9 @@ const Bitacora = sequelize.define(
     },
     {
         tableName: "Bitacora",
-        timestamps: false
+        timestamps: true,
+        createdAt: 'fecha', // Mapeamos createdAt a tu columna real
+        updatedAt: false 
     }
 );
 

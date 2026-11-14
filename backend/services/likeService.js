@@ -45,15 +45,15 @@ const alternarLike = async ( id_usuario, id_publicacion) => {
             "id_like",
             nuevoLike.id_like
         );
-    }
 
-    await bitacoraService.registrar({
-        idUsuario: id_usuario,
-        descripcion: "Like agregado",
-        accion: "INSERT",
-        tablaAfectada: "Like",
-        usuarioAfectado: id_usuario
-    });
+        await bitacoraService.registrar({
+            idUsuario: id_usuario,
+            descripcion: "Like agregado",
+            accion: "INSERT",
+            tablaAfectada: "Like",
+            usuarioAfectado: id_usuario
+        });
+    }
 
     const totalLikes = await likeDao.contarLikes(id_publicacion);
 

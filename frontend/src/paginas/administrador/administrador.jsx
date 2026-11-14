@@ -268,7 +268,7 @@ function Administrador() {
                       <td>{registro.descripcion}</td>
                       <td>{registro.tabla_afectada}</td>
                       <td>{registro.usuario_afectado}</td>
-                      <td>{registro.fecha}</td>
+                      <td>{registro.fecha ? new Date(registro.fecha).toLocaleString("es-AR") : "Sin fecha"}</td>
                     </tr>
                   ))}
                 </tbody>
