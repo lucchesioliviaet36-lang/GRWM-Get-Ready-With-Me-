@@ -8,14 +8,11 @@ const API_URL = "http://localhost:3000";
 
 const Busqueda = () => {
   const navigate = useNavigate();
-
   const token = localStorage.getItem("token");
-
   const [busqueda, setBusqueda] = useState("");
   const [resultados, setResultados] = useState([]);
   const [sugerencias, setSugerencias] = useState([]);
   const [usuariosSeguidos, setUsuariosSeguidos] = useState([]);
-
   const [buscando, setBuscando] = useState(false);
   const [cargandoSugerencias, setCargandoSugerencias] = useState(true);
   const [error, setError] = useState("");
@@ -156,8 +153,7 @@ const Busqueda = () => {
     try {
       setProcesando(prev => [...prev, id]);
 
-      const response = await fetch(
-        `${API_URL}/api/usuarios/${id}/seguir`,
+      const response = await fetch(`${API_URL}/api/usuarios/${id}/seguir`,
         {
           method: loSigo ? "DELETE" : "POST",
           headers: {
@@ -173,9 +169,7 @@ const Busqueda = () => {
       }
 
       setUsuariosSeguidos(prev =>
-        loSigo
-          ? prev.filter(usuarioId => usuarioId !== id)
-          : [...prev, id]
+        loSigo ? prev.filter(usuarioId => usuarioId !== id) : [...prev, id]
       );
 
     } catch (error) {

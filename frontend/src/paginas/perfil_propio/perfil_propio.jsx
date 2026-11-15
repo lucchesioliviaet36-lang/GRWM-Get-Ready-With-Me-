@@ -30,7 +30,6 @@ function PerfilPropio() {
   const [productosPerfil, setProductosPerfil] = useState([]);
   const [cargandoProductos, setCargandoProductos] = useState(false);
   const [errorProductos, setErrorProductos] = useState("");
-  
   const token = localStorage.getItem('token');
 
     // OBTENER URL DE IMAGEN
@@ -246,8 +245,7 @@ function PerfilPropio() {
 
   // Cargar publicaciones favoritas
   useEffect(() => {
-    const idUsuarioActual =
-      usuarioSesion?.id_usuario || usuarioSesion?.id;
+    const idUsuarioActual = usuarioSesion?.id_usuario || usuarioSesion?.id;
 
     if (pestanaActiva !== 'favoritos' || !idUsuarioActual) return;
 
@@ -503,11 +501,7 @@ function PerfilPropio() {
   useEffect(() => {
     const idUsuario = usuarioSesion?.id_usuario || usuarioSesion?.id;
 
-    if (
-      pestanaActiva !== "productos" ||
-      !idUsuario ||
-      !token
-    ) {
+    if (pestanaActiva !== "productos" || !idUsuario || !token) {
       return;
     }
 

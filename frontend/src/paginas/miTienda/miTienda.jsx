@@ -6,25 +6,20 @@ import Footer from "../../componentes/footer/footer";
 
 function MiTienda() {
   const navigate = useNavigate();
-
   // Productos cargados desde la base de datos
   const [productos, setProductos] = useState([]);
-
   // Mostrar / ocultar formulario para publicar producto
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
-
   // Estados del formulario
   const [nombre, setNombre] = useState("");
   const [categoria, setCategoria] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [precio, setPrecio] = useState("");
   const [imagen, setImagen] = useState(null);
-
   // Estados generales
   const [cargando, setCargando] = useState(true);
   const [publicando, setPublicando] = useState(false);
   const [error, setError] = useState("");
-
 
   // =========================
   // OBTENER PRODUCTOS
@@ -43,8 +38,7 @@ function MiTienda() {
         return;
       }
 
-      const respuesta = await fetch(
-        "http://localhost:3000/api/productos",
+      const respuesta = await fetch("http://localhost:3000/api/productos",
         {
           method: "GET",
           headers: {
@@ -167,8 +161,7 @@ function MiTienda() {
 
       // Agregamos inmediatamente el nuevo producto a la tienda
       setProductos((productosActuales) => [
-        datos.producto,
-        ...productosActuales //"..." Spread Operator
+        datos.producto,  ...productosActuales //"..." Spread Operator
       ]);
 
 
@@ -259,11 +252,9 @@ function MiTienda() {
       // Lo eliminamos también de la pantalla
       setProductos((productosActuales) =>
         productosActuales.filter(
-          (producto) =>
-            producto.id_producto !== idProducto
+          (producto) => producto.id_producto !== idProducto
         )
       );
-
 
       alert("Producto eliminado correctamente");
 

@@ -24,18 +24,13 @@ function Publicacion() {
   const desdePaginaPrincipal = location.state?.desdePaginaPrincipal === true;
   const desdePerfilPropio = location.state?.desdePerfilPropio === true;
   const { id } = useParams();
-
   const reproductorRef = useRef(null);
   const [reproduciendo, setReproduciendo] = useState(false);
-
   const [menuOpciones, setMenuOpciones] = useState(false);
-
   const [postEncontrado, setPostEncontrado] = useState(null);
   const [cargandoPublicacion, setCargandoPublicacion] = useState(true);
   const [autorPublicacion, setAutorPublicacion] = useState(null);
-
   const [usuariosEtiquetados, setUsuariosEtiquetados] = useState([]);
-
   // Obtenemos los datos del usuario dinámicamente desde localStorage
   const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
   const idUsuarioActual = usuarioSesion?.id_usuario;
@@ -46,7 +41,6 @@ function Publicacion() {
           setCargandoPublicacion(true);
 
           try {
-
               const response = await fetch("http://localhost:3000/api/publicaciones", {
                   headers: {
                       Authorization: `Bearer ${token}`
@@ -59,9 +53,7 @@ function Publicacion() {
 
               const publicaciones = await response.json();
 
-              const encontrada = publicaciones.find(
-                  p => String(p.id_publicacion) === String(id)
-              );
+              const encontrada = publicaciones.find(p => String(p.id_publicacion) === String(id));
 
               if (encontrada) {
                   setPostEncontrado({
@@ -102,8 +94,7 @@ function Publicacion() {
       if (!id || !token) return;
 
       try {
-        const response = await fetch(
-          `http://localhost:3000/api/publicaciones/${id}/etiquetados`,
+        const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/etiquetados`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -131,7 +122,6 @@ function Publicacion() {
 
   const fotoAMostrar = postEncontrado?.img || "";
   const descripcionMostrar = postEncontrado?.descripcion || "";
-
   const musicaUrl = postEncontrado?.musica_url || '';
   const musicaTitulo = postEncontrado?.musica_titulo || '';
   const musicaArtista = postEncontrado?.musica_artista || '';
@@ -163,7 +153,6 @@ function Publicacion() {
   };
 
   const idVideoYouTube = obtenerIdVideoYouTube(musicaUrl);
-
   function reproducirPausarMusica() {
     const reproductor = reproductorRef.current;
 
@@ -230,15 +219,12 @@ function Publicacion() {
       : usuarioSesion.foto_perfil;
 
   const fotoPerfilHeader = obtenerImagenPerfil(fotoPerfilOriginal);
-
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [totalLikes, setTotalLikes] = useState(postEncontrado?.likes || 0);
-
   // Estado de comentarios
   const [comentarios, setComentarios] = useState([]);
   const [nuevoComentario, setNuevoComentario] = useState('');
-
   // 🗑️ Función para eliminar un comentario
   const handleEliminarComentario = async (idComentario) => {
     const confirmar = window.confirm("¿Querés borrar este comentario?");
@@ -246,8 +232,7 @@ function Publicacion() {
 
     try {
 
-      const response = await fetch(
-        `http://localhost:3000/api/publicaciones/comentario/${idComentario}`,
+      const response = await fetch(`http://localhost:3000/api/publicaciones/comentario/${idComentario}`,
         {
           method: 'DELETE',
           headers: {
@@ -257,8 +242,7 @@ function Publicacion() {
       );
 
       if (response.ok) {
-        const resComentarios = await fetch(
-          `http://localhost:3000/api/publicaciones/${id}/comentarios`,
+        const resComentarios = await fetch( `http://localhost:3000/api/publicaciones/${id}/comentarios`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -332,8 +316,7 @@ function Publicacion() {
       if (!id || !idUsuarioActual) return;
       try {
 
-        const response = await fetch(
-          `http://localhost:3000/api/publicaciones/${id}/favorito?id_usuario=${idUsuarioActual}`,
+        const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/favorito?id_usuario=${idUsuarioActual}`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -362,8 +345,7 @@ function Publicacion() {
 
     try {
 
-      const response = await fetch(
-        `http://localhost:3000/api/publicaciones/${id}/like`,
+      const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/like`,
         {
           method: "POST",
           headers: {
@@ -400,8 +382,7 @@ function Publicacion() {
 
     try {
 
-      const response = await fetch(
-          `http://localhost:3000/api/publicaciones/${id}/favorito`,
+      const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/favorito`,
           {
               method: "POST",
               headers: {
@@ -442,9 +423,7 @@ function Publicacion() {
     if (nuevoComentario.trim() === '') return;
 
     try {
-
-        const response = await fetch(
-          `http://localhost:3000/api/publicaciones/${id}/comentario`,
+        const response = await fetch(`http://localhost:3000/api/publicaciones/${id}/comentario`,
           {
             method: 'POST',
             headers: {
@@ -459,8 +438,7 @@ function Publicacion() {
 
       if (response.ok) {
         setNuevoComentario('');
-        const resComentarios = await fetch(
-          `http://localhost:3000/api/publicaciones/${id}/comentarios`,
+        const resComentarios = await fetch(`http://localhost:3000/api/publicaciones/${id}/comentarios`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -493,8 +471,7 @@ function Publicacion() {
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/publicaciones/${id}`,
+      const response = await fetch(`http://localhost:3000/api/publicaciones/${id}`,
         {
           method: 'DELETE',
           headers: {

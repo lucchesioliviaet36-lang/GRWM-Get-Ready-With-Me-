@@ -142,12 +142,9 @@ function AIOutfit() {
   const seleccionarPrenda = (prenda) => {
     const existe =
       prendasSeleccionadas.some(
-        (seleccionada) =>
-          seleccionada.id ===
-            prenda.id
+        (seleccionada) => seleccionada.id === prenda.id
           &&
-          seleccionada.origen ===
-            prenda.origen
+          seleccionada.origen === prenda.origen
       );
 
     if (existe) {
@@ -155,12 +152,9 @@ function AIOutfit() {
         (actuales) =>
           actuales.filter(
             (seleccionada) =>
-              !(
-                seleccionada.id ===
-                  prenda.id
+              !( seleccionada.id === prenda.id
                 &&
-                seleccionada.origen ===
-                  prenda.origen
+                seleccionada.origen === prenda.origen
               )
           )
       );
@@ -176,11 +170,9 @@ function AIOutfit() {
   const estaSeleccionada = (prenda) => {
     return prendasSeleccionadas.some(
       (seleccionada) =>
-        seleccionada.id ===
-          prenda.id
+        seleccionada.id === prenda.id
         &&
-        seleccionada.origen ===
-          prenda.origen
+        seleccionada.origen === prenda.origen
     );
   };
 
@@ -238,9 +230,7 @@ function AIOutfit() {
       if (!token) {
         navigate("/");
         return;
-
       }
-
 
       const response = await fetch(`${API_URL}/api/ai/outfit`,{
         method: "POST",
@@ -312,9 +302,7 @@ function AIOutfit() {
   };
 
   // TARJETA DE PRENDA
-  const renderPrenda = (
-    prenda
-  ) => {
+  const renderPrenda = (prenda) => {
     const seleccionada = estaSeleccionada(prenda);
 
     return (

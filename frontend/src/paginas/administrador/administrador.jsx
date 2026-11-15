@@ -25,8 +25,7 @@ function Administrador() {
       setError("");
       setMensaje("");
 
-      const respuesta = await fetch(
-        `${API_URL}/api/admin/integridad/inicializar`,
+      const respuesta = await fetch(`${API_URL}/api/admin/integridad/inicializar`,
         {
           method: "POST",
           headers: headers()
@@ -37,8 +36,7 @@ function Administrador() {
 
       if (!respuesta.ok) {
         throw new Error(
-          datos.message ||
-          "No se pudo inicializar la integridad"
+          datos.message || "No se pudo inicializar la integridad"
         );
       }
 

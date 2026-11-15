@@ -72,9 +72,7 @@ function PerfilUsuario() {
                 setErrorSeguimiento('');
                 setSeguimientoDisponible(true);
 
-                const headers = {
-                    Authorization: `Bearer ${token}`
-                };
+                const headers = {Authorization: `Bearer ${token}`};
 
                 const consultarJson = async (url) => {
                     const respuesta = await fetch(url, {
@@ -134,8 +132,7 @@ function PerfilUsuario() {
                 ]);
 
                 if (resultadosSeguimiento.every((resultado) => resultado.status === 'fulfilled')) {
-                    const [datosEstadisticas, datosSeguimiento] = resultadosSeguimiento
-                        .map((resultado) => resultado.value);
+                    const [datosEstadisticas, datosSeguimiento] = resultadosSeguimiento.map((resultado) => resultado.value);
                     setSeguidores(Number(datosEstadisticas.seguidores) || 0);
                     setSeguidos(Number(datosEstadisticas.seguidos) || 0);
                     setLoSigo(Boolean(datosSeguimiento.loSigo));
@@ -178,8 +175,7 @@ function PerfilUsuario() {
         setCargandoProductos(true);
         setErrorProductos("");
 
-        const response = await fetch(
-            `${API_URL}/api/productos/usuario/${id}`,
+        const response = await fetch(`${API_URL}/api/productos/usuario/${id}`,
             {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -233,8 +229,7 @@ function PerfilUsuario() {
                 metodo = 'POST';
             }
 
-            const response = await fetch(
-                `${API_URL}/api/usuarios/${id}/seguir`,
+            const response = await fetch(`${API_URL}/api/usuarios/${id}/seguir`,
                 {
                     method: metodo,
                     headers: {
@@ -298,9 +293,7 @@ function PerfilUsuario() {
         );
     }
 
-    const nombreMostrar =
-        `${usuario.nombre || ''} ${usuario.apellido || ''}`.trim()
-        || usuario.username;
+    const nombreMostrar = `${usuario.nombre || ''} ${usuario.apellido || ''}`.trim() || usuario.username;
 
     const usuarioTag = usuario.username
         ? `@${usuario.username.replace('@', '')}`

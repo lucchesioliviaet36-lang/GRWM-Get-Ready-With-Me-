@@ -5,7 +5,6 @@ import "./recuperarContrasena.css";
 
 function RecuperarContrasena() {
   const navigate = useNavigate();
-
   const [mail, setMail] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
@@ -25,8 +24,7 @@ function RecuperarContrasena() {
     try {
       setCargando(true);
 
-      const response = await fetch(
-        "http://localhost:3000/api/auth/recuperar-contrasena",
+      const response = await fetch("http://localhost:3000/api/auth/recuperar-contrasena",
         {
           method: "POST",
 
@@ -43,9 +41,7 @@ function RecuperarContrasena() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.mensaje || "No se pudo enviar el correo"
-        );
+        throw new Error(data.mensaje || "No se pudo enviar el correo");
       }
 
       setMensaje(data.mensaje);

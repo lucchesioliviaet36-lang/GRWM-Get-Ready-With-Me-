@@ -8,7 +8,6 @@ import Footer from "../../componentes/footer/footer";
 
 function AgregarPrenda() {
   const navigate = useNavigate();
-
   const [imagen, setImagen] = useState(null);
   const [imagenOriginal, setImagenOriginal] = useState("");
   const [previewImagen, setPreviewImagen] = useState("");
@@ -88,13 +87,11 @@ function AgregarPrenda() {
           pixelCrop.height
         );
 
-        canvas.toBlob(
-          (blob) => {
-            if (blob) resolve(blob);
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
             else reject(new Error("No se pudo generar la imagen recortada."));
           },
-          "image/jpeg",
-          0.9
+          "image/jpeg", 0.9
         );
       };
 
@@ -106,13 +103,7 @@ function AgregarPrenda() {
   const confirmarRecorte = async () => {
     try {
       const blob = await crearImagenRecortada(imagenOriginal, areaRecortada);
-
-      const archivoRecortado = new File(
-        [blob],
-        `prenda-${Date.now()}.jpg`,
-        {type: "image/jpeg"}
-      );
-
+      const archivoRecortado = new File( [blob], `prenda-${Date.now()}.jpg`, {type: "image/jpeg"});
       const nuevaPreview = URL.createObjectURL(blob);
 
       setImagen(archivoRecortado);

@@ -13,7 +13,6 @@ function ModalSeguimiento({
     const [usuarios, setUsuarios] = useState([]);
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState('');
-
     const token = localStorage.getItem('token');
 
     useEffect(() => {

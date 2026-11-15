@@ -7,7 +7,6 @@ import Footer from "../../componentes/footer/footer";
 function Pago() {
   const navigate = useNavigate();
   const {id} = useParams();
-
   const [metodoPago, setMetodoPago] = useState(null);
   const [mostrarSaldoModal, setMostrarSaldoModal] = useState(false);
   const [saldo, setSaldo] = useState(0);
@@ -15,7 +14,6 @@ function Pago() {
   const [montoCarga, setMontoCarga] = useState("");
   const [procesando, setProcesando] = useState(false);
   const [errorPago, setErrorPago] = useState("");
-
 
   // =========================
   // COMPRA CON SALDO
@@ -46,10 +44,9 @@ function Pago() {
 
 
       // SALDO INSUFICIENTE
-      if (
-        respuesta.status === 409 &&
-        datos.codigo === "SALDO_INSUFICIENTE"
-      ) {
+      if (respuesta.status === 409 &&
+        datos.codigo === "SALDO_INSUFICIENTE") {
+
         setSaldo(Number(datos.saldo));
         setFaltante(Number(datos.faltante));
         setMontoCarga(datos.faltante);
@@ -57,17 +54,13 @@ function Pago() {
         return;
       }
 
-
       if (!respuesta.ok) {
         throw new Error(
-          datos.message ||
-          "No se pudo realizar el pago"
+          datos.message || "No se pudo realizar el pago"
         );
       }
 
-
       setMostrarSaldoModal(false);
-
 
       // IR AL ESTADO DEL PEDIDO
       navigate(
@@ -86,7 +79,6 @@ function Pago() {
       setProcesando(false);
     }
   };
-
 
   // =========================
   // COMPRA EN EFECTIVO
@@ -117,11 +109,9 @@ function Pago() {
 
       if (!respuesta.ok) {
         throw new Error(
-          datos.message ||
-          "No se pudo registrar la compra"
+          datos.message || "No se pudo registrar la compra"
         );
       }
-
 
       // IR AL ESTADO DEL PEDIDO
       navigate(
@@ -164,13 +154,8 @@ function Pago() {
 
   const cargarSaldo = async () => {
     try {
-      if (
-        !montoCarga ||
-        Number(montoCarga) <= 0
-      ) {
-        setErrorPago(
-          "Ingresá un monto válido"
-        );
+      if (!montoCarga || Number(montoCarga) <= 0) {
+        setErrorPago("Ingresá un monto válido");
         return;
       }
 
@@ -196,10 +181,7 @@ function Pago() {
       const datos = await respuesta.json();
 
       if (!respuesta.ok) {
-        throw new Error(
-          datos.message ||
-          "No se pudo cargar saldo"
-        );
+        throw new Error(datos.message || "No se pudo cargar saldo");
       }
 
       setSaldo(Number(datos.saldo));

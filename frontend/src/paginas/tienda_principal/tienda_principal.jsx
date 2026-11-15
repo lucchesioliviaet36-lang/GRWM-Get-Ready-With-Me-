@@ -18,7 +18,6 @@ function obtenerUrlImagen(ruta) {
 
 function TiendaPrincipal() {
   const navigate = useNavigate();
-
   const [productos, setProductos] = useState([]);
   const [categoriaActiva, setCategoriaActiva] = useState("Todos");
   const [busqueda, setBusqueda] = useState("");
@@ -55,11 +54,8 @@ function TiendaPrincipal() {
   }, []);
 
   const categorias = [
-    "Todos",
-    ...new Set(
-      productos
-        .map((producto) => producto.categoria)
-        .filter(Boolean)
+    "Todos", ...new Set(
+      productos.map((producto) => producto.categoria).filter(Boolean)
     ),
   ];
 
@@ -68,8 +64,7 @@ function TiendaPrincipal() {
       const nombre = producto.nombre || "";
       const categoria = producto.categoria || "";
 
-      const coincideCategoria =
-        categoriaActiva === "Todos" || categoria === categoriaActiva;
+      const coincideCategoria = categoriaActiva === "Todos" || categoria === categoriaActiva;
 
       const coincideBusqueda = `${nombre} ${categoria} ${
         producto.id_usuario || ""

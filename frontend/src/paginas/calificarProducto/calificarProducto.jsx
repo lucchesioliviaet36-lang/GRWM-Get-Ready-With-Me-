@@ -18,8 +18,7 @@ function CalificarProducto() {
       try {
         const token = localStorage.getItem("token");
 
-        const respuesta = await fetch(
-          `http://localhost:3000/api/pedidos/${idPedido}`,
+        const respuesta = await fetch(`http://localhost:3000/api/pedidos/${idPedido}`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -60,8 +59,7 @@ function CalificarProducto() {
 
       const token = localStorage.getItem("token");
 
-      const respuesta = await fetch(
-        "http://localhost:3000/api/calificaciones",
+      const respuesta = await fetch("http://localhost:3000/api/calificaciones",
         {
           method: "POST",
           headers: {

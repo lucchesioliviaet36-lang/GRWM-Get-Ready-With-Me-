@@ -10,19 +10,14 @@ function EditarPerfil() {
   const [toastMessage, setToastMessage] = useState(""); 
   const [isLoading, setIsLoading] = useState(false); 
   const [camposConError, setCamposConError] = useState({});
-
   const [contrasenaActual, setContrasenaActual] = useState("");
   const [nuevaContrasena, setNuevaContrasena] = useState("");
   const [confirmarContrasena, setConfirmarContrasena] = useState("");
-
   // 👤 Cargar usuario en sesión
   const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
-
   const API_URL = "http://localhost:3000";
-
   const [bannerImg, setBannerImg] = useState(usuarioSesion.banner || null);
   const [avatarImg, setAvatarImg] = useState(usuarioSesion.foto_perfil || null);
-
   const [bannerArchivo, setBannerArchivo] = useState(null);
   const [avatarArchivo, setAvatarArchivo] = useState(null);
 
