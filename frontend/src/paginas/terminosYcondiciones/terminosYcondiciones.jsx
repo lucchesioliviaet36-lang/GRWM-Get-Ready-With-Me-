@@ -1,6 +1,10 @@
 import "./terminosYcondiciones.css";
+import { useNavigate } from "react-router-dom";
 
 const TerminosCondiciones = () => {
+
+    const navigate = useNavigate();
+
   return (
     <div className="pagina-terminos">
       <div className="terminos-contenedor">
@@ -184,6 +188,12 @@ const TerminosCondiciones = () => {
         <div className="terminos-pie">
           <span>GRWM</span>
           <p>Compartí tu estilo, descubrí tendencias y conectá.</p>
+          <button
+            className="boton-volver"
+            onClick={() => navigate("/paginaPrincipal")}
+            >
+            ← Volver a la página principal
+            </button>
         </div>
 
       </div>

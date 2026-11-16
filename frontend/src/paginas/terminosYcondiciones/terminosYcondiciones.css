@@ -134,3 +134,22 @@
     font-size: 16px;
   }
 }
+
+
+.boton-volver {
+  margin-top: 20px;
+  padding: 11px 22px;
+  border: none;
+  border-radius: 25px;
+  background: #bd4f80;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.boton-volver:hover {
+  background: #e89cc1;
+  transform: translateY(-2px);
+}
