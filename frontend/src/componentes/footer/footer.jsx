@@ -10,7 +10,7 @@ function Footer() {
       <footer className="footer">
         <div>© 2026 GRWM. Todos los derechos reservados.</div>
         <div className="footer-links">
-          <button>Privacidad</button>
+          <button onClick={() => navigate("/privacidad")}>Privacidad</button>
           <button onClick={() => navigate("/terminosYcondiciones")}>Términos y Condiciones</button>
         </div>
       </footer>

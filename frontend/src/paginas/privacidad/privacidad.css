@@ -1,0 +1,154 @@
+.pagina-privacidad {
+  min-height: 100vh;
+  background: #fff7fa;
+  padding: 45px 20px;
+  color: #553749;
+}
+
+.privacidad-contenedor {
+  max-width: 950px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 5px 25px rgba(112, 60, 94, 0.08);
+  overflow: hidden;
+}
+
+.privacidad-encabezado {
+  text-align: center;
+  padding: 55px 35px 45px;
+  background: linear-gradient(135deg, #fff0f6, #fce4ef);
+}
+
+.privacidad-etiqueta {
+  color: #bd4f80;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.privacidad-encabezado h1 {
+  color: #703c5e;
+  font-size: 34px;
+  margin: 18px 0 12px;
+}
+
+.privacidad-encabezado p {
+  max-width: 600px;
+  margin: 0 auto;
+  color: #76596a;
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.privacidad-fecha {
+  display: block;
+  margin-top: 20px;
+  font-size: 12px;
+  color: #a17c91;
+}
+
+.privacidad-contenido {
+  padding: 35px 55px;
+}
+
+.privacidad-contenido section {
+  padding: 22px 0;
+  border-bottom: 1px solid #f4e7ed;
+}
+
+.privacidad-contenido section:last-child {
+  border-bottom: none;
+}
+
+.privacidad-contenido h2 {
+  color: #a74675;
+  font-size: 18px;
+  margin: 0 0 13px;
+}
+
+.privacidad-contenido p {
+  color: #6d5864;
+  font-size: 14px;
+  line-height: 1.9;
+  margin: 8px 0;
+}
+
+.privacidad-contenido ul {
+  padding-left: 22px;
+  margin: 12px 0;
+}
+
+.privacidad-contenido li {
+  color: #6d5864;
+  font-size: 14px;
+  line-height: 2;
+}
+
+.privacidad-contenido li::marker {
+  color: #bd4f80;
+}
+
+.privacidad-contacto {
+  color: #bd4f80 !important;
+  font-weight: 600;
+}
+
+.privacidad-pie {
+  text-align: center;
+  padding: 25px;
+  background: #fff0f6;
+}
+
+.privacidad-pie span {
+  color: #a74675;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+.privacidad-pie p {
+  color: #98788a;
+  font-size: 12px;
+  margin: 8px 0 0;
+}
+
+.boton-volver-privacidad {
+  margin-top: 20px;
+  padding: 11px 22px;
+  border: none;
+  border-radius: 25px;
+  background: #bd4f80;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.boton-volver-privacidad:hover {
+  background: #963c67;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+  .pagina-privacidad {
+    padding: 20px 12px;
+  }
+
+  .privacidad-encabezado {
+    padding: 40px 20px;
+  }
+
+  .privacidad-encabezado h1 {
+    font-size: 27px;
+  }
+
+  .privacidad-contenido {
+    padding: 25px 22px;
+  }
+
+  .privacidad-contenido h2 {
+    font-size: 16px;
+  }
+}

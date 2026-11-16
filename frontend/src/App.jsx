@@ -22,7 +22,8 @@ import AIOutfit from './paginas/iaOutfit/iaOutfit'
 import Administrador from './paginas/administrador/administrador'
 import RutaProtegida from './componentes/rutaProtegida/rutaProtegida'
 import {CrearHistoria} from './paginas/crear_historia/crear_historia';
-import TerminosCondiciones from "./paginas/terminosYcondiciones/terminosYcondiciones";
+import TerminosCondiciones from "./paginas/terminosYcondiciones/terminosYcondiciones"
+import Privacidad from "./paginas/privacidad/privacidad"
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
         <Route path="/iaOutfit" element={<AIOutfit />} />
         <Route path="/crear_historia" element={<CrearHistoria />} />
         <Route path="/terminosYcondiciones" element={<TerminosCondiciones />}/>
+        <Route path="/privacidad" element={<Privacidad />} />
         
       </Routes>
     </BrowserRouter>
