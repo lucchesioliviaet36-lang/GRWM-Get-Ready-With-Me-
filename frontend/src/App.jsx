@@ -22,6 +22,7 @@ import AIOutfit from './paginas/iaOutfit/iaOutfit'
 import Administrador from './paginas/administrador/administrador'
 import RutaProtegida from './componentes/rutaProtegida/rutaProtegida'
 import {CrearHistoria} from './paginas/crear_historia/crear_historia';
+import TerminosCondiciones from "./paginas/terminosYcondiciones/terminosYcondiciones";
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
         <Route path="/pedido/:idPedido" element={<DetallePedido />}/>
         <Route path="/iaOutfit" element={<AIOutfit />} />
         <Route path="/crear_historia" element={<CrearHistoria />} />
+        <Route path="/terminosYcondiciones" element={<TerminosCondiciones />}/>
         
       </Routes>
     </BrowserRouter>

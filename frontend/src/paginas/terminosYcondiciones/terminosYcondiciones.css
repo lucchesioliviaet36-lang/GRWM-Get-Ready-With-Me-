@@ -1,0 +1,136 @@
+.pagina-terminos {
+  min-height: 100vh;
+  background: #fff7fa;
+  padding: 45px 20px;
+  color: #553749;
+}
+
+.terminos-contenedor {
+  max-width: 950px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 5px 25px rgba(112, 60, 94, 0.08);
+  overflow: hidden;
+}
+
+.terminos-encabezado {
+  text-align: center;
+  padding: 55px 35px 45px;
+  background: linear-gradient(135deg, #fff0f6, #fce4ef);
+}
+
+.terminos-etiqueta {
+  color: #bd4f80;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.terminos-encabezado h1 {
+  color: #703c5e;
+  font-size: 34px;
+  margin: 18px 0 12px;
+}
+
+.terminos-encabezado p {
+  max-width: 600px;
+  margin: 0 auto;
+  color: #76596a;
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.terminos-fecha {
+  display: block;
+  margin-top: 20px;
+  font-size: 12px;
+  color: #a17c91;
+}
+
+.terminos-contenido {
+  padding: 35px 55px;
+}
+
+.terminos-contenido section {
+  padding: 22px 0;
+  border-bottom: 1px solid #f4e7ed;
+}
+
+.terminos-contenido section:last-child {
+  border-bottom: none;
+}
+
+.terminos-contenido h2 {
+  color: #a74675;
+  font-size: 18px;
+  margin: 0 0 13px;
+}
+
+.terminos-contenido p {
+  color: #6d5864;
+  font-size: 14px;
+  line-height: 1.9;
+  margin: 8px 0;
+}
+
+.terminos-contenido ul {
+  padding-left: 22px;
+  margin: 12px 0;
+}
+
+.terminos-contenido li {
+  color: #6d5864;
+  font-size: 14px;
+  line-height: 2;
+}
+
+.terminos-contenido li::marker {
+  color: #bd4f80;
+}
+
+.terminos-contacto {
+  color: #bd4f80 !important;
+  font-weight: 600;
+}
+
+.terminos-pie {
+  text-align: center;
+  padding: 25px;
+  background: #fff0f6;
+}
+
+.terminos-pie span {
+  color: #a74675;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+.terminos-pie p {
+  color: #98788a;
+  font-size: 12px;
+  margin: 8px 0 0;
+}
+
+@media (max-width: 600px) {
+  .pagina-terminos {
+    padding: 20px 12px;
+  }
+
+  .terminos-encabezado {
+    padding: 40px 20px;
+  }
+
+  .terminos-encabezado h1 {
+    font-size: 27px;
+  }
+
+  .terminos-contenido {
+    padding: 25px 22px;
+  }
+
+  .terminos-contenido h2 {
+    font-size: 16px;
+  }
+}
