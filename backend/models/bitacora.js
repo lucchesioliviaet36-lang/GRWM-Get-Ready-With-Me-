@@ -49,7 +49,7 @@ const Bitacora = sequelize.define(
     {
         tableName: "Bitacora",
         timestamps: true,
-        createdAt: 'fecha', // Mapeamos createdAt a tu columna real
+        createdAt: 'fecha', // Mapeamos createdAt a la columna real
         updatedAt: false 
     }
 );

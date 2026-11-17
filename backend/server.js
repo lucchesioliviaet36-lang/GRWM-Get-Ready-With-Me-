@@ -21,6 +21,7 @@ const pagoRoutes = require("./routes/pagoRoutes");
 const pedidoRoutes = require("./routes/pedidoRoutes");
 const calificacionRoutes = require("./routes/calificacionRoutes");
 const permisosRoutes = require("./routes/permisosRoutes.js");
+const bitacoraRoutes = require("./routes/bitacoraRoutes");
 const app = express();
 const PORT = 3000;
 
@@ -42,6 +43,7 @@ app.use("/api/pagos", pagoRoutes);
 app.use("/api/pedidos", pedidoRoutes);
 app.use("/api/calificaciones", calificacionRoutes);
 app.use("/api/permisos", permisosRoutes);
+app.use("/api/bitacora", bitacoraRoutes);
 
 app.get("/", (req, res) => {
     res.json({

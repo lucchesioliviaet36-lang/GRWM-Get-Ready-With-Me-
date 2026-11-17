@@ -672,3 +672,128 @@
     flex-direction: column;
   }
 }
+
+/* ================================
+   FILTROS DE BITÁCORA
+================================ */
+
+.bitacora-filtros {
+  background: #fffafd;
+  border: 1px solid #f0dce7;
+  border-radius: 16px;
+  padding: 22px;
+  margin: 20px 0 25px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 18px;
+}
+
+.bitacora-filtros > div:not(.bitacora-botones-filtro) {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bitacora-filtros label {
+  color: #70465e;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.bitacora-filtros input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 13px;
+  border: 1px solid #e8cbd9;
+  border-radius: 9px;
+  background: white;
+  color: #56364a;
+  font-size: 14px;
+  outline: none;
+  transition: .2s;
+}
+
+.bitacora-filtros input:focus {
+  border-color: #c989a9;
+  box-shadow: 0 0 0 3px rgba(201, 137, 169, .15);
+}
+
+.bitacora-botones-filtro {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 5px;
+}
+
+.bitacora-botones-filtro button {
+  border: none;
+  border-radius: 9px;
+  padding: 11px 18px;
+  background: #c989a9;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.bitacora-botones-filtro button:hover {
+  background: #9d5b7c;
+  transform: translateY(-1px);
+}
+
+.bitacora-botones-filtro button:last-child {
+  background: white;
+  color: #9d5b7c;
+  border: 1px solid #dfb7ca;
+}
+
+.bitacora-botones-filtro button:last-child:hover {
+  background: #f9edf3;
+}
+
+.admin-tabla-contenedor {
+  border: 1px solid #f0dce7;
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+.admin-tabla-contenedor table {
+  min-width: 750px;
+}
+
+.admin-tabla-contenedor th {
+  background: #fff3f8;
+  color: #70345c;
+  font-size: 13px;
+}
+
+.admin-tabla-contenedor td {
+  color: #62475a;
+  font-size: 13px;
+}
+
+.admin-tabla-contenedor tbody tr:hover {
+  background: #fffafd;
+}
+
+@media (max-width: 900px) {
+  .bitacora-filtros {
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
+  }
+}
+
+@media (max-width: 550px) {
+  .bitacora-filtros {
+    grid-template-columns: 1fr;
+  }
+
+  .bitacora-botones-filtro {
+    flex-direction: column;
+  }
+
+  .bitacora-botones-filtro button {
+    width: 100%;
+  }
+}

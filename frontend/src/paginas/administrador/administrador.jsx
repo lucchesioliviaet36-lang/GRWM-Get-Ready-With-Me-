@@ -28,6 +28,14 @@ function Administrador() {
   const [patenteSeleccionada, setPatenteSeleccionada] = useState("");
   const [diasRestriccion, setDiasRestriccion] = useState(1);
 
+  // FILTROS DE BITÁCORA
+  const [filtroUsuario, setFiltroUsuario] = useState("");
+  const [filtroAccion, setFiltroAccion] = useState("");
+  const [filtroTabla, setFiltroTabla] = useState("");
+  const [filtroDescripcion, setFiltroDescripcion] = useState("");
+  const [filtroFechaDesde, setFiltroFechaDesde] = useState("");
+  const [filtroFechaHasta, setFiltroFechaHasta] = useState("");
+
   const headers = () => {
     const token = localStorage.getItem("token");
     return { Authorization: `Bearer ${token}` };
@@ -202,20 +210,35 @@ function Administrador() {
     }
   };
 
-  const cargarBitacora = async () => {
+  const cargarBitacora = async (filtros = {}) => {
     try {
       setCargando(true);
       setError("");
 
-      const respuesta = await fetch(`${API_URL}/api/admin/bitacora`, {
-        headers: headers()
+      const parametros = new URLSearchParams();
+
+      Object.entries(filtros).forEach(([clave, valor]) => {
+        if (valor) {
+          parametros.append(clave, valor);
+        }
       });
+
+      const respuesta = await fetch(
+        `${API_URL}/api/bitacora?${parametros.toString()}`,
+        {
+          headers: headers()
+        }
+      );
 
       const datos = await respuesta.json();
 
-      if (!respuesta.ok) throw new Error(datos.message || "No se pudo cargar la bitácora");
+      if (!respuesta.ok) {
+        throw new Error(
+          datos.mensaje || "No se pudo cargar la bitácora"
+        );
+      }
 
-      setBitacora(datos.bitacora || []);
+      setBitacora(Array.isArray(datos) ? datos : datos.bitacora || []);
       setSeccion("bitacora");
 
     } catch (error) {
@@ -223,6 +246,28 @@ function Administrador() {
     } finally {
       setCargando(false);
     }
+  };
+
+  const aplicarFiltrosBitacora = () => {
+    cargarBitacora({
+      id_usuario: filtroUsuario,
+      accion: filtroAccion,
+      tabla_afectada: filtroTabla,
+      descripcion: filtroDescripcion,
+      fechaDesde: filtroFechaDesde,
+      fechaHasta: filtroFechaHasta
+    });
+  };
+
+  const limpiarFiltrosBitacora = () => {
+    setFiltroUsuario("");
+    setFiltroAccion("");
+    setFiltroTabla("");
+    setFiltroDescripcion("");
+    setFiltroFechaDesde("");
+    setFiltroFechaHasta("");
+
+    cargarBitacora();
   };
 
   const cargarDVV = async () => {
@@ -428,6 +473,78 @@ function Administrador() {
         {seccion === "bitacora" && (
           <section className="admin-panel">
             <h2>Bitácora</h2>
+
+            <div className="bitacora-filtros">
+
+              <div>
+                <label>Usuario que realizó la acción</label>
+                <input
+                  type="number"
+                  placeholder="ID del usuario"
+                  value={filtroUsuario}
+                  onChange={(e) => setFiltroUsuario(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label>Acción</label>
+                <input
+                  type="text"
+                  placeholder="Ej: INSERT, UPDATE, DELETE"
+                  value={filtroAccion}
+                  onChange={(e) => setFiltroAccion(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label>Tabla afectada</label>
+                <input
+                  type="text"
+                  placeholder="Nombre de la tabla"
+                  value={filtroTabla}
+                  onChange={(e) => setFiltroTabla(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label>Descripción</label>
+                <input
+                  type="text"
+                  placeholder="Buscar descripción"
+                  value={filtroDescripcion}
+                  onChange={(e) => setFiltroDescripcion(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label>Desde</label>
+                <input
+                  type="date"
+                  value={filtroFechaDesde}
+                  onChange={(e) => setFiltroFechaDesde(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label>Hasta</label>
+                <input
+                  type="date"
+                  value={filtroFechaHasta}
+                  onChange={(e) => setFiltroFechaHasta(e.target.value)}
+                />
+              </div>
+
+              <div className="bitacora-botones-filtro">
+                <button onClick={aplicarFiltrosBitacora}>
+                  Aplicar filtros
+                </button>
+
+                <button onClick={limpiarFiltrosBitacora}>
+                  Limpiar filtros
+                </button>
+              </div>
+
+            </div>
 
             <div className="admin-tabla-contenedor">
               <table>

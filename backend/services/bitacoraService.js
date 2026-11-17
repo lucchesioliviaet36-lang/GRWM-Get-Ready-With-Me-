@@ -1,5 +1,6 @@
 const Bitacora = require("../models/bitacora");
 const digitoVerificadorService = require("./digitoVerificadorService");
+const bitacoraDAO = require("../dao/bitacoraDAO");
 
 // ACTUALIZAR DVV DE BITACORA
 const actualizarDVV = async () => {
@@ -37,7 +38,13 @@ const registrar = async ({
     return registro;
 };
 
+// OBTENER REGISTROS DE BITACORA CON FILTROS
+const obtenerTodos = async (filtros = {}) => {
+    return await bitacoraDAO.obtenerTodos(filtros);
+};
+
 module.exports = {
     registrar,
-    actualizarDVV
+    actualizarDVV,
+    obtenerTodos
 };
