@@ -36,6 +36,9 @@ function InicioSesion() {
 
       const datos = await respuesta.json();
 
+      console.log("RESPUESTA COMPLETA DEL LOGIN:", datos);
+      console.log("USUARIO DEL LOGIN:", datos.usuario);
+
       if (!respuesta.ok) {
         setError(datos.mensaje || "Usuario, email o contraseña incorrectos");
         return;

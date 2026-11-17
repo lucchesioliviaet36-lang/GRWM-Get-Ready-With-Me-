@@ -62,14 +62,25 @@ const obtenerUsuariosEtiquetados = async (id_publicacion) => {
     );
 };
 
-const eliminarPublicacion = async (id_publicacion) => {
+const eliminarPublicacion = async (id_publicacion, id_usuario, esAdministrador) => {
     const publicaciones = await publicacionDao.obtenerTodas();
 
     const publicacion = publicaciones.find((item) =>
-        Number(item.id_publicacion) === Number(id_publicacion));
+        Number(item.id_publicacion) === Number(id_publicacion)
+    );
 
     if (!publicacion) {
         throw new Error("Publicación no encontrada");
+    }
+
+    // Comprobar que sea el dueño o que sea administrador
+    if (
+        Number(publicacion.id_usuario) !== Number(id_usuario) &&
+        !esAdministrador
+    ) {
+        const error = new Error("No tenés permiso para eliminar esta publicación");
+        error.status = 403;
+        throw error;
     }
 
     const idUsuario = publicacion.id_usuario;
@@ -84,7 +95,7 @@ const eliminarPublicacion = async (id_publicacion) => {
     );
 
     await bitacoraService.registrar({
-        idUsuario: idUsuario,
+        idUsuario: id_usuario,
         descripcion: "Publicación eliminada",
         accion: "DELETE",
         tablaAfectada: "Publicacion",

@@ -6,6 +6,8 @@ const Usuario = require("../models/usuarioModels");
 const emailService = require("./emailService.js");
 const digitoVerificadorService = require("./digitoVerificadorService");
 const bitacoraService = require("./bitacoraService");
+const rolServicio = require("./rolServicio.js");
+const usuarioRolServicio = require("./usuarioRolServicio.js");
 
 const MAX_INTENTOS = 5;
 const TIEMPO_BLOQUEO_MINUTOS = 30;
@@ -21,46 +23,46 @@ const registrar = async (datos) => {
     } = datos;
 
     if (!nombre || !apellido || !username || !contraseña || !mail) {
-        throw new Error(
-            "Todos los campos deben completarse"
-        );
+        throw new Error("Todos los campos deben completarse");
     }
 
     const usuarioUsername = await usuarioDAO.buscarPorUsername(username);
+
     if (usuarioUsername) {
-        throw new Error(
-            "Este Username ya esta registrado"
-        );
+        throw new Error("Este Username ya esta registrado");
     }
 
     const usuarioMail = await usuarioDAO.buscarPorMail(mail);
+
     if (usuarioMail) {
-        throw new Error(
-            "Este mail ya esta registrado"
-        );
+        throw new Error("Este mail ya esta registrado");
     }
 
     if (contraseña.length < 7) {
-        throw new Error(
-            "La contraseña debe tener al menos 7 caracteres"
-        );
+        throw new Error("La contraseña debe tener al menos 7 caracteres");
+    }
+
+    // Buscar el rol predeterminado para los nuevos usuarios
+    const rolUsuario = await rolServicio.buscarPorNombre("usuario");
+
+    if (!rolUsuario) {
+        throw new Error("No existe el rol usuario en la base de datos");
     }
 
     const contraseñaHash = await bcrypt.hash(contraseña, 10);
-    const nuevoUsuario =
-        await usuarioDAO.crear({
-            nombre,
-            apellido,
-            username,
-            contraseña: contraseñaHash,
-            mail,
-            descripcion: null,
-            fecha_registro: new Date(),
-            DVH: null
-        }
-    );
 
-    // DVH + DVV
+    const nuevoUsuario = await usuarioDAO.crear({
+        nombre,
+        apellido,
+        username,
+        contraseña: contraseñaHash,
+        mail,
+        descripcion: null,
+        fecha_registro: new Date(),
+        DVH: null
+    });
+
+    // Recalcular DVH y DVV del usuario
     await digitoVerificadorService.recalcularRegistroYTabla(
         Usuario,
         "Usuario",
@@ -68,7 +70,13 @@ const registrar = async (datos) => {
         nuevoUsuario.id_usuario
     );
 
-    // BITACORA
+    // Asignar el rol usuario al nuevo usuario
+    await usuarioRolServicio.asignarRol(
+        nuevoUsuario.id_usuario,
+        rolUsuario.id_rol
+    );
+
+    // Registrar la operación en la bitácora
     await bitacoraService.registrar({
         idUsuario: nuevoUsuario.id_usuario,
         descripcion: "Registro de usuario",
@@ -181,6 +189,25 @@ const iniciar_sesion = async (identificador, contraseña) => {
         usuarioAfectado: usuario.id_usuario
     });
 
+    // OBTENER LOS ROLES DEL USUARIO DESDE LA BASE DE DATOS
+    const asignaciones = await usuarioRolServicio.obtenerPorUsuario(
+        usuario.id_usuario
+    );
+
+    const rolesUsuario = await Promise.all(
+        asignaciones.map(async (asignacion) => {
+            const rol = await rolServicio.buscarPorId(asignacion.id_rol);
+            return rol ? rol.nombre_rol : null;
+        })
+    );
+
+    const roles = rolesUsuario.filter(Boolean);
+
+    // Priorizar el rol administrador si lo tiene
+    const rolPrincipal = roles.includes("administrador")
+        ? "administrador"
+        : roles[0] || "usuario";
+
     // CREAR JWT
     if (!process.env.JWT_SECRET) {
         throw new Error(
@@ -192,7 +219,8 @@ const iniciar_sesion = async (identificador, contraseña) => {
         {
             id_usuario: usuario.id_usuario,
             username: usuario.username,
-            rol: usuario.rol
+            rol: rolPrincipal,
+            roles
         },
         process.env.JWT_SECRET,
         {
@@ -208,7 +236,8 @@ const iniciar_sesion = async (identificador, contraseña) => {
             apellido: usuario.apellido,
             username: usuario.username,
             mail: usuario.mail,
-            rol: usuario.rol
+            rol: rolPrincipal,
+            roles
         }
     };
 };

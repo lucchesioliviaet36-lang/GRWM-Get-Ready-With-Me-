@@ -1,6 +1,7 @@
 const express = require("express");
 const productoController = require("../controllers/productoController");
 const authMiddleware = require("../middlewares/authMiddleware");
+const verificarPermiso = require("../middlewares/permisoMiddleware");
 const uploadProducto = require("../middlewares/uploadProducto");
 const router = express.Router();
 
@@ -12,7 +13,9 @@ router.get("/:id", authMiddleware, productoController.obtenerPorId);
 
 router.get("/", authMiddleware, productoController.obtenerProductos);
 
-router.post("/", authMiddleware, uploadProducto.single("imagen"), productoController.agregar);
+router.post( "/", authMiddleware, verificarPermiso("CREAR_PUBLICACION"), uploadProducto.single("imagen"),
+    productoController.agregar
+);
 
 router.delete("/:id", authMiddleware, productoController.eliminar);
 

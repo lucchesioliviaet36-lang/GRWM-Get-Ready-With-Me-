@@ -4,6 +4,7 @@ const Mensaje = require('../models/Mensaje');
 const { Op } = require('sequelize');
 const Usuario = require('../models/usuarioModels');
 const authMiddleware = require('../middlewares/authMiddleware');
+const verificarPermiso = require('../middlewares/permisoMiddleware');
 
 router.use(authMiddleware);
 
@@ -110,7 +111,7 @@ router.get('/:usuario2Id', async (req, res) => {
 });
 
 // Guardar un mensaje nuevo con validación previa
-router.post('/', async (req, res) => {
+router.post('/', verificarPermiso("ENVIAR_MENSAJE"), async (req, res) => {
   try {
     const { destinatarioId, contenido } = req.body;
     const remitenteId = Number(req.user.id_usuario);

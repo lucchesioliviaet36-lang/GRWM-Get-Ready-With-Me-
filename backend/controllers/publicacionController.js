@@ -167,9 +167,23 @@ const buscarCanciones = async (req, res) => {
 const eliminarPublicacion = async (req, res) => {
     try {
         const { id_publicacion } = req.params;
+        const id_usuario = req.user.id_usuario;
 
-        const filasAfectadas =
-            await publicacionService.eliminarPublicacion(id_publicacion);
+        const roles = await require("../services/usuarioRolServicio.js")
+            .obtenerPorUsuario(id_usuario);
+
+        const rolServicio = require("../services/rolServicio.js");
+        const rolAdministrador = await rolServicio.buscarPorNombre("administrador");
+
+        const esAdministrador = roles.some(
+            rol => Number(rol.id_rol) === Number(rolAdministrador?.id_rol)
+        );
+
+        const filasAfectadas = await publicacionService.eliminarPublicacion(
+            id_publicacion,
+            id_usuario,
+            esAdministrador
+        );
 
         if (filasAfectadas > 0) {
             return res.status(200).json({
@@ -184,8 +198,8 @@ const eliminarPublicacion = async (req, res) => {
     } catch (error) {
         console.error("Error al eliminar publicación:", error);
 
-        return res.status(500).json({
-            error: "Error al eliminar en la base de datos"
+        return res.status(error.status || 500).json({
+            error: error.message || "Error al eliminar la publicación"
         });
     }
 };

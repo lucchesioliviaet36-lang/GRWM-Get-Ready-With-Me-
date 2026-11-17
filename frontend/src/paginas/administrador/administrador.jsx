@@ -5,6 +5,7 @@ import "./administrador.css";
 const API_URL = "http://localhost:3000";
 
 function Administrador() {
+  console.log("EL PANEL DE ADMINISTRACIÓN SE ESTÁ MOSTRANDO");
   const navigate = useNavigate();
   const [integridad, setIntegridad] = useState(null);
   const [bitacora, setBitacora] = useState([]);
@@ -14,9 +15,133 @@ function Administrador() {
   const [error, setError] = useState("");
   const [mensaje, setMensaje] = useState("");
 
+  //PARA LOS PERMISOS
+  const [usuarios, setUsuarios] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [patentes, setPatentes] = useState([]);
+  const [usuariosRoles, setUsuariosRoles] = useState([]);
+  const [rolesPatentes, setRolesPatentes] = useState([]);
+  const [restricciones, setRestricciones] = useState([]);
+
+  const [usuarioSeleccionado, setUsuarioSeleccionado] = useState("");
+  const [rolSeleccionado, setRolSeleccionado] = useState("");
+  const [patenteSeleccionada, setPatenteSeleccionada] = useState("");
+  const [diasRestriccion, setDiasRestriccion] = useState(1);
+
   const headers = () => {
     const token = localStorage.getItem("token");
     return { Authorization: `Bearer ${token}` };
+  };
+
+
+  const cargarGestionPermisos = async () => {
+    try {
+      setCargando(true);
+      setError("");
+      setMensaje("");
+
+      const respuesta = await fetch(`${API_URL}/api/permisos/gestion`, {
+        headers: headers()
+      });
+
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok) {
+        throw new Error(datos.mensaje || "No se pudieron cargar los permisos");
+      }
+
+      setUsuarios(datos.usuarios || []);
+      setRoles(datos.roles || []);
+      setPatentes(datos.patentes || []);
+      setUsuariosRoles(datos.usuariosRoles || []);
+      setRolesPatentes(datos.rolesPatentes || []);
+      setRestricciones(datos.restricciones || []);
+
+      setSeccion("permisos");
+
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const ejecutarAccionPermisos = async (url, metodo, cuerpo = null) => {
+    try {
+      setCargando(true);
+      setError("");
+      setMensaje("");
+
+      const respuesta = await fetch(`${API_URL}/api/permisos${url}`, {
+        method: metodo,
+        headers: {
+          ...headers(),
+          "Content-Type": "application/json"
+        },
+        ...(cuerpo ? { body: JSON.stringify(cuerpo) } : {})
+      });
+
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok) {
+        throw new Error(datos.mensaje || "No se pudo realizar la operación");
+      }
+
+      setMensaje(datos.mensaje || "Operación realizada correctamente");
+      await cargarGestionPermisos();
+
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const asignarRolUsuario = () => {
+    if (!usuarioSeleccionado || !rolSeleccionado) {
+      setError("Seleccioná un usuario y un rol.");
+      return;
+    }
+
+    ejecutarAccionPermisos("/usuarios/roles", "POST", {
+      id_usuario: Number(usuarioSeleccionado),
+      id_rol: Number(rolSeleccionado)
+    });
+  };
+
+  const quitarRolUsuario = (id) => {
+    ejecutarAccionPermisos(`/usuarios/roles/${id}`, "DELETE");
+  };
+
+  const asignarPatenteRol = (id_rol, id_patente) => {
+    ejecutarAccionPermisos("/roles/patentes", "POST", {
+      id_rol,
+      id_patente
+    });
+  };
+
+  const quitarPatenteRol = (id) => {
+    ejecutarAccionPermisos(`/roles/patentes/${id}`, "DELETE");
+  };
+
+  const aplicarRestriccion = () => {
+    if (!usuarioSeleccionado || !patenteSeleccionada || Number(diasRestriccion) <= 0) {
+      setError("Completá el usuario, la patente y los días.");
+      return;
+    }
+
+    ejecutarAccionPermisos(
+      `/usuarios/${usuarioSeleccionado}/restricciones`,
+      "POST",
+      {
+        id_patente: Number(patenteSeleccionada),
+        dias: Number(diasRestriccion)
+      }
+    );
+  };
+
+  const quitarRestriccion = (id) => {
+    ejecutarAccionPermisos(`/restricciones/${id}`, "PATCH");
   };
 
   const inicializarIntegridad = async () => {
@@ -187,6 +312,7 @@ function Administrador() {
           <button onClick={cargarBitacora}>Bitácora</button>
           <button onClick={cargarDVV}>Dígitos verificadores</button>
           <button onClick={() => setSeccion("backup")}>Backup</button>
+          <button onClick={cargarGestionPermisos}>Gestión de permisos</button>
         </nav>
 
         <button className="admin-cerrar-sesion" onClick={cerrarSesion}>Cerrar sesión</button>
@@ -199,6 +325,13 @@ function Administrador() {
             <span className="admin-subtitulo">ADMINISTRACIÓN</span>
             <h1>Panel de Administración</h1>
           </div>
+
+          <button
+            className="admin-volver-inicio"
+            onClick={() => navigate("/paginaPrincipal")}
+          >
+            ← Ir a GRWM
+          </button>
         </div>
 
         {error && <div className="admin-error">{error}</div>}
@@ -386,6 +519,189 @@ function Administrador() {
             </button>
 
             {mensaje && <div className="backup-exito">✓ {mensaje}</div>}
+          </section>
+
+          
+        )}
+
+
+        {seccion === "permisos" && (
+          <section className="admin-panel gestion-permisos">
+            <h2>Gestión de permisos</h2>
+            <p>Administrá los roles y las acciones disponibles en GRWM.</p>
+
+            {mensaje && <div className="backup-exito">{mensaje}</div>}
+
+            <div className="gestion-bloque">
+              <h3>Asignar roles a usuarios</h3>
+
+              <label>Usuario</label>
+              <select
+                value={usuarioSeleccionado}
+                onChange={(e) => setUsuarioSeleccionado(e.target.value)}
+              >
+                <option value="">Seleccionar usuario</option>
+                {usuarios.map((usuario) => (
+                  <option key={usuario.id_usuario} value={usuario.id_usuario}>
+                    {usuario.nombre} {usuario.apellido} (@{usuario.username})
+                  </option>
+                ))}
+              </select>
+
+              <label>Rol</label>
+              <select
+                value={rolSeleccionado}
+                onChange={(e) => setRolSeleccionado(e.target.value)}
+              >
+                <option value="">Seleccionar rol</option>
+                {roles.map((rol) => (
+                  <option key={rol.id_rol} value={rol.id_rol}>
+                    {rol.nombre_rol}
+                  </option>
+                ))}
+              </select>
+
+              <button onClick={asignarRolUsuario} disabled={cargando}>
+                Asignar rol
+              </button>
+
+              <h4>Roles asignados</h4>
+
+              {usuariosRoles.map((asignacion) => {
+                const usuario = usuarios.find(
+                  (u) => Number(u.id_usuario) === Number(asignacion.id_usuario)
+                );
+                const rol = roles.find(
+                  (r) => Number(r.id_rol) === Number(asignacion.id_rol)
+                );
+
+                return (
+                  <div className="gestion-fila" key={asignacion.id_usuario_rol}>
+                    <span>
+                      {usuario?.username || `Usuario ${asignacion.id_usuario}`}
+                      {" — "}
+                      {rol?.nombre_rol || `Rol ${asignacion.id_rol}`}
+                    </span>
+
+                    <button
+                      onClick={() => quitarRolUsuario(asignacion.id_usuario_rol)}
+                      disabled={cargando || rol?.nombre_rol === "administrador"}
+                    >
+                      Quitar
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="gestion-bloque">
+              <h3>Permisos por rol</h3>
+
+              {roles.map((rol) => {
+                const asignaciones = rolesPatentes.filter(
+                  (rp) => Number(rp.id_rol) === Number(rol.id_rol)
+                );
+
+                return (
+                  <div key={rol.id_rol} className="gestion-rol">
+                    <h4>{rol.nombre_rol}</h4>
+
+                    {patentes.map((patente) => {
+                      const asignacion = asignaciones.find(
+                        (rp) => Number(rp.id_patente) === Number(patente.id_patente)
+                      );
+
+                      return (
+                        <div className="gestion-fila" key={patente.id_patente}>
+                          <span>{patente.nombre_patente}</span>
+
+                          {asignacion ? (
+                            <button
+                              onClick={() => quitarPatenteRol(asignacion.id_rol_patente)}
+                              disabled={cargando || rol.nombre_rol === "administrador"}
+                            >
+                              Quitar permiso
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => asignarPatenteRol(rol.id_rol, patente.id_patente)}
+                              disabled={cargando}
+                            >
+                              Asignar permiso
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="gestion-bloque">
+              <h3>Restringir acciones de usuarios</h3>
+
+              <label>Patente</label>
+              <select
+                value={patenteSeleccionada}
+                onChange={(e) => setPatenteSeleccionada(e.target.value)}
+              >
+                <option value="">Seleccionar acción</option>
+                {patentes.map((patente) => (
+                  <option key={patente.id_patente} value={patente.id_patente}>
+                    {patente.nombre_patente}
+                  </option>
+                ))}
+              </select>
+
+              <label>Duración en días</label>
+              <input
+                type="number"
+                min="1"
+                value={diasRestriccion}
+                onChange={(e) => setDiasRestriccion(e.target.value)}
+              />
+
+              <button onClick={aplicarRestriccion} disabled={cargando}>
+                Aplicar restricción
+              </button>
+
+              <h4>Restricciones registradas</h4>
+
+              {restricciones.map((restriccion) => {
+                const usuario = usuarios.find(
+                  (u) => Number(u.id_usuario) === Number(restriccion.id_usuario)
+                );
+                const patente = patentes.find(
+                  (p) => Number(p.id_patente) === Number(restriccion.id_patente)
+                );
+
+                return (
+                  <div className="gestion-fila" key={restriccion.id_usuario_patente}>
+                    <span>
+                      {usuario?.username || `Usuario ${restriccion.id_usuario}`}
+                      {" — "}
+                      {patente?.nombre_patente || `Patente ${restriccion.id_patente}`}
+                      {" — "}
+                      Vence: {restriccion.fecha_vencimiento
+                        ? new Date(restriccion.fecha_vencimiento).toLocaleDateString("es-AR")
+                        : "Sin fecha"}
+                      {" — "}
+                      {restriccion.estado ? "Inactiva" : "Activa"}
+                    </span>
+
+                    {!restriccion.estado && (
+                      <button
+                        onClick={() => quitarRestriccion(restriccion.id_usuario_patente)}
+                        disabled={cargando}
+                      >
+                        Levantar restricción
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </section>
         )}
 

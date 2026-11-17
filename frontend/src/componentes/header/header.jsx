@@ -42,11 +42,22 @@ function Header() {
 
       const usuarioActual = data.usuario || data;
 
-      setUsuario(usuarioActual);
+      const usuarioGuardadoActual =
+        JSON.parse(localStorage.getItem("usuario")) || {};
+
+      const usuarioCompleto = {
+        ...usuarioActual,
+
+        rol: usuarioGuardadoActual.rol || "usuario",
+
+        roles: usuarioGuardadoActual.roles || ["usuario"]
+      };
+
+      setUsuario(usuarioCompleto);
 
       localStorage.setItem(
         "usuario",
-        JSON.stringify(usuarioActual)
+        JSON.stringify(usuarioCompleto)
       );
 
     } catch (error) {
@@ -86,6 +97,19 @@ function Header() {
   };
 
   const fotoPerfilHeader = obtenerFotoPerfil();
+
+  // VERIFICAR SI EL USUARIO ES ADMINISTRADOR
+  const usuarioActual = usuario || usuarioGuardado;
+
+  const rolesUsuario = usuarioActual.roles || usuarioGuardado.roles || [];
+
+  const esAdministrador =
+    usuarioActual.rol === "administrador" ||
+    usuarioGuardado.rol === "administrador" ||
+    rolesUsuario.some((rol) =>
+      (typeof rol === "string" ? rol : rol.nombre_rol || rol.nombre || rol.rol)
+        ?.toLowerCase() === "administrador"
+  );
 
   // CERRAR SESIÓN
   const handleCerrarSesion = () => {
@@ -204,6 +228,12 @@ function Header() {
         <button onClick={() => navigate("/paginaPrincipal")}>
           Página Principal
         </button>
+
+        {esAdministrador && (
+          <button onClick={() => navigate("/administrador")}>
+            Administración
+          </button>
+        )}
 
         <div className="mini-avatar-contenedor">
 

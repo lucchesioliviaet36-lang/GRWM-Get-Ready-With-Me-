@@ -21,6 +21,13 @@ const buscarPorUsername = async (username) => {
     });
 };
 
+// Obtener todos los usuarios
+const obtenerTodos = async () => {
+    return await Usuario.findAll({
+        attributes: ["id_usuario"]
+    });
+};
+
 // Buscar por mail
 const buscarPorMail = async (mail) => {
     return await Usuario.findOne({
@@ -399,5 +406,6 @@ module.exports = {
     obtenerSeguimiento,
     obtenerSugerencias,
     obtenerListaSeguidores,
-    obtenerListaSeguidos
+    obtenerListaSeguidos,
+    obtenerTodos
 };

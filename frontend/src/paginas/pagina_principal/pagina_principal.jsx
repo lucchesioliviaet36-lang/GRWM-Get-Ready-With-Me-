@@ -77,9 +77,24 @@ export default function Feed() {
       .then((res) => res.json())
       .then((data) => {
         const usuarioActual = data.usuario || data;
+        const usuarioSesion = JSON.parse(localStorage.getItem('usuario')) || {};
 
-        setUsuarioGuardado(usuarioActual);
-        localStorage.setItem('usuario', JSON.stringify(usuarioActual));
+        const rolesConservados = usuarioSesion.roles?.length
+          ? usuarioSesion.roles
+          : usuarioActual.roles || [];
+
+        const usuarioCompleto = {
+          ...usuarioSesion,
+          ...usuarioActual,
+          roles: rolesConservados,
+          rol: usuarioSesion.rol ||
+            (rolesConservados.includes('administrador')
+              ? 'administrador'
+              : usuarioActual.rol || 'usuario')
+        };
+
+        setUsuarioGuardado(usuarioCompleto);
+        localStorage.setItem('usuario', JSON.stringify(usuarioCompleto));
       })
       .catch((error) => {
         console.error('Error al actualizar los datos del usuario:', error);

@@ -4,6 +4,7 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const authMiddleware = require("../middlewares/authMiddleware.js");
+const verificarPermiso = require("../middlewares/permisoMiddleware.js");
 
 // LIKES, FAVORITOS Y COMENTARIOS
 const likeController = require("../controllers/likeController.js");
@@ -49,7 +50,7 @@ const upload = multer({
 });
 
 // 🚀 CREAR Y OBTENER PUBLICACIONES
-router.post("/", authMiddleware, upload.single("imagen"), (req, res) => {
+router.post("/", authMiddleware,verificarPermiso("CREAR_PUBLICACION"), upload.single("imagen"), (req, res) => {
     publicacionController.crearPublicacion(req, res);
 });
 
@@ -63,7 +64,7 @@ router.get("/:id_publicacion/etiquetados", authMiddleware, (req, res) => {
 });
 
 // --- LIKES ---
-router.post("/:id_publicacion/like", authMiddleware, (req, res) => {
+router.post("/:id_publicacion/like",authMiddleware,verificarPermiso("DAR_LIKE"),(req, res) => {
     likeController.alternarLike(req, res);
 });
 
@@ -72,7 +73,7 @@ router.get("/:id_publicacion/likes", authMiddleware, (req, res) => {
 });
 
 // --- FAVORITOS ---
-router.post("/:id_publicacion/favorito", authMiddleware, (req, res) => {
+router.post("/:id_publicacion/favorito",authMiddleware,verificarPermiso("GUARDAR_FAVORITO"), (req, res) => {
     favoritoController.toggleFavorito(req, res);
 });
 
@@ -85,13 +86,10 @@ router.get("/favoritos/usuario/:id_usuario", authMiddleware, (req, res) => {
 });
 
 // --- COMENTARIOS ---
-router.get("/:id_publicacion/comentarios", authMiddleware, (req, res) => {
-    comentarioController.obtenerComentarios(req, res);
-});
-
-router.post("/:id_publicacion/comentario", authMiddleware, (req, res) => {
+router.post("/:id_publicacion/comentario", authMiddleware,verificarPermiso("COMENTAR_PUBLICACION"), (req, res) => {
     comentarioController.crearComentario(req, res);
 });
+
 
 router.delete("/comentario/:id_comentario", authMiddleware, (req, res) => {
     comentarioController.eliminarComentario(req, res);

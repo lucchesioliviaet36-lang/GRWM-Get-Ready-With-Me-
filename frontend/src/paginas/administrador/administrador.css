@@ -287,6 +287,202 @@
   color: #a73636;
 }
 
+/* ================================
+   GESTIÓN DE PERMISOS
+================================ */
+
+.gestion-permisos {
+  max-width: 1200px;
+  padding: 25px 10px;
+}
+
+.gestion-permisos > h2 {
+  color: #70345c;
+  font-size: 27px;
+  margin-bottom: 8px;
+}
+
+.gestion-permisos > p {
+  color: #8b7180;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+/* Mensajes */
+
+.gestion-permisos .backup-exito {
+  margin: 15px 0 25px;
+}
+
+/* Bloques principales */
+
+.gestion-bloque {
+  background: #fffafd;
+  border: 1px solid #f0dce7;
+  border-radius: 18px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 15px rgba(112, 52, 92, 0.04);
+}
+
+.gestion-bloque h3 {
+  color: #70345c;
+  font-size: 19px;
+  margin: 0 0 20px;
+}
+
+.gestion-bloque h4 {
+  color: #9d5b7c;
+  font-size: 15px;
+  margin: 25px 0 12px;
+}
+
+/* Formularios */
+
+.gestion-bloque label {
+  display: block;
+  color: #70465e;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 15px 0 7px;
+}
+
+.gestion-bloque select,
+.gestion-bloque input {
+  width: 100%;
+  max-width: 450px;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #e8cbd9;
+  border-radius: 10px;
+  background: white;
+  color: #56364a;
+  font-size: 14px;
+  outline: none;
+  transition: .2s;
+}
+
+.gestion-bloque select:focus,
+.gestion-bloque input:focus {
+  border-color: #c989a9;
+  box-shadow: 0 0 0 3px rgba(201, 137, 169, .15);
+}
+
+/* Botones */
+
+.gestion-bloque button {
+  border: none;
+  border-radius: 9px;
+  padding: 10px 16px;
+  background: #c989a9;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.gestion-bloque button:hover:not(:disabled) {
+  background: #9d5b7c;
+  transform: translateY(-1px);
+}
+
+.gestion-bloque button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.gestion-bloque > button {
+  display: block;
+  margin-top: 17px;
+}
+
+/* Filas de asignaciones */
+
+.gestion-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 13px 15px;
+  margin-bottom: 9px;
+  background: white;
+  border: 1px solid #f0e3ea;
+  border-radius: 11px;
+  color: #62475a;
+  font-size: 13px;
+  transition: .2s;
+}
+
+.gestion-fila:hover {
+  border-color: #dfb7ca;
+  background: #fffafd;
+}
+
+.gestion-fila span {
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.gestion-fila button {
+  flex-shrink: 0;
+}
+
+/* Roles y sus permisos */
+
+.gestion-rol {
+  background: white;
+  border: 1px solid #f0dce7;
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.gestion-rol h4 {
+  color: #70345c;
+  font-size: 16px;
+  text-transform: capitalize;
+  margin: 0 0 15px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0e3ea;
+}
+
+.gestion-rol .gestion-fila {
+  margin-bottom: 8px;
+}
+
+/* Restricciones */
+
+.gestion-bloque:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive */
+
+@media (max-width: 700px) {
+  .gestion-permisos {
+    padding: 15px 5px;
+  }
+
+  .gestion-bloque {
+    padding: 18px;
+  }
+
+  .gestion-fila {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .gestion-fila button {
+    width: 100%;
+  }
+
+  .gestion-bloque select,
+  .gestion-bloque input {
+    max-width: 100%;
+  }
+}
+
 @media (max-width: 900px) {
   .integridad-info {
     flex-direction: column;
@@ -439,6 +635,40 @@
 
 @media (max-width: 700px) {
   .backup-info {
+    flex-direction: column;
+  }
+}
+
+
+/* Botón para volver a GRWM */
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.admin-volver-inicio {
+  background: #c989a9;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.admin-volver-inicio:hover {
+  background: #9d5b7c;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+  .admin-header {
+    align-items: flex-start;
     flex-direction: column;
   }
 }

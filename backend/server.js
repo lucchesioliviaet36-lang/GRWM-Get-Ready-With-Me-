@@ -4,7 +4,6 @@ const path = require("path");
 require("dotenv").config();
 const { sequelize } = require("./config/database.js");
 const Usuario = require("./models/usuarioModels.js");
-const HistoriaLike = require("./models/historiaLikeModel.js");
 const HistoriaComentario = require("./models/historiaComentarioModel.js");
 const authRoutes = require("./routes/authRoutes");
 const catalogoRoutes = require("./routes/catalogoRoutes.js");
@@ -21,6 +20,7 @@ const adminRoutes = require("./routes/adminRoutes");
 const pagoRoutes = require("./routes/pagoRoutes");
 const pedidoRoutes = require("./routes/pedidoRoutes");
 const calificacionRoutes = require("./routes/calificacionRoutes");
+const permisosRoutes = require("./routes/permisosRoutes.js");
 const app = express();
 const PORT = 3000;
 
@@ -41,6 +41,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/pagos", pagoRoutes);
 app.use("/api/pedidos", pedidoRoutes);
 app.use("/api/calificaciones", calificacionRoutes);
+app.use("/api/permisos", permisosRoutes);
 
 app.get("/", (req, res) => {
     res.json({
@@ -79,7 +80,6 @@ async function startServer() {
 
         // Crea la tabla del modelo existente solo si todavía no existe.
         await Mensaje.sync();
-        await HistoriaLike.sync();
         await HistoriaComentario.sync();
 
         console.log("Conexión con MySQL exitosa");
