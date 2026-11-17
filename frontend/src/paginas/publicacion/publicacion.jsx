@@ -616,10 +616,20 @@ function Publicacion() {
                       navigate('/IniciarSesion');
                       return;
                     }
-                    navigate(`/chat?usuarioId=${postEncontrado.id_usuario}`);
+
+                    navigate(`/perfil_usuario/${postEncontrado.id_usuario}`);
                   }}
-                  style={{ border: 'none', borderRadius: '18px', padding: '8px 14px', background: '#8b3f68', color: 'white', cursor: 'pointer' }}
-                >Ver perfil</button>
+                  style={{
+                    border: 'none',
+                    borderRadius: '18px',
+                    padding: '8px 14px',
+                    background: '#8b3f68',
+                    color: 'white',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Ver perfil
+                </button>
               )}
 
               {Number(postEncontrado?.id_usuario) === Number(idUsuarioActual) && (
