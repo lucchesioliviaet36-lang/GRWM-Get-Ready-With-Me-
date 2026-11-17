@@ -81,9 +81,21 @@ const eliminarPublicacion = async (id_publicacion) => {
     });
 };
 
+const obtenerUsuariosPorIds = async (idsUsuarios) => {
+    return await Usuario.findAll({
+        attributes: ["id_usuario", "username", "foto_perfil"],
+        where: {
+            id_usuario: {
+                [Op.in]: idsUsuarios
+            }
+        }
+    });
+};
+
 module.exports = {
     crearPublicacion,
     obtenerTodas,
     eliminarPublicacion,
-    obtenerUsuariosEtiquetados
+    obtenerUsuariosEtiquetados,
+    obtenerUsuariosPorIds
 };

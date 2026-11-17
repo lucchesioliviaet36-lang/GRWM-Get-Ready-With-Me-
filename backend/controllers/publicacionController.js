@@ -58,21 +58,29 @@ const obtenerPublicaciones = async (req, res) => {
     try {
         const publicaciones =
             await publicacionService.obtenerPublicaciones();
-        const idsUsuarios = [...new Set(publicaciones.map((publicacion) => publicacion.id_usuario))];
-        const usuarios = idsUsuarios.length
-            ? await Usuario.findAll({
-                attributes: ["id_usuario", "username", "foto_perfil"],
-                where: { id_usuario: { [Op.in]: idsUsuarios } }
-            })
-            : [];
+
+        const idsUsuarios = [
+            ...new Set(
+                publicaciones.map((publicacion) => publicacion.id_usuario)
+            )
+        ];
+
+        const usuarios =
+            await publicacionService.obtenerUsuariosPorIds(idsUsuarios);
+
         const usuariosPorId = new Map(
-            usuarios.map((usuario) => [usuario.id_usuario, usuario.get({ plain: true })])
+            usuarios.map((usuario) => [
+                usuario.id_usuario,
+                usuario.get({ plain: true })
+            ])
         );
 
-        return res.status(200).json(publicaciones.map((publicacion) => ({
-            ...publicacion.get({ plain: true }),
-            usuario: usuariosPorId.get(publicacion.id_usuario) || null
-        })));
+        return res.status(200).json(
+            publicaciones.map((publicacion) => ({
+                ...publicacion.get({ plain: true }),
+                usuario: usuariosPorId.get(publicacion.id_usuario) || null
+            }))
+        );
 
     } catch (error) {
         console.error("Error al obtener publicaciones:", error);

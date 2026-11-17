@@ -105,9 +105,18 @@ const eliminarPublicacion = async (id_publicacion, id_usuario, esAdministrador) 
     return resultado;
 };
 
+const obtenerUsuariosPorIds = async (idsUsuarios) => {
+    if (!idsUsuarios.length) {
+        return [];
+    }
+
+    return await publicacionDAO.obtenerUsuariosPorIds(idsUsuarios);
+};
+
 module.exports = {
     crearPublicacion,
     obtenerPublicaciones,
     eliminarPublicacion,
-    obtenerUsuariosEtiquetados
+    obtenerUsuariosEtiquetados,
+    obtenerUsuariosPorIds
 };
