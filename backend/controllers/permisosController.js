@@ -3,6 +3,7 @@ const patenteServicio = require("../services/patenteServicio.js");
 const rolPatenteServicio = require("../services/rolPatenteServicio.js");
 const usuarioRolServicio = require("../services/usuarioRolServicio.js");
 const usuarioPatenteServicio = require("../services/usuarioPatenteServicio.js");
+const usuarioServicio = require("../services/usuarioServicio.js");
 
 // Obtener todos los roles
 const obtenerRoles = async (req, res) => {
@@ -223,8 +224,6 @@ const quitarRestriccion = async (req, res) => {
 
 const obtenerDatosGestion = async (req, res) => {
     try {
-        const Usuario = require("../models/usuarioModels.js");
-
         const [
             usuarios,
             roles,
@@ -233,15 +232,7 @@ const obtenerDatosGestion = async (req, res) => {
             rolesPatentes,
             restricciones
         ] = await Promise.all([
-            Usuario.findAll({
-                attributes: [
-                    "id_usuario",
-                    "nombre",
-                    "apellido",
-                    "username",
-                    "mail"
-                ]
-            }),
+            usuarioServicio.obtenerUsuariosGestion(),
             rolServicio.obtenerTodos(),
             patenteServicio.obtenerTodas(),
             usuarioRolServicio.obtenerTodos(),

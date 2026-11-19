@@ -384,6 +384,20 @@ const obtenerSugerencias = async (idUsuarioActual) => {
     });
 };
 
+// OBTENER USUARIOS PARA LA GESTIÓN DE PERMISOS
+const obtenerUsuariosGestion = async () => {
+    return await Usuario.findAll({
+        attributes: [
+            "id_usuario",
+            "nombre",
+            "apellido",
+            "username",
+            "mail"
+        ]
+    });
+};
+
+
 module.exports = {
     buscarParaInicioSesion,
     buscarPorUsername,
@@ -407,5 +421,6 @@ module.exports = {
     obtenerSugerencias,
     obtenerListaSeguidores,
     obtenerListaSeguidos,
-    obtenerTodos
+    obtenerTodos,
+    obtenerUsuariosGestion
 };

@@ -220,6 +220,11 @@ const obtenerSugerencias = async (idUsuarioActual) => {
     );
 };
 
+// OBTENER USUARIOS PARA LA GESTIÓN DE PERMISOS
+const obtenerUsuariosGestion = async () => {
+    return await usuarioDAO.obtenerUsuariosGestion();
+};
+
 module.exports = {
     obtenerPorId,
     actualizarPerfil,
@@ -232,5 +237,6 @@ module.exports = {
     obtenerEstadoSeguimiento,
     obtenerSugerencias,
     obtenerListaSeguidores,
-    obtenerListaSeguidos
+    obtenerListaSeguidos,
+    obtenerUsuariosGestion
 };
