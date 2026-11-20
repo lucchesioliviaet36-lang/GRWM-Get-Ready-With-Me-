@@ -1,0 +1,114 @@
+const Mensaje = require("../models/Mensaje");
+const Usuario = require("../models/usuarioModels");
+const { Op } = require("sequelize");
+
+const camposPublicosUsuario = [
+    "id_usuario",
+    "nombre",
+    "apellido",
+    "username",
+    "foto_perfil"
+];
+
+// Obtener usuarios para iniciar una conversación
+const obtenerUsuariosDisponibles = async (usuarioId, termino) => {
+    const condiciones = [
+        { id_usuario: { [Op.ne]: usuarioId } }
+    ];
+
+    if (termino) {
+        condiciones.push({
+            [Op.or]: [
+                { username: { [Op.like]: `%${termino}%` } },
+                { nombre: { [Op.like]: `%${termino}%` } },
+                { apellido: { [Op.like]: `%${termino}%` } }
+            ]
+        });
+    }
+
+    return await Usuario.findAll({
+        where: {
+            [Op.and]: condiciones
+        },
+        attributes: camposPublicosUsuario,
+        order: [["username", "ASC"]],
+        limit: 50
+    });
+};
+
+// Obtener un usuario por su ID
+const obtenerUsuarioPorId = async (id) => {
+    return await Usuario.findByPk(id, {
+        attributes: camposPublicosUsuario
+    });
+};
+
+// Obtener todos los mensajes del usuario
+const obtenerMensajesDeUsuario = async (usuarioId) => {
+    return await Mensaje.findAll({
+        where: {
+            [Op.or]: [
+                { remitenteId: usuarioId },
+                { destinatarioId: usuarioId }
+            ]
+        },
+        order: [["createdAt", "DESC"]]
+    });
+};
+
+// Obtener los usuarios correspondientes a varios IDs
+const obtenerUsuariosPorIds = async (idsUsuarios) => {
+    return await Usuario.findAll({
+        where: {
+            id_usuario: {
+                [Op.in]: idsUsuarios
+            }
+        },
+        attributes: camposPublicosUsuario
+    });
+};
+
+// Obtener los mensajes entre dos usuarios
+const obtenerHistorial = async (usuario1Id, usuario2Id) => {
+    return await Mensaje.findAll({
+        where: {
+            [Op.or]: [
+                {
+                    remitenteId: usuario1Id,
+                    destinatarioId: usuario2Id
+                },
+                {
+                    remitenteId: usuario2Id,
+                    destinatarioId: usuario1Id
+                }
+            ]
+        },
+        order: [
+            ["createdAt", "DESC"],
+            ["id", "DESC"]
+        ],
+        limit: 100
+    });
+};
+
+// Crear un mensaje
+const crearMensaje = async (
+    remitenteId,
+    destinatarioId,
+    contenido
+) => {
+    return await Mensaje.create({
+        remitenteId,
+        destinatarioId,
+        contenido
+    });
+};
+
+module.exports = {
+    obtenerUsuariosDisponibles,
+    obtenerUsuarioPorId,
+    obtenerMensajesDeUsuario,
+    obtenerUsuariosPorIds,
+    obtenerHistorial,
+    crearMensaje
+};
