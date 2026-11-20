@@ -110,7 +110,7 @@ const obtenerUsuariosPorIds = async (idsUsuarios) => {
         return [];
     }
 
-    return await publicacionDAO.obtenerUsuariosPorIds(idsUsuarios);
+    return await publicacionDao.obtenerUsuariosPorIds(idsUsuarios);
 };
 
 module.exports = {

@@ -1,6 +1,7 @@
 const Publicacion = require("../models/publicacion.js");
 const PublicacionEtiquetado = require("../models/publicacionEtiquetado.js");
 const Usuario = require("../models/usuarioModels.js");
+const { Op } = require("sequelize");
 
 // Insertar una publicación
 const crearPublicacion = async (
